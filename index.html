@@ -45,7 +45,7 @@
     .start-button {
         display: block;
         margin: 0 auto 40px auto;
-        background-color: #01a900; /* KPN donker groen */
+        background-color: #2596be; /* KPN groen */
         color: #fff;
         font-weight: bold;
         font-size: 1.2rem;
@@ -55,12 +55,12 @@
         cursor: pointer;
         transition: background-color 0.3s;
     }
-    .start-button:hover { background-color: #017700; }
+    .start-button:hover { background-color: #0170a0; }
 
     /* Grid container */
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(2, 1fr); /* altijd 2 kolommen */
         gap: 20px;
         max-width: 1000px;
         margin: 0 auto 50px auto;
@@ -69,13 +69,15 @@
 
     /* Card styling */
     .card {
-        background: linear-gradient(135deg, #ffffff, #e6e6e6);
+        background-color: #ffffff;
         border-radius: 20px;
         text-align: center;
         padding: 25px 15px;
         box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         cursor: pointer;
         transition: transform 0.2s, box-shadow 0.2s;
+        text-decoration: none;
+        color: inherit;
     }
     .card:hover {
         transform: translateY(-5px);
@@ -99,9 +101,8 @@
         font-size: 1rem;
     }
 
-    /* Responsive tweaks */
-    @media (max-width: 600px) {
-        .grid { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+        .grid { grid-template-columns: 1fr; } /* mobiel: 1 kolom */
     }
 </style>
 </head>
@@ -117,34 +118,34 @@
 <button class="start-button">Start nu</button>
 
 <div class="grid">
-    <div class="card">
+    <a href="#" class="card">
         <img src="images/tussenstand.png" alt="Tussenstand Logo">
         <h3>Tussenstand</h3>
-    </div>
-    <div class="card">
+    </a>
+    <a href="#" class="card">
         <img src="images/videos.png" alt="Video Logo">
         <h3>Video's</h3>
-    </div>
-    <div class="card">
+    </a>
+    <a href="#" class="card">
         <img src="images/uitleg.png" alt="Uitleg Logo">
         <h3>Uitleg</h3>
-    </div>
-    <div class="card">
+    </a>
+    <a href="#" class="card">
         <img src="images/qa.png" alt="Vraag & Antwoord Logo">
         <h3>Vraag & Antwoord</h3>
-    </div>
-    <div class="card">
+    </a>
+    <a href="#" class="card">
         <img src="images/games.png" alt="Games Logo">
         <h3>Games</h3>
-    </div>
-    <div class="card">
+    </a>
+    <a href="#" class="card">
         <img src="images/winnen.png" alt="WINNEN WINNEN WINNEN Logo">
         <h3>WINNEN WINNEN WINNEN!</h3>
-    </div>
+    </a>
 </div>
 
 <footer>
-    &copy; KPN 2026
+    &copy; KPN 326
 </footer>
 </body>
 </html>
