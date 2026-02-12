@@ -1,80 +1,58 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mechanic Four Incentive</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPN Mechanic Four Incentive</title>
+
     <link rel="stylesheet" href="styles.css">
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
 
-<!-- TOP BAR -->
-<div id="topbar" class="hidden">
-    <button id="backBtn">← Terug</button>
-    <div id="countdown"></div>
-</div>
-
-<!-- START PAGE -->
-<section id="page-start" class="page active">
-    <img src="assets/logo.png" class="logo" />
-
-    <h2 id="welcomeText"></h2>
-
-    <button id="startBtn" class="primary-btn">START</button>
-
-    <img src="assets/gif-start.gif" class="start-gif" />
-</section>
-
-<!-- INHOUDSOPGAVE -->
-<section id="page-home" class="page">
-    <h2 id="homeGreeting"></h2>
-
-    <div class="menu">
-        <button data-page="stand">📊 Tussenstand</button>
-        <button data-page="uitleg">📖 Uitleg Incentive</button>
-        <button data-page="videos" id="videoMenuBtn">🎬 Video’s <span id="videoBadge"></span></button>
-        <button data-page="vragen">❓ Vraag the Mechanic Four</button>
-        <button data-page="games">🎮 Games</button>
-        <button data-page="motivatie">🔥 DOEN DOEN DOEN!</button>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">KPN Monteur Incentive</div>
     </div>
 
-    <img src="assets/gif-hero.gif" class="hero-gif" />
-</section>
+    <!-- HERO -->
+    <section class="hero">
+        <h1>Mechanic Four</h1>
+        <p>Alles wat je nodig hebt om te winnen.</p>
+        <a href="#" class="button">Start nu</a>
+    </section>
 
-<!-- TUSSENSTAND -->
-<section id="page-stand" class="page">
-    <iframe id="teamStandFrame"></iframe>
-    <div id="personalKpi"></div>
-</section>
+    <!-- GRID MET CARDS -->
+    <section class="grid">
 
-<!-- UITLEG -->
-<section id="page-uitleg" class="page">
-    <iframe id="uitlegFrame"></iframe>
-</section>
+        <div class="card">
+            <h3>📊 KPI Dashboard</h3>
+            <p>Bekijk jouw prestaties en de teamranglijst.</p>
+            <a href="#" class="button">Bekijk KPI</a>
+        </div>
 
-<!-- VIDEO'S -->
-<section id="page-videos" class="page">
-    <div id="videoGrid"></div>
-</section>
+        <div class="card">
+            <h3>🎥 Video Updates</h3>
+            <p>Nieuwe instructies en updates van het team.</p>
+            <a href="#" class="button">Open Video’s</a>
+        </div>
 
-<!-- VRAGEN -->
-<section id="page-vragen" class="page">
-    <div id="questionList"></div>
-    <textarea id="questionInput" placeholder="Stel je vraag..."></textarea>
-    <button id="submitQuestion">Verstuur</button>
-</section>
+        <div class="card">
+            <h3>❓ Vraag & Antwoord</h3>
+            <p>Stel je vraag of bekijk eerdere antwoorden.</p>
+            <a href="#" class="button button-yellow">Bekijk FAQ</a>
+        </div>
 
-<!-- GAMES -->
-<section id="page-games" class="page">
-    <div id="gameContainer"></div>
-</section>
+        <div class="card">
+            <h3>🔥 DOEN DOEN DOEN!</h3>
+            <p>Motivatie, foto’s en teammomenten.</p>
+            <a href="#" class="button">Bekijk Motivatie</a>
+        </div>
 
-<!-- MOTIVATIE -->
-<section id="page-motivatie" class="page">
-    <div id="photoGrid"></div>
-</section>
+    </section>
 
-<script src="app.js"></script>
+    <script src="app.js"></script>
+
 </body>
 </html>
