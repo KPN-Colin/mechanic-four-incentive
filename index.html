@@ -1,229 +1,222 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KPN Monteur Incentive</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KPN Monteur Incentive</title>
 
-  <style>
-    :root {
-      --kpn-green: #00a651;
-      --dark-green: #008a43;
-      --white: #ffffff;
-      --light: #f5f5f5;
-    }
+<style>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+:root{
+  --kpn-green:#01a900;
+  --kpn-blue:#2596be;
+  --light-bg:#f2f4f5;
+  --white:#ffffff;
+}
 
-    body {
-      background-color: var(--kpn-green);
-      color: white;
-    }
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial, sans-serif;
+}
 
-    /* HEADER */
-    .header {
-      background: var(--kpn-green);
-      padding: 20px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      position: relative;
-      border-bottom: 2px solid rgba(255,255,255,0.2);
-    }
+body{
+  background:var(--light-bg);
+}
 
-    .countdown {
-      font-size: 14px;
-      margin-top: 5px;
-    }
+/* TOP WHITE BAR */
+.header{
+  background:white;
+  padding:18px;
+  text-align:center;
+  font-weight:bold;
+  font-size:20px;
+  color:var(--kpn-green);
+  position:relative;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
 
-    .back-btn {
-      position: absolute;
-      left: 20px;
-      top: 20px;
-      background: transparent;
-      border: 1px solid white;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: none;
-    }
+.countdown{
+  font-size:14px;
+  color:var(--kpn-blue);
+  margin-top:4px;
+}
 
-    .back-btn:hover {
-      background: white;
-      color: var(--kpn-green);
-    }
+.back-btn{
+  position:absolute;
+  left:20px;
+  top:16px;
+  background:transparent;
+  border:none;
+  color:var(--kpn-blue);
+  font-size:14px;
+  cursor:pointer;
+  display:none;
+}
 
-    /* START PAGE */
-    .start-page {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 80vh;
-      text-align: center;
-      padding: 20px;
-    }
+/* GREEN HERO SECTION */
+.hero{
+  background:var(--kpn-green);
+  color:white;
+  padding:60px 20px;
+  text-align:center;
+}
 
-    .start-page h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
-    }
+.hero h1{
+  font-size:28px;
+  margin-bottom:20px;
+}
 
-    .start-btn {
-      background: white;
-      color: var(--kpn-green);
-      padding: 14px 30px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+.start-btn{
+  background:white;
+  color:var(--kpn-green);
+  padding:14px 28px;
+  font-weight:bold;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:0.2s;
+}
 
-    .start-btn:hover {
-      background: var(--light);
-    }
+.start-btn:hover{
+  transform:scale(1.05);
+}
 
-    /* MENU PAGE */
-    .menu {
-      display: none;
-      padding: 30px 20px;
-    }
+/* MENU SECTION */
+.menu{
+  display:none;
+  padding:40px 20px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  max-width:700px;
+  margin:auto;
+}
 
-    .card {
-      background: white;
-      color: var(--kpn-green);
-      border-radius: 14px;
-      padding: 30px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s ease;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    }
+.card{
+  background:white;
+  padding:30px 20px;
+  border-radius:16px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+.card:hover{
+  transform:translateY(-6px);
+}
 
-    .card img {
-      width: 60px;
-      margin-bottom: 15px;
-    }
+.card img{
+  width:60px;
+  margin-bottom:15px;
+  filter:brightness(0) saturate(100%) invert(43%) sepia(95%) saturate(600%) hue-rotate(80deg);
+}
 
-    .card-title {
-      font-weight: bold;
-      font-size: 16px;
-    }
+.card-title{
+  color:var(--kpn-blue);
+  font-weight:bold;
+  font-size:16px;
+}
 
-    /* CONTENT PAGE */
-    .content-page {
-      display: none;
-      padding: 30px;
-      text-align: center;
-    }
+/* CONTENT */
+.content-page{
+  display:none;
+  padding:40px 20px;
+  text-align:center;
+}
 
-  </style>
+</style>
 </head>
+
 <body>
 
-  <div class="header">
-    <button class="back-btn" onclick="goBack()">← Terug</button>
-    KPN Monteur Incentive
-    <div class="countdown" id="countdown"></div>
-  </div>
+<div class="header">
+  <button class="back-btn" onclick="goBack()">← Terug</button>
+  KPN Monteur Incentive
+  <div class="countdown" id="countdown"></div>
+</div>
 
-  <!-- START PAGE -->
-  <div class="start-page" id="startPage">
-    <h1>Welkom bij de Incentive 🚀</h1>
-    <button class="start-btn" onclick="startApp()">Start nu</button>
-  </div>
+<div class="hero" id="startPage">
+  <h1>Welkom bij de Incentive 🚀</h1>
+  <button class="start-btn" onclick="startApp()">Start nu</button>
+</div>
 
-  <!-- MENU -->
-  <div class="menu" id="menuPage">
-    <div class="grid">
+<div class="menu" id="menuPage">
+  <div class="grid">
 
-      <div class="card" onclick="openPage('tussenstand')">
-        <img src="https://img.icons8.com/ios-filled/100/00a651/combo-chart.png"/>
-        <div class="card-title">Tussenstand</div>
-      </div>
-
-      <div class="card" onclick="openPage('videos')">
-        <img src="https://img.icons8.com/ios-filled/100/00a651/video.png"/>
-        <div class="card-title">Video's</div>
-      </div>
-
-      <div class="card" onclick="openPage('vragen')">
-        <img src="https://img.icons8.com/ios-filled/100/00a651/help.png"/>
-        <div class="card-title">Vraag & Antwoord</div>
-      </div>
-
-      <div class="card" onclick="openPage('doen')">
-        <img src="https://img.icons8.com/ios-filled/100/00a651/checkmark.png"/>
-        <div class="card-title">Doen Doen Doen</div>
-      </div>
-
-      <div class="card" onclick="openPage('games')">
-        <img src="https://img.icons8.com/ios-filled/100/00a651/controller.png"/>
-        <div class="card-title">Games</div>
-      </div>
-
-      <div class="card" onclick="openPage('uitleg')">
-        <img src="https://img.icons8.com/ios-filled/100/00a651/info.png"/>
-        <div class="card-title">Uitleg</div>
-      </div>
-
+    <div class="card" onclick="openPage('Tussenstand')">
+      <img src="https://img.icons8.com/ios-filled/100/000000/combo-chart.png"/>
+      <div class="card-title">Tussenstand</div>
     </div>
+
+    <div class="card" onclick="openPage('Video\'s')">
+      <img src="https://img.icons8.com/ios-filled/100/000000/video.png"/>
+      <div class="card-title">Video's</div>
+    </div>
+
+    <div class="card" onclick="openPage('Vraag & Antwoord')">
+      <img src="https://img.icons8.com/ios-filled/100/000000/help.png"/>
+      <div class="card-title">Vraag & Antwoord</div>
+    </div>
+
+    <div class="card" onclick="openPage('Doen Doen Doen')">
+      <img src="https://img.icons8.com/ios-filled/100/000000/checkmark.png"/>
+      <div class="card-title">Doen Doen Doen</div>
+    </div>
+
+    <div class="card" onclick="openPage('Games')">
+      <img src="https://img.icons8.com/ios-filled/100/000000/controller.png"/>
+      <div class="card-title">Games</div>
+    </div>
+
+    <div class="card" onclick="openPage('Uitleg')">
+      <img src="https://img.icons8.com/ios-filled/100/000000/info.png"/>
+      <div class="card-title">Uitleg</div>
+    </div>
+
   </div>
+</div>
 
-  <!-- CONTENT -->
-  <div class="content-page" id="contentPage">
-    <h2 id="pageTitle"></h2>
-    <p>Hier komt straks de inhoud van deze pagina.</p>
-  </div>
+<div class="content-page" id="contentPage">
+  <h2 id="pageTitle"></h2>
+  <p>Hier komt straks de inhoud.</p>
+</div>
 
-  <script>
-    const countdownElement = document.getElementById("countdown");
-    const targetDate = new Date("March 31, 2026 23:59:59").getTime();
+<script>
 
-    setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetDate - now;
+const countdownElement=document.getElementById("countdown");
+const targetDate=new Date("March 31, 2026 23:59:59").getTime();
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      countdownElement.innerHTML = "Einde incentive over: " + days + " dagen";
-    }, 1000);
+setInterval(()=>{
+  const now=new Date().getTime();
+  const distance=targetDate-now;
+  const days=Math.floor(distance/(1000*60*60*24));
+  countdownElement.innerHTML="Einde incentive over: "+days+" dagen";
+},1000);
 
-    function startApp() {
-      document.getElementById("startPage").style.display = "none";
-      document.getElementById("menuPage").style.display = "block";
-      document.querySelector(".back-btn").style.display = "block";
-    }
+function startApp(){
+  document.getElementById("startPage").style.display="none";
+  document.getElementById("menuPage").style.display="block";
+  document.querySelector(".back-btn").style.display="block";
+}
 
-    function openPage(title) {
-      document.getElementById("menuPage").style.display = "none";
-      document.getElementById("contentPage").style.display = "block";
-      document.getElementById("pageTitle").innerText = title;
-    }
+function openPage(title){
+  document.getElementById("menuPage").style.display="none";
+  document.getElementById("contentPage").style.display="block";
+  document.getElementById("pageTitle").innerText=title;
+}
 
-    function goBack() {
-      document.getElementById("contentPage").style.display = "none";
-      document.getElementById("menuPage").style.display = "block";
-    }
-  </script>
+function goBack(){
+  document.getElementById("contentPage").style.display="none";
+  document.getElementById("menuPage").style.display="block";
+}
+
+</script>
 
 </body>
 </html>
