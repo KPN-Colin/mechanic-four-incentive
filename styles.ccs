@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #ffffff;
+    color: #000;
+}
+
+.page {
+    display: none;
+    padding: 20px;
+}
+
+.page.active {
+    display: block;
+}
+
+#topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #00C300;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.primary-btn {
+    background: #00C300;
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    width: 100%;
+}
+
+.menu button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background: #f2f2f2;
+    font-size: 16px;
+}
+
+.hero-gif {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 40%;
+    pointer-events: none;
+}
+
+.start-gif {
+    width: 100%;
+    margin-top: 30px;
+}
+
+#videoBadge {
+    color: red;
+    font-weight: bold;
+}
