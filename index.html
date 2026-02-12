@@ -1,222 +1,182 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KPN Monteur Incentive</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPN Monteur Incentive</title>
+    <style>
+        /* Algemene reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-<style>
+        body {
+            background-color: #f2f4f5; /* lichtgrijze achtergrond tussen cards */
+            color: #000;
+        }
 
-:root{
-  --kpn-green:#01a900;
-  --kpn-blue:#2596be;
-  --light-bg:#f2f4f5;
-  --white:#ffffff;
-}
+        /* Header */
+        header {
+            background-color: #2596be; /* KPN groen */
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            position: relative;
+        }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial, sans-serif;
-}
+        /* Terugknop */
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background-color: #fff;
+            color: #2596be;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-body{
-  background:var(--light-bg);
-}
+        /* Countdown */
+        .countdown {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: #000;
+            font-weight: bold;
+        }
 
-/* TOP WHITE BAR */
-.header{
-  background:white;
-  padding:18px;
-  text-align:center;
-  font-weight:bold;
-  font-size:20px;
-  color:var(--kpn-green);
-  position:relative;
-  box-shadow:0 2px 8px rgba(0,0,0,0.05);
-}
+        /* Welkomsttekst */
+        .welcome {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
 
-.countdown{
-  font-size:14px;
-  color:var(--kpn-blue);
-  margin-top:4px;
-}
+        /* Startknop */
+        .start-button {
+            display: block;
+            margin: 0 auto 40px auto;
+            background-color: #01a900; /* donkergroen */
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-.back-btn{
-  position:absolute;
-  left:20px;
-  top:16px;
-  background:transparent;
-  border:none;
-  color:var(--kpn-blue);
-  font-size:14px;
-  cursor:pointer;
-  display:none;
-}
+        .start-button:hover {
+            background-color: #017700;
+        }
 
-/* GREEN HERO SECTION */
-.hero{
-  background:var(--kpn-green);
-  color:white;
-  padding:60px 20px;
-  text-align:center;
-}
+        /* Grid container */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto 50px auto;
+            padding: 0 20px;
+        }
 
-.hero h1{
-  font-size:28px;
-  margin-bottom:20px;
-}
+        /* Card styling */
+        .card {
+            background-color: #fff;
+            border-radius: 15px;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-.start-btn{
-  background:white;
-  color:var(--kpn-green);
-  padding:14px 28px;
-  font-weight:bold;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  transition:0.2s;
-}
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
 
-.start-btn:hover{
-  transform:scale(1.05);
-}
+        /* Card logo */
+        .card img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+        }
 
-/* MENU SECTION */
-.menu{
-  display:none;
-  padding:40px 20px;
-}
+        /* Card title */
+        .card h3 {
+            color: #2596be; /* KPN blauw voor titels */
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
 
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
-  max-width:700px;
-  margin:auto;
-}
+        /* Footer / onderbalk */
+        footer {
+            background-color: #2596be;
+            color: #fff;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 1rem;
+        }
 
-.card{
-  background:white;
-  padding:30px 20px;
-  border-radius:16px;
-  text-align:center;
-  cursor:pointer;
-  transition:0.2s;
-  box-shadow:0 8px 20px rgba(0,0,0,0.08);
-}
-
-.card:hover{
-  transform:translateY(-6px);
-}
-
-.card img{
-  width:60px;
-  margin-bottom:15px;
-  filter:brightness(0) saturate(100%) invert(43%) sepia(95%) saturate(600%) hue-rotate(80deg);
-}
-
-.card-title{
-  color:var(--kpn-blue);
-  font-weight:bold;
-  font-size:16px;
-}
-
-/* CONTENT */
-.content-page{
-  display:none;
-  padding:40px 20px;
-  text-align:center;
-}
-
-</style>
+        /* Responsive tweaks */
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <button class="back-button">&larr; Terug</button>
+        KPN Monteur Incentive
+        <div class="countdown">Nog 3 dagen</div>
+    </header>
 
-<div class="header">
-  <button class="back-btn" onclick="goBack()">← Terug</button>
-  KPN Monteur Incentive
-  <div class="countdown" id="countdown"></div>
-</div>
-
-<div class="hero" id="startPage">
-  <h1>Welkom bij de Incentive 🚀</h1>
-  <button class="start-btn" onclick="startApp()">Start nu</button>
-</div>
-
-<div class="menu" id="menuPage">
-  <div class="grid">
-
-    <div class="card" onclick="openPage('Tussenstand')">
-      <img src="https://img.icons8.com/ios-filled/100/000000/combo-chart.png"/>
-      <div class="card-title">Tussenstand</div>
+    <div class="welcome">
+        Hoi Colin,
     </div>
 
-    <div class="card" onclick="openPage('Video\'s')">
-      <img src="https://img.icons8.com/ios-filled/100/000000/video.png"/>
-      <div class="card-title">Video's</div>
+    <button class="start-button">Start nu</button>
+
+    <div class="grid">
+        <div class="card">
+            <img src="images/tussenstand.png" alt="Tussenstand Logo">
+            <h3>Tussenstand</h3>
+        </div>
+        <div class="card">
+            <img src="images/videos.png" alt="Video Logo">
+            <h3>Video's</h3>
+        </div>
+        <div class="card">
+            <img src="images/uitleg.png" alt="Uitleg Logo">
+            <h3>Uitleg</h3>
+        </div>
+        <div class="card">
+            <img src="images/qa.png" alt="Vraag & Antwoord Logo">
+            <h3>Vraag & Antwoord</h3>
+        </div>
+        <div class="card">
+            <img src="images/games.png" alt="Games Logo">
+            <h3>Games</h3>
+        </div>
+        <div class="card">
+            <img src="images/winnen.png" alt="WINNEN WINNEN WINNEN Logo">
+            <h3>WINNEN WINNEN WINNEN!</h3>
+        </div>
     </div>
 
-    <div class="card" onclick="openPage('Vraag & Antwoord')">
-      <img src="https://img.icons8.com/ios-filled/100/000000/help.png"/>
-      <div class="card-title">Vraag & Antwoord</div>
-    </div>
-
-    <div class="card" onclick="openPage('Doen Doen Doen')">
-      <img src="https://img.icons8.com/ios-filled/100/000000/checkmark.png"/>
-      <div class="card-title">Doen Doen Doen</div>
-    </div>
-
-    <div class="card" onclick="openPage('Games')">
-      <img src="https://img.icons8.com/ios-filled/100/000000/controller.png"/>
-      <div class="card-title">Games</div>
-    </div>
-
-    <div class="card" onclick="openPage('Uitleg')">
-      <img src="https://img.icons8.com/ios-filled/100/000000/info.png"/>
-      <div class="card-title">Uitleg</div>
-    </div>
-
-  </div>
-</div>
-
-<div class="content-page" id="contentPage">
-  <h2 id="pageTitle"></h2>
-  <p>Hier komt straks de inhoud.</p>
-</div>
-
-<script>
-
-const countdownElement=document.getElementById("countdown");
-const targetDate=new Date("March 31, 2026 23:59:59").getTime();
-
-setInterval(()=>{
-  const now=new Date().getTime();
-  const distance=targetDate-now;
-  const days=Math.floor(distance/(1000*60*60*24));
-  countdownElement.innerHTML="Einde incentive over: "+days+" dagen";
-},1000);
-
-function startApp(){
-  document.getElementById("startPage").style.display="none";
-  document.getElementById("menuPage").style.display="block";
-  document.querySelector(".back-btn").style.display="block";
-}
-
-function openPage(title){
-  document.getElementById("menuPage").style.display="none";
-  document.getElementById("contentPage").style.display="block";
-  document.getElementById("pageTitle").innerText=title;
-}
-
-function goBack(){
-  document.getElementById("contentPage").style.display="none";
-  document.getElementById("menuPage").style.display="block";
-}
-
-</script>
-
+    <footer>
+        &copy; KPN 2026
+    </footer>
 </body>
 </html>
