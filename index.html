@@ -14,7 +14,7 @@
 }
 
 body {
-    background-color: #f2f4f5;
+    background-color: #eae9ec; /* Nieuwe achtergrondkleur */
     color: #000;
 }
 
@@ -63,101 +63,67 @@ header {
 /* Welkom */
 .welcome {
     text-align: center;
-    margin: 30px 0;
+    margin: 40px 0;
     font-size: 1.3rem;
     font-weight: bold;
-}
-
-/* Startknop */
-.start-button {
-    display: block;
-    margin: 0 auto 50px auto;
-    background-color: #00c300;
-    color: #fff;
-    font-weight: bold;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 30px;
-    padding: 15px 50px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.start-button:hover {
-    background-color: #017700;
 }
 
 /* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 40px; /* meer ruimte tussen cards */
-    max-width: 700px; /* smaller grid */
-    margin: 0 auto 60px auto;
+    gap: 50px;                 /* Meer ruimte tussen cards */
+    max-width: 600px;          /* Cards kleiner */
+    margin: 0 auto 80px auto;  /* Meer ruimte rondom */
 }
 
-/* CARD vierkanter */
+/* CARD kleiner en mooi gecentreerd */
 .card {
-    background-color: #fff;
-    border-radius: 20px;
+    background-color: #ffffff;
+    border-radius: 18px;
+    height: 190px;             /* Vaste hoogte (kleiner) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* Horizontaal centreren */
+    justify-content: center;   /* Verticaal centreren */
     text-align: center;
-    padding: 40px 20px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
     cursor: pointer;
     text-decoration: none;
     color: inherit;
     transition: 0.2s;
-    aspect-ratio: 1 / 1; /* maakt ze vierkanter */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-/* Grotere icons */
+/* Grotere icon maar netjes in midden */
 .card img {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 20px;
+    width: 85px;
+    height: 85px;
+    margin-bottom: 15px;
 }
 
 .card h3 {
     color: #00a000;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: bold;
 }
 
-/* M4 ALL gif apart */
-.m4-all {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
+/* m4 all over volledige breedte */
 .m4-all img {
-    height: 110px;
+    width: 100%;
+    display: block;
 }
 
-/* Mechanics */
-.mechanics {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.mechanics img {
-    height: 80px;
-    margin: 10px;
-}
-
-/* Footer */
+/* Footer direct aansluitend */
 footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    padding: 30px 20px;
+    padding: 25px 20px;
     font-size: 1rem;
 }
 </style>
@@ -175,10 +141,6 @@ footer {
 <div class="welcome">
     Hoi Colin,
 </div>
-
-<button class="start-button" onclick="alert('WINNEN WINNEN WINNEN!')">
-    Start nu
-</button>
 
 <div class="grid">
     <a href="tussenstand.html" class="card">
@@ -212,17 +174,9 @@ footer {
     </a>
 </div>
 
-<!-- m4 all GIF los onder cards -->
+<!-- Alleen m4 all gif -->
 <div class="m4-all">
     <img src="images/mechanics/m4 all.gif">
-</div>
-
-<!-- Individuele mechanics -->
-<div class="mechanics">
-    <img src="images/mechanics/Mechanic 4 Alberto.gif">
-    <img src="images/mechanics/Mechanic 4 Colin.gif">
-    <img src="images/mechanics/Mechanic 4 Arie.gif">
-    <img src="images/mechanics/Mechanic 4 Jasper.gif">
 </div>
 
 <footer>
