@@ -21,28 +21,25 @@ body {
 /* HEADER */
 header {
     background-color: #00c300;
-    color: #fff;
-    height: 90px;                 /* vaste hoogte voor perfecte centrering */
-    display: flex;
-    align-items: center;          /* verticale centrering */
-    justify-content: center;      /* horizontale centrering */
+    height: 90px;              /* vaste balkhoogte */
     position: relative;
-    font-size: 1.5rem;
-    font-weight: bold;
 }
 
-/* KPN logo exact midden */
+/* Logo exact midden */
 .kpn-logo {
-    height: 55px;
-}
-
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 90px;              /* zelfde hoogte als balk */
 }
 
 /* Terugknop */
 .back-button {
     position: absolute;
-    left: 100px;
-    top: 20px;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     background-color: #fff;
     color: #00c300;
     border: none;
@@ -52,14 +49,16 @@ header {
     font-weight: bold;
 }
 
-/* Countdown wit */
+/* Countdown */
 .countdown {
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #ffffff;
     font-weight: bold;
 }
+
 
 /* Welkom */
 .welcome {
