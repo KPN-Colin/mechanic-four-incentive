@@ -1,18 +1,1 @@
-{
-  "routes": [
-    {
-      "route": "/*",
-      "serve": "/index.html",
-      "statusCode": 200
-    }
-  ],
-  "auth": {
-    "identityProviders": {
-      "azureActiveDirectory": {
-        "registration": {
-          "openIdIssuer": "https://login.microsoftonline.com/<TENANT-ID>/v2.0"
-        }
-      }
-    }
-  }
-}
+{"routes":[{"route":"/*","serve":"/index.html","statusCode":200}]}
