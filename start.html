@@ -25,7 +25,7 @@ body {
 header {
     background-color: #00c300;
     color: #fff;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
     font-size: 1.5rem;
     font-weight: bold;
@@ -36,7 +36,7 @@ header {
 .kpn-logo {
     position: absolute;
     left: 20px;
-    top: 15px;
+    top: 18px;
     height: 50px;
 }
 
@@ -44,7 +44,7 @@ header {
 .countdown {
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 22px;
     color: #ffffff;
     font-weight: bold;
 }
@@ -54,32 +54,35 @@ header {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;   /* Niet meer exact in midden */
     align-items: center;
+    padding-top: 120px;            /* EXTRA ruimte onder header */
 }
 
 /* Welkom */
 .welcome {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    margin-bottom: 40px;
+    margin-bottom: 60px;           /* Meer ruimte tussen tekst en knop */
 }
 
-/* Start knop */
+/* Start knop groter */
 .start-button {
     background-color: #00c300;
     color: #fff;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.4rem;             /* Groter lettertype */
     border: none;
-    border-radius: 30px;
-    padding: 15px 50px;
+    border-radius: 40px;
+    padding: 20px 70px;            /* Grotere knop */
     cursor: pointer;
     transition: 0.3s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
 .start-button:hover {
     background-color: #017700;
+    transform: translateY(-3px);
 }
 
 /* m4 all full width */
