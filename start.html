@@ -1,146 +1,33 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPN Monteur Incentive - Start</title>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    background-color: #eae9ec;
-    color: #000;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* HEADER */
-header {
-    background-color: #00c300;
-    height: 90px;              /* vaste balkhoogte */
-    position: relative;
-}
-
-/* Logo exact midden */
-.kpn-logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    height: 90px;              /* zelfde hoogte als balk */
-}
-
-/* Terugknop */
-.back-button {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 25px;
-    padding: 8px 18px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* Countdown */
-.countdown {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ffffff;
-    font-weight: bold;
-}
-
-
-/* Midden content */
-.center-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;   /* Niet meer exact in midden */
-    align-items: center;
-    padding-top: 120px;            /* EXTRA ruimte onder header */
-}
-
-/* Welkom */
-.welcome {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 60px;           /* Meer ruimte tussen tekst en knop */
-}
-
-/* Start knop groter */
-.start-button {
-    background-color: #00c300;
-    color: #fff;
-    font-weight: bold;
-    font-size: 1.4rem;             /* Groter lettertype */
-    border: none;
-    border-radius: 40px;
-    padding: 20px 70px;            /* Grotere knop */
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.start-button:hover {
-    background-color: #017700;
-    transform: translateY(-3px);
-}
-
-/* m4 all full width */
-.m4-all img {
-    width: 100%;
-    display: block;
-}
-
-/* Footer */
-footer {
-    background-color: #00c300;
-    color: #fff;
-    text-align: center;
-    padding: 25px 20px;
-    font-size: 1rem;
-}
-</style>
+    <title>Mechanic4</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://alcdn.msauth.net/browser/2.38.0/js/msal-browser.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
 </head>
-
 <body>
 
 <header>
-    <img src="images/logo/kpn logo.png" class="kpn-logo">
-    KPN Monteur Incentive
-    <div class="countdown">Nog 3 dagen</div>
+    <img src="assets/logo.png" class="logo">
 </header>
 
-<div class="center-content">
-    <div class="welcome">
-        Hoi, Colin
-    </div>
+<main>
+    <div class="countdown">Nog 12 dagen...</div>
 
-    <button class="start-button" onclick="window.location.href='index.html'">
-        Start nu
+    <button class="start-btn" onclick="startLoginFlow()">
+        Start
     </button>
-</div>
+</main>
 
-<div class="m4-all">
-    <img src="images/mechanics/m4 all.gif">
-</div>
+<img src="assets/m4all.gif" class="bottom-gif">
 
-<footer>
-    &copy; KPN 2026
-</footer>
+<div id="loadingOverlay" class="overlay hidden">
+    <div class="loader-text">
+        Controleren of medewerker uit Team Tilburg komt...
+    </div>
+</div>
 
 </body>
 </html>
