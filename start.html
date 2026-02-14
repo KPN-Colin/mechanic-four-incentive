@@ -2,125 +2,72 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPN Monteur Incentive - Start</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Start - KPN Monteur Incentive</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background-color: #eae9ec;
-  color: #000;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+* {margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif;}
+html, body {height:100%; background:#eae9ec; display:flex; flex-direction:column;}
+body {min-height:100vh;}
 
 /* HEADER */
 header {
-  background-color: #00c300;
-  color: #fff;
-  padding: 15px 15px 25px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
+  background:#00c300;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
 }
 
-.kpn-logo {
-  height: 60px;
-}
+.kpn-logo {height:50px; margin-right:5px;}
 
-.header-title {
-  font-weight: bold;
-  font-size: 1.5rem;
-  text-align: center;
-  flex: 1;
-}
+.header-title {font-size:1.4rem; font-weight:bold; color:#fff; display:flex; align-items:center;}
 
-.countdown {
-  font-size: 1rem;
-}
+.countdown {position:absolute; right:15px; font-size:1rem; color:#fff; top:50%; transform:translateY(-50%);}
 
-/* CENTER CONTENT */
-.center-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
+/* Hoi Colin */
+.welcome {text-align:center; font-size:1.2rem; font-weight:bold; margin:10px 15px;}
 
-.welcome {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
+/* START BUTTON */
 .start-button {
-  background-color: #00c300;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.3rem;
-  border: none;
-  border-radius: 35px;
-  padding: 18px 60px;
-  cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
-
-.start-button:hover {
-  background-color: #017700;
-  transform: translateY(-2px);
+  display:block;
+  margin:20px auto;
+  padding:15px 30px;
+  border-radius:25px;
+  background:#00a651;
+  color:#fff;
+  font-weight:bold;
+  text-decoration:none;
+  text-align:center;
 }
 
 /* GIF */
-.m4-all img {
-  width: 90%;
-  max-width: 400px;
-  display: block;
-  margin-top: 30px;
-}
+.m4-all img {width:100%; display:block;}
 
 /* FOOTER */
-footer {
-  background-color: #00c300;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-  font-size: 1rem;
-}
+footer {background:#00c300; color:#fff; text-align:center; padding:20px; font-size:1rem; margin-top:auto;}
 </style>
 </head>
-
 <body>
 
 <header>
+  <div class="header-title">
     <img src="images/logo/kpn logo.png" class="kpn-logo">
-    <div class="header-title">Incentive</div>
-    <div class="countdown">Nog 3 dagen</div>
+    Incentive
+  </div>
+  <div class="countdown">Nog 3 dagen</div>
 </header>
 
-<div class="center-content">
-    <div class="welcome">Hoi, Colin</div>
-    <button class="start-button" onclick="window.location.href='index.html'">
-        Start nu
-    </button>
-    <div class="m4-all">
-        <img src="images/mechanics/m4 all.gif">
-    </div>
+<div class="welcome">Hoi Colin,</div>
+
+<div class="m4-all">
+  <img src="images/mechanics/mv-al.gif">
 </div>
 
+<a href="index.html" class="start-button">Start nu</a>
+
 <footer>
-    &copy; KPN 2026
+  &copy; KPN 2026
 </footer>
 
 </body>
