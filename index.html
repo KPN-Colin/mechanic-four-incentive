@@ -25,30 +25,35 @@ body {
 header {
   background-color: #00c300;
   color: #fff;
-  padding: 10px 15px;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  padding: 10px 15px;
   position: relative;
 }
 
-.logo-back {
+/* TERUGKNOP */
+.back-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* LOGO + TITEL */
+.logo-title {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .kpn-logo {
   height: 50px;
-}
-
-.back-button {
-  display: none; /* niet zichtbaar op indexpagina */
+  margin-right: 5px;
 }
 
 .header-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   font-size: 1.4rem;
   font-weight: bold;
 }
@@ -62,9 +67,15 @@ header {
 }
 
 /* WELCOME */
+.welcome-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin-top: 10px;
+}
+
 .welcome {
-  text-align: center;
-  margin: 10px 15px 15px 15px;
   font-size: 1.2rem;
   font-weight: bold;
 }
@@ -75,7 +86,7 @@ header {
   grid-template-columns: repeat(2, minmax(90px, 1fr));
   gap: 10px;
   padding: 0 15px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .card {
@@ -109,17 +120,16 @@ header {
   font-size: 0.8rem;
   font-weight: bold;
   color: #00a000;
-  text-decoration: none; /* onderstreping verwijderd */
+  text-decoration: none;
   padding: 0 5px;
   word-wrap: break-word;
 }
 
 /* GIF */
 .m4-all img {
-  width: 80%;
-  max-width: 350px;
+  width: 100%;
   display: block;
-  margin: 0 auto 0 auto;
+  margin: 0;
 }
 
 /* FOOTER */
@@ -137,14 +147,17 @@ footer {
 <body>
 
 <header>
-  <div class="logo-back">
-      <img src="images/logo/kpn logo.png" class="kpn-logo">
+  <button class="back-button" onclick="window.location.href='start.html'">&#x21A9;</button>
+  <div class="logo-title">
+    <img src="images/logo/kpn logo.png" class="kpn-logo">
+    <div class="header-title">Incentive</div>
   </div>
-  <div class="header-title">Incentive</div>
   <div class="countdown">Nog 3 dagen</div>
 </header>
 
-<div class="welcome">Hoi Colin,</div>
+<div class="welcome-container">
+  <div class="welcome">Hoi Colin,</div>
+</div>
 
 <div class="grid">
   <a href="tussenstand.html" class="card">
