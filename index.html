@@ -28,72 +28,73 @@ header {
     height: 90px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
+    justify-content: center;
+    position: relative;
+    padding: 0 15px;
     font-size: 1.5rem;
     font-weight: bold;
-    position: relative;
 }
 
 header .logo-back {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
+    position: absolute;
+    left: 15px;
 }
 
 .kpn-logo {
-    height: 55px;
+    height: 50px;
 }
 
 .back-button {
     background-color: #fff;
     color: #00c300;
     border: none;
-    border-radius: 25px;
-    padding: 8px 18px;
+    border-radius: 20px;
+    padding: 6px 15px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 0.9rem;
 }
 
 .header-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    font-weight: bold;
 }
 
 .countdown {
-    font-size: 1rem;
     position: absolute;
-    right: 30px;
+    right: 15px;
+    font-size: 1rem;
 }
 
 /* Welkom */
 .welcome {
     text-align: center;
-    margin: 60px 0 40px 0;
-    font-size: 1.3rem;
+    margin: 50px 15px 30px 15px;
+    font-size: 1.2rem;
     font-weight: bold;
 }
 
 /* GRID */
 .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 50px;
-    max-width: 600px;
-    margin: 0 auto 80px auto;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 15px;
+    padding: 0 15px;
+    margin-bottom: 40px;
 }
 
 .card {
     background-color: #ffffff;
-    border-radius: 18px;
-    height: 190px;
+    border-radius: 15px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     cursor: pointer;
     text-decoration: none;
     color: inherit;
@@ -101,32 +102,33 @@ header .logo-back {
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
 .card img {
-    width: 85px;
-    height: 85px;
-    margin-bottom: 15px;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
 }
 
 .card h3 {
     color: #00a000;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     font-weight: bold;
 }
 
 .m4-all img {
     width: 100%;
     display: block;
+    margin-bottom: 0;
 }
 
 footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    padding: 25px 20px;
+    padding: 20px;
     font-size: 1rem;
 }
 </style>
