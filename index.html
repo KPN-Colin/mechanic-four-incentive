@@ -7,120 +7,129 @@
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: #eae9ec;
-    color: #000;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  background-color: #eae9ec;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* HEADER */
 header {
-    background-color: #00c300;
-    color: #fff;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    font-weight: bold;
+  background-color: #00c300;
+  color: #fff;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .logo-back {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .kpn-logo {
-    height: 50px;
+  height: 50px;
 }
 
 .back-button {
-    margin-top: 8px;
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 20px;
-    padding: 6px 15px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
+  display: none; /* niet zichtbaar op indexpagina */
 }
 
 .header-title {
-    margin-top: 5px;
-    font-size: 1.4rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 .countdown {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 1rem;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
 }
 
-/* Welkom */
+/* WELCOME */
 .welcome {
-    text-align: center;
-    margin: 20px 15px 20px 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
+  text-align: center;
+  margin: 10px 15px 15px 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 /* GRID */
 .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(100px, 1fr));
-    gap: 10px;
-    padding: 0 15px;
-    margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, 1fr));
+  gap: 10px;
+  padding: 0 15px;
+  margin-bottom: 15px;
 }
 
 .card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    cursor: pointer;
-    transition: 0.2s;
+  background-color: #fff;
+  border-radius: 12px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s;
 }
 
 .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
 .card img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 5px;
+  width: 55px;
+  height: 55px;
+  margin-bottom: 5px;
 }
 
 .card h3 {
-    color: #00a000;
-    font-size: 0.8rem;
-    font-weight: bold;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #00a000;
+  text-decoration: none; /* onderstreping verwijderd */
+  padding: 0 5px;
+  word-wrap: break-word;
 }
 
+/* GIF */
+.m4-all img {
+  width: 80%;
+  max-width: 350px;
+  display: block;
+  margin: 0 auto 0 auto;
+}
+
+/* FOOTER */
 footer {
-    background-color: #00c300;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    font-size: 1rem;
+  background-color: #00c300;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 1rem;
+  margin-top: auto;
 }
 </style>
 </head>
@@ -128,47 +137,48 @@ footer {
 <body>
 
 <header>
-    <div class="logo-back">
-        <img src="images/logo/kpn logo.png" class="kpn-logo">
-        <button class="back-button" onclick="window.location.href='start.html'">&larr; Terug</button>
-    </div>
-    <div class="header-title">Incentive</div>
-    <div class="countdown">Nog 3 dagen</div>
+  <div class="logo-back">
+      <img src="images/logo/kpn logo.png" class="kpn-logo">
+  </div>
+  <div class="header-title">Incentive</div>
+  <div class="countdown">Nog 3 dagen</div>
 </header>
 
-<div class="welcome">
-    Hoi Colin,
-</div>
+<div class="welcome">Hoi Colin,</div>
 
 <div class="grid">
-    <a href="tussenstand.html" class="card">
-        <img src="images/icons/tussenstand.png">
-        <h3>Tussenstand</h3>
-    </a>
-    <a href="videos.html" class="card">
-        <img src="images/icons/videos.png">
-        <h3>Video's</h3>
-    </a>
-    <a href="uitleg.html" class="card">
-        <img src="images/icons/uitleg.png">
-        <h3>Uitleg</h3>
-    </a>
-    <a href="qa.html" class="card">
-        <img src="images/icons/qa.png">
-        <h3>Vraag & Antwoord</h3>
-    </a>
-    <a href="games.html" class="card">
-        <img src="images/icons/games.png">
-        <h3>Games</h3>
-    </a>
-    <a href="winnen.html" class="card">
-        <img src="images/icons/winnen.png">
-        <h3>WINNEN WINNEN WINNEN!</h3>
-    </a>
+  <a href="tussenstand.html" class="card">
+      <img src="images/icons/tussenstand.png">
+      <h3>Tussenstand</h3>
+  </a>
+  <a href="videos.html" class="card">
+      <img src="images/icons/videos.png">
+      <h3>Video's</h3>
+  </a>
+  <a href="uitleg.html" class="card">
+      <img src="images/icons/uitleg.png">
+      <h3>Uitleg</h3>
+  </a>
+  <a href="qa.html" class="card">
+      <img src="images/icons/qa.png">
+      <h3>Vraag & Antwoord</h3>
+  </a>
+  <a href="games.html" class="card">
+      <img src="images/icons/games.png">
+      <h3>Games</h3>
+  </a>
+  <a href="winnen.html" class="card">
+      <img src="images/icons/winnen.png">
+      <h3 style="font-size:0.7rem;">WINNEN WINNEN WINNEN!</h3>
+  </a>
+</div>
+
+<div class="m4-all">
+  <img src="images/mechanics/m4 all.gif">
 </div>
 
 <footer>
-    &copy; KPN 2026
+  &copy; KPN 2026
 </footer>
 
 </body>
