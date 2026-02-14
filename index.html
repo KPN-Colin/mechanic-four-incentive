@@ -2,148 +2,79 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Incentive - KPN Monteur</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Index - Incentive</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
-body {
-  background-color: #eae9ec;
-  color: #000;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+* {margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif;}
+html, body {height:100%; display:flex; flex-direction:column; background:#eae9ec;}
 
 /* HEADER */
 header {
-  background-color: #00c300;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 10px 15px;
-  position: relative;
+  background:#00c300;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
 }
 
-/* TERUGKNOP */
 .back-button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 1.5rem;
-  cursor: pointer;
-  margin-right: 10px;
+  background:none;
+  border:none;
+  font-size:1.5rem;
+  color:#fff;
+  cursor:pointer;
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
 }
 
-/* LOGO + TITEL */
 .logo-title {
-  display: flex;
-  align-items: center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.kpn-logo {
-  height: 50px;
-  margin-right: 5px;
-}
+.kpn-logo {height:40px; margin-right:5px;}
 
-.header-title {
-  font-size: 1.4rem;
-  font-weight: bold;
-}
+.header-title {font-size:1.4rem; font-weight:bold; color:#fff; display:flex; align-items:center;}
 
-.countdown {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1rem;
-}
+.countdown {position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:1rem; color:#fff;}
 
-/* WELCOME */
-.welcome-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
-  margin-top: 10px;
-}
-
-.welcome {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
+/* Hoi Colin */
+.welcome {text-align:center; font-size:1.2rem; font-weight:bold; margin:10px 15px;}
 
 /* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(90px, 1fr));
-  gap: 10px;
-  padding: 0 15px;
-  margin-bottom: 10px;
-}
+.grid {display:grid; grid-template-columns:repeat(2, minmax(90px,1fr)); gap:10px; padding:0 15px; margin:10px 0;}
 
 .card {
-  background-color: #fff;
-  border-radius: 12px;
-  height: 110px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-  transition: 0.2s;
+  background:#fff;
+  border-radius:12px;
+  height:110px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  cursor:pointer;
+  text-decoration:none;
+  color:inherit;
+  transition:0.2s;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
-}
-
-.card img {
-  width: 55px;
-  height: 55px;
-  margin-bottom: 5px;
-}
-
-.card h3 {
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: #00a000;
-  text-decoration: none;
-  padding: 0 5px;
-  word-wrap: break-word;
-}
+.card:hover {transform:translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,0.15);}
+.card img {width:55px; height:55px; margin-bottom:5px;}
+.card h3 {font-size:0.8rem; font-weight:bold; color:#00a000; text-decoration:none; padding:0 5px;}
 
 /* GIF */
-.m4-all img {
-  width: 100%;
-  display: block;
-  margin: 0;
-}
+.m4-all img {width:100%; display:block;}
 
 /* FOOTER */
-footer {
-  background-color: #00c300;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-  font-size: 1rem;
-  margin-top: auto;
-}
+footer {background:#00c300; color:#fff; text-align:center; padding:20px; font-size:1rem; margin-top:auto;}
 </style>
 </head>
-
 <body>
 
 <header>
@@ -155,9 +86,7 @@ footer {
   <div class="countdown">Nog 3 dagen</div>
 </header>
 
-<div class="welcome-container">
-  <div class="welcome">Hoi Colin,</div>
-</div>
+<div class="welcome">Hoi Colin,</div>
 
 <div class="grid">
   <a href="tussenstand.html" class="card">
