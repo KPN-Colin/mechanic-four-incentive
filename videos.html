@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video's - KPN Monteur Incentive</title>
+<title>Video's - Incentive</title>
 
 <style>
 * {
@@ -25,22 +25,18 @@ body {
 header {
     background-color: #00c300;
     color: #fff;
-    height: 90px;
+    padding: 15px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     position: relative;
-    padding: 0 15px;
-    font-size: 1.5rem;
     font-weight: bold;
 }
 
-header .logo-back {
+.logo-back {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    position: absolute;
-    left: 15px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .kpn-logo {
@@ -48,6 +44,7 @@ header .logo-back {
 }
 
 .back-button {
+    margin-top: 8px;
     background-color: #fff;
     color: #00c300;
     border: none;
@@ -59,22 +56,18 @@ header .logo-back {
 }
 
 .header-title {
-    font-weight: bold;
+    margin-top: 5px;
+    font-size: 1.4rem;
 }
 
 .countdown {
     position: absolute;
-    right: 15px;
+    right: 20px;
+    top: 15px;
     font-size: 1rem;
 }
 
-/* GIF */
-.m4-gif {
-    width: 100%;
-    margin-top: 10px;
-}
-
-/* SCROLLABLE VIDEOS */
+/* VIDEO GRID */
 .video-container {
     flex: 1;
     overflow-y: auto;
@@ -110,6 +103,12 @@ header .logo-back {
     color: #00c300;
 }
 
+/* JASPER GIF */
+.m4-gif {
+    width: 100%;
+    margin-top: 15px;
+}
+
 /* FOOTER */
 footer {
     background-color: #00c300;
@@ -128,81 +127,42 @@ footer {
         <img src="images/logo/kpn logo.png" class="kpn-logo">
         <button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
     </div>
-
-    <div class="header-title">KPN Monteur Incentive</div>
-
+    <div class="header-title">Incentive</div>
     <div class="countdown">Nog 3 dagen</div>
 </header>
 
-<!-- Mechanic GIF boven de scrollable content -->
-<div class="m4-gif">
-    <img src="images/mechanics/Mechanic 4 Jasper.gif">
-</div>
-
 <div class="video-container">
     <div class="video-grid">
-        <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-            <div class="thumb-inner">Video 1</div>
-        </div>
-        <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-            <div class="thumb-inner">Video 2</div>
-        </div>
-        <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-            <div class="thumb-inner">Video 3</div>
-        </div>
-        <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-            <div class="thumb-inner">Video 4</div>
-        </div>
+        <!-- 20 placeholder videos voor scroll-test -->
+        <div class="video-thumb"><div class="thumb-inner">Video 1</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 2</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 3</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 4</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 5</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 6</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 7</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 8</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 9</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 10</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 11</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 12</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 13</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 14</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 15</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 16</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 17</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 18</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 19</div></div>
+        <div class="video-thumb"><div class="thumb-inner">Video 20</div></div>
+    </div>
+    <div class="m4-gif">
+        <img src="images/mechanics/Mechanic 4 Jasper.gif">
     </div>
 </div>
 
 <footer>
     &copy; KPN 2026
 </footer>
-
-<script>
-function openVideo(src) {
-    const overlay = document.createElement("div");
-    overlay.style.position = "fixed";
-    overlay.style.inset = "0";
-    overlay.style.background = "rgba(0,0,0,0.85)";
-    overlay.style.display = "flex";
-    overlay.style.alignItems = "center";
-    overlay.style.justifyContent = "center";
-    overlay.style.zIndex = "1000";
-
-    const video = document.createElement("video");
-    video.src = src;
-    video.controls = true;
-    video.autoplay = true;
-    video.style.maxWidth = "90%";
-    video.style.maxHeight = "80%";
-    video.style.borderRadius = "10px";
-
-    const closeBtn = document.createElement("button");
-    closeBtn.innerHTML = "×";
-    closeBtn.style.position = "absolute";
-    closeBtn.style.top = "20px";
-    closeBtn.style.right = "20px";
-    closeBtn.style.width = "40px";
-    closeBtn.style.height = "40px";
-    closeBtn.style.borderRadius = "50%";
-    closeBtn.style.background = "rgba(255,255,255,0.2)";
-    closeBtn.style.color = "#fff";
-    closeBtn.style.fontSize = "22px";
-    closeBtn.style.border = "none";
-    closeBtn.style.cursor = "pointer";
-
-    closeBtn.onclick = () => {
-        video.pause();
-        overlay.remove();
-    };
-
-    overlay.appendChild(video);
-    overlay.appendChild(closeBtn);
-    document.body.appendChild(overlay);
-}
-</script>
 
 </body>
 </html>
