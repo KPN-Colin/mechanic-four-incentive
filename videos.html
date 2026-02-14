@@ -14,7 +14,7 @@
 }
 
 body {
-    background-color: #eae9ec;
+    background-color: #fbfdfa; /* achtergrond passend bij GIF */
     color: #000;
     display: flex;
     flex-direction: column;
@@ -36,8 +36,24 @@ header {
     flex-shrink: 0;
 }
 
+header .logo-back {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .kpn-logo {
     height: 55px;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .header-title {
@@ -48,21 +64,6 @@ header {
 
 .countdown {
     font-size: 1rem;
-}
-
-/* TERUGKNOP */
-.back-button {
-    position: absolute;
-    left: 30px;
-    top: 100px;
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 25px;
-    padding: 8px 18px;
-    cursor: pointer;
-    font-weight: bold;
-    z-index: 10;
 }
 
 /* MAIN LAYOUT */
@@ -85,6 +86,7 @@ header {
     gap: 20px;
 }
 
+/* THUMBNAILS */
 .video-thumb {
     background: #fff;
     border-radius: 15px;
@@ -92,6 +94,10 @@ header {
     cursor: pointer;
     box-shadow: 0 6px 15px rgba(0,0,0,0.08);
     transition: 0.2s;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .video-thumb:hover {
@@ -99,9 +105,9 @@ header {
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
 
-.video-thumb img {
-    width: 100%;
-    display: block;
+.thumb-inner {
+    font-weight: bold;
+    color: #00c300;
 }
 
 /* GIF RECHTS (DESKTOP) */
@@ -179,24 +185,35 @@ footer {
 <body>
 
 <header>
-    <img src="images/logo/kpn logo.png" class="kpn-logo">
+    <div class="logo-back">
+        <img src="images/logo/kpn logo.png" class="kpn-logo">
+        <button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
+    </div>
+
     <div class="header-title">KPN Monteur Incentive</div>
+
     <div class="countdown">Nog 3 dagen</div>
 </header>
-
-<button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
 
 <div class="main">
     <div class="video-container">
         <div class="video-grid" id="videoGrid">
 
-            <!-- Tijdelijke dummy thumbnails -->
+            <!-- Dummy interne thumbnails voor testen -->
             <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-                <img src="https://via.placeholder.com/400x250">
+                <div class="thumb-inner">Video 1</div>
             </div>
 
             <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
-                <img src="https://via.placeholder.com/400x250">
+                <div class="thumb-inner">Video 2</div>
+            </div>
+
+            <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
+                <div class="thumb-inner">Video 3</div>
+            </div>
+
+            <div class="video-thumb" onclick="openVideo('https://www.w3schools.com/html/mov_bbb.mp4')">
+                <div class="thumb-inner">Video 4</div>
             </div>
 
         </div>
