@@ -25,27 +25,34 @@ header {
     height: 90px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
+    justify-content: space-between;
+    padding: 0 30px;
     font-size: 1.5rem;
     font-weight: bold;
 }
 
-/* Logo exact midden */
+/* Logo links */
 .kpn-logo {
+    height: 55px;
+}
+
+/* Titel altijd exact midden */
+.header-title {
     position: absolute;
-    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    height: 90px;
+    transform: translateX(-50%);
+}
+
+/* Countdown rechts */
+.countdown {
+    font-size: 1rem;
 }
 
 /* Terugknop */
 .back-button {
     position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 30px;
+    bottom: -45px;
     background-color: #fff;
     color: #00c300;
     border: none;
@@ -55,20 +62,10 @@ header {
     font-weight: bold;
 }
 
-/* Countdown */
-.countdown {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ffffff;
-    font-weight: bold;
-}
-
 /* Welkom */
 .welcome {
     text-align: center;
-    margin: 40px 0;
+    margin: 60px 0 40px 0;
     font-size: 1.3rem;
     font-weight: bold;
 }
@@ -82,7 +79,6 @@ header {
     margin: 0 auto 80px auto;
 }
 
-/* CARD */
 .card {
     background-color: #ffffff;
     border-radius: 18px;
@@ -116,13 +112,11 @@ header {
     font-weight: bold;
 }
 
-/* m4 all */
 .m4-all img {
     width: 100%;
     display: block;
 }
 
-/* Footer */
 footer {
     background-color: #00c300;
     color: #fff;
@@ -137,10 +131,11 @@ footer {
 
 <header>
     <img src="images/logo/kpn logo.png" class="kpn-logo">
-    <button class="back-button" onclick="window.location.href='start.html'">&larr; Terug</button>
-    KPN Monteur Incentive
+    <div class="header-title">KPN Monteur Incentive</div>
     <div class="countdown">Nog 3 dagen</div>
 </header>
+
+<button class="back-button" onclick="window.location.href='start.html'">&larr; Terug</button>
 
 <div class="welcome">
     Hoi Colin,
