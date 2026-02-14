@@ -7,100 +7,96 @@
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: #eae9ec;
-    color: #000;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  background-color: #eae9ec;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* HEADER */
 header {
-    background-color: #00c300;
-    color: #fff;
-    padding: 15px 15px 25px 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    position: relative;
+  background-color: #00c300;
+  color: #fff;
+  padding: 15px 15px 25px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
 }
 
 .kpn-logo {
-    height: 50px;
+  height: 60px;
 }
 
 .header-title {
-    margin-top: 5px;
-    font-weight: bold;
-}
-
-.back-button {
-    display: none; /* startpagina heeft geen terugknop */
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  flex: 1;
 }
 
 .countdown {
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
-/* Midden content */
+/* CENTER CONTENT */
 .center-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .welcome {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 30px;
-    text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .start-button {
-    background-color: #00c300;
-    color: #fff;
-    font-weight: bold;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 30px;
-    padding: 15px 50px;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  background-color: #00c300;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.3rem;
+  border: none;
+  border-radius: 35px;
+  padding: 18px 60px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 .start-button:hover {
-    background-color: #017700;
-    transform: translateY(-2px);
+  background-color: #017700;
+  transform: translateY(-2px);
 }
 
+/* GIF */
 .m4-all img {
-    width: 100%;
-    display: block;
-    margin-top: auto;
+  width: 90%;
+  max-width: 400px;
+  display: block;
+  margin-top: 30px;
 }
 
+/* FOOTER */
 footer {
-    background-color: #00c300;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    font-size: 1rem;
+  background-color: #00c300;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 1rem;
 }
 </style>
 </head>
@@ -114,17 +110,13 @@ footer {
 </header>
 
 <div class="center-content">
-    <div class="welcome">
-        Hoi, Colin
-    </div>
-
+    <div class="welcome">Hoi, Colin</div>
     <button class="start-button" onclick="window.location.href='index.html'">
         Start nu
     </button>
-</div>
-
-<div class="m4-all">
-    <img src="images/mechanics/m4 all.gif">
+    <div class="m4-all">
+        <img src="images/mechanics/m4 all.gif">
+    </div>
 </div>
 
 <footer>
