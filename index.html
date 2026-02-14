@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPN Monteur Incentive</title>
+<title>Incentive - KPN Monteur</title>
 
 <style>
 * {
@@ -25,22 +25,18 @@ body {
 header {
     background-color: #00c300;
     color: #fff;
-    height: 90px;
+    padding: 15px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
     position: relative;
-    padding: 0 15px;
-    font-size: 1.5rem;
     font-weight: bold;
 }
 
-header .logo-back {
+.logo-back {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    position: absolute;
-    left: 15px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .kpn-logo {
@@ -48,6 +44,7 @@ header .logo-back {
 }
 
 .back-button {
+    margin-top: 8px;
     background-color: #fff;
     color: #00c300;
     border: none;
@@ -59,19 +56,21 @@ header .logo-back {
 }
 
 .header-title {
-    font-weight: bold;
+    margin-top: 5px;
+    font-size: 1.4rem;
 }
 
 .countdown {
     position: absolute;
-    right: 15px;
+    right: 20px;
+    top: 15px;
     font-size: 1rem;
 }
 
 /* Welkom */
 .welcome {
     text-align: center;
-    margin: 50px 15px 30px 15px;
+    margin: 20px 15px 20px 15px;
     font-size: 1.2rem;
     font-weight: bold;
 }
@@ -79,16 +78,16 @@ header .logo-back {
 /* GRID */
 .grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(2, minmax(100px, 1fr));
+    gap: 10px;
     padding: 0 15px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .card {
     background-color: #ffffff;
-    border-radius: 15px;
-    height: 140px;
+    border-radius: 12px;
+    height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -96,32 +95,24 @@ header .logo-back {
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     cursor: pointer;
-    text-decoration: none;
-    color: inherit;
     transition: 0.2s;
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
 .card img {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 10px;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
 }
 
 .card h3 {
     color: #00a000;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: bold;
-}
-
-.m4-all img {
-    width: 100%;
-    display: block;
-    margin-bottom: 0;
 }
 
 footer {
@@ -141,9 +132,7 @@ footer {
         <img src="images/logo/kpn logo.png" class="kpn-logo">
         <button class="back-button" onclick="window.location.href='start.html'">&larr; Terug</button>
     </div>
-
-    <div class="header-title">KPN Monteur Incentive</div>
-
+    <div class="header-title">Incentive</div>
     <div class="countdown">Nog 3 dagen</div>
 </header>
 
@@ -156,35 +145,26 @@ footer {
         <img src="images/icons/tussenstand.png">
         <h3>Tussenstand</h3>
     </a>
-
     <a href="videos.html" class="card">
         <img src="images/icons/videos.png">
         <h3>Video's</h3>
     </a>
-
     <a href="uitleg.html" class="card">
         <img src="images/icons/uitleg.png">
         <h3>Uitleg</h3>
     </a>
-
     <a href="qa.html" class="card">
         <img src="images/icons/qa.png">
         <h3>Vraag & Antwoord</h3>
     </a>
-
     <a href="games.html" class="card">
         <img src="images/icons/games.png">
         <h3>Games</h3>
     </a>
-
     <a href="winnen.html" class="card">
         <img src="images/icons/winnen.png">
         <h3>WINNEN WINNEN WINNEN!</h3>
     </a>
-</div>
-
-<div class="m4-all">
-    <img src="images/mechanics/m4 all.gif">
 </div>
 
 <footer>
