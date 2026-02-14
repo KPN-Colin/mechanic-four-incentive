@@ -1,30 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
-    <title>Mechanic4</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic4 Incentive</title>
+
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-<header>
-    <img src="assets/logo.png" class="logo">
-</header>
-
-<main>
-    <div class="countdown">Nog 12 dagen...</div>
-
-    <button class="start-btn" onclick=index.html">
-        Start
-    </button>
-</main>
-
-<img src="assets/m4all.gif" class="bottom-gif">
-
-<div id="loadingOverlay" class="overlay hidden">
-    <div class="loader-text">
-        Controleren of medewerker uit Team Tilburg komt...
+    <div class="top-bar">
+        <img src="images/logo/KPN-logo.png" alt="KPN Logo" class="logo">
     </div>
-</div>
+
+    <div class="start-container">
+        <img src="images/mechanics/M4 al.gif" alt="M4 Animation" class="start-gif">
+        <h1>Welkom bij Mechanic4 Incentive</h1>
+        <button class="start-button" onclick="gaNaarDashboard()">Start</button>
+    </div>
+
+    <script>
+        function gaNaarDashboard() {
+            window.location.href = "index.html";
+        }
+    </script>
 
 </body>
 </html>
