@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mechanic 4 - Tussenstand</title>
+
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
+body {background-color:#eae9ec; color:#000; display:flex; flex-direction:column; min-height:100vh;}
+header {background-color:#00c300; color:#fff; height:90px; display:flex; align-items:center; justify-content:space-between; padding:0 30px; font-size:1.5rem; font-weight:bold; position:relative;}
+header .logo-back {display:flex; align-items:center; gap:15px;}
+.kpn-logo {height:55px;}
+.back-button {background-color:#fff; color:#00c300; border:none; border-radius:25px; padding:8px 18px; cursor:pointer; font-weight:bold;}
+.header-title {position:absolute; left:50%; transform:translateX(-50%);}
+.countdown {font-size:1rem; position:absolute; right:30px;}
+.content {padding:40px; max-width:800px; margin:0 auto; text-align:left;}
+.content h2 {margin-bottom:20px; color:#00a000;}
+.content p {margin-bottom:15px; line-height:1.5;}
+footer {background-color:#00c300; color:#fff; text-align:center; padding:25px 20px; font-size:1rem;}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo-back">
+    <img src="/images/logo/kpn-logo.png" class="kpn-logo">
+    <button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
+  </div>
+  <div class="header-title">Tussenstand</div>
+  <div class="countdown">Nog 3 dagen</div>
+</header>
+
+<div class="content">
+  <h2>Jouw huidige punten</h2>
+  <p>Bekijk hier hoeveel punten je hebt gescoord tot nu toe in Mechanic 4.</p>
+</div>
+
+<footer>&copy; KPN 2026</footer>
+</body>
+</html>
