@@ -3,72 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Start - KPN Monteur Incentive</title>
-<style>
-* {margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif;}
-html, body {height:100%; background:#eae9ec; display:flex; flex-direction:column;}
-body {min-height:100vh;}
-
-/* HEADER */
-header {
-  background:#00c300;
-  height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.kpn-logo {height:50px; margin-right:5px;}
-
-.header-title {font-size:1.4rem; font-weight:bold; color:#fff; display:flex; align-items:center;}
-
-.countdown {position:absolute; right:15px; font-size:1rem; color:#fff; top:50%; transform:translateY(-50%);}
-
-/* Hoi Colin */
-.welcome {text-align:center; font-size:1.2rem; font-weight:bold; margin:10px 15px;}
-
-/* START BUTTON */
-.start-button {
-  display:block;
-  margin:20px auto;
-  padding:15px 30px;
-  border-radius:25px;
-  background:#00a651;
-  color:#fff;
-  font-weight:bold;
-  text-decoration:none;
-  text-align:center;
-}
-
-/* GIF */
-.m4-all img {width:100%; display:block;}
-
-/* FOOTER */
-footer {background:#00c300; color:#fff; text-align:center; padding:20px; font-size:1rem; margin-top:auto;}
-</style>
+<title>KPN Incentive</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-<header>
-  <div class="header-title">
-    <img src="images/logo/kpn logo.png" class="kpn-logo">
-    Incentive
-  </div>
-  <div class="countdown">Nog 3 dagen</div>
+<body class="start-page">
+
+<header class="header">
+    <div class="header-left"></div>
+
+    <div class="header-center">
+        <img src="kpn-logo.png" class="kpn-logo">
+        <div class="title">Incentive</div>
+    </div>
+
+    <div class="header-right"></div>
 </header>
 
-<div class="welcome">Hoi Colin,</div>
+<main class="start-main">
+    <h1>Hoi Colin</h1>
+    <a href="index.html" class="start-button">Start nu</a>
+</main>
 
-<div class="m4-all">
-  <img src="images/mechanics/mv-al.gif">
-</div>
+<img src="start-gif.gif" class="bottom-gif">
 
-<a href="index.html" class="start-button">Start nu</a>
-
-<footer>
-  &copy; KPN 2026
+<footer class="footer">
+    © 2026 KPN
 </footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
 
 </body>
 </html>
