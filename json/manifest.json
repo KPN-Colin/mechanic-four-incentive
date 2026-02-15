@@ -1,10 +1,10 @@
 {
   "name": "Mechanic 4",
   "short_name": "M4",
-  "start_url": "/html/start.html",
+  "start_url": "/html/index.html",
   "display": "standalone",
   "background_color": "#fbfdfa",
-  "theme_color": "#00A651",
+  "theme_color": "#fbfdfa",
   "icons": [
     {
       "src": "../images/logo/m4-icon.png",
