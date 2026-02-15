@@ -3,8 +3,8 @@
   "short_name": "M4",
   "start_url": "/html/index.html",
   "display": "standalone",
-  "background_color": "#fbfdfa",
-  "theme_color": "#fbfdfa",
+  "background_color": "#ffffff",
+  "theme_color": "#00C300",
   "icons": [
     {
       "src": "../images/logo/m4-icon.png",
