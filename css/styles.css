@@ -1,99 +1,186 @@
-body {
+/* Reset & base */
+* {
     margin: 0;
-    font-family: sans-serif;
-    background-color: #fbfdfa;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-header {
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    background-color: #fff;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    padding: 5px;
-}
-
-.back-btn {
-    align-self: flex-start;
-    font-size: 24px;
-    margin-left: 10px;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f7f7f7;
+    position: relative;
 }
 
 .header-center {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1;
+    justify-content: center;
 }
 
-.kpn-logo {
-    height: 40px;
+.logo {
+    height: 50px;
+}
+
+.incentive-title {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 .countdown {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .hoi-colin {
-    margin-top: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
     text-align: center;
 }
 
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    padding: 10px;
+/* Terugknop */
+.back-btn {
+    font-size: 1.5rem;
+    text-decoration: none;
+    color: #000;
 }
 
-.card {
+/* Main content */
+.main-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100px;
+    padding: 20px;
+}
+
+/* Start knop */
+.start-btn-container {
+    margin: 20px 0;
+}
+
+.start-btn {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #0072c6;
+    color: white;
     text-decoration: none;
-    color: black;
+    font-size: 1.5rem;
+    border-radius: 8px;
+}
+
+/* GIFs */
+.start-gif-container,
+.footer-gif {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0 0 0;
+}
+
+.start-gif,
+.index-gif,
+.jasper-gif {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Footer */
+.footer {
+    width: 100%;
+    padding: 10px;
+    background-color: #f7f7f7;
+    text-align: center;
+    position: relative;
+}
+
+/* Cards */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.card {
+    background-color: #eaeaea;
+    border-radius: 8px;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+    color: #000;
+    transition: transform 0.2s;
 }
 
 .card img {
     width: 60px;
     height: 60px;
-}
-
-.video-scroll {
-    max-height: 60vh;
-    overflow-y: scroll;
-    padding: 10px;
-}
-
-.video-card {
-    background-color: #fff;
+    object-fit: contain;
     margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 8px;
 }
 
+.card h3 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+/* Video page scrollable content */
+.videos-scrollable {
+    overflow-y: auto;
+    height: calc(100vh - 120px); /* header + footer */
+}
+
+.videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    padding-bottom: 100px; /* ruimte voor Jasper GIF */
+}
+
+/* Jasper GIF */
 .footer-gif {
-    width: 100%;
-    display: block;
-    margin-top: 0;
+    position: relative;
 }
 
-.footer-gif-right {
-    display: block;
-    width: auto;
-    height: 100px;
+.jasper-gif {
     position: absolute;
-    right: 0;
     bottom: 0;
+    right: 0;
+    width: 150px; /* vaste breedte, kan later aangepast worden */
 }
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #fff;
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-center {
+        flex-direction: column;
+    }
+
+    .hoi-colin {
+        font-size: 1.5rem;
+    }
+
+    .start-btn {
+        font-size: 1.2rem;
+        padding: 12px 25px;
+    }
 }
