@@ -2,7 +2,7 @@ const msalConfig = {
     auth: {
         clientId: "CLIENT_ID_HIER",
         authority: "https://login.microsoftonline.com/TENANT_ID_HIER",
-        redirectUri: window.location.origin + "html/index.html"
+        redirectUri: window.location.origin + "/html/index.html"
     }
 };
 
