@@ -42,7 +42,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_MOSS_092665703 }}
           action: "upload"
           skip_app_build: true
-          app_location: "/"        # <- root map
+          app_location: "html"        # <- root map
           api_location: ""         # <- geen aparte API folder
           output_location: ""      # <- geen build output folder
           github_id_token: ${{ steps.idtoken.outputs.result }}
@@ -57,3 +57,4 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
+
