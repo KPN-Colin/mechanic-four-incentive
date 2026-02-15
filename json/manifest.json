@@ -7,12 +7,12 @@
   "theme_color": "#00C300",
   "icons": [
     {
-      "src": "../images/logo/m4-icon.png",
+      "src": "/images/logo/m4-icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "../images/logo/m4-icon.png",
+      "src": "/images/logo/m4-icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
