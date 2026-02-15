@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const backBtn = document.querySelector('.back-btn');
-    if(backBtn) backBtn.addEventListener('click', () => window.history.back());
+// Placeholder voor eventuele toekomstige interactiviteit
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Mechanic 4 Webapp ready.");
 });
