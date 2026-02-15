@@ -1,17 +1,8 @@
 {
-    "navigationFallback": {
-        "rewrite": "/html/index.html",
-        "exclude": ["/images/*", "/css/*", "/js/*"]
-    },
-    "routes": [
-        { "route": "/", "rewrite": "/html/index.html" },
-        { "route": "/index.html", "rewrite": "/html/index.html" },
-        { "route": "/videos.html", "rewrite": "/html/videos.html" },
-        { "route": "/start.html", "rewrite": "/html/start.html" },
-        { "route": "/tussenstand.html", "rewrite": "/html/tussenstand.html" },
-        { "route": "/uitleg.html", "rewrite": "/html/uitleg.html" },
-        { "route": "/qa.html", "rewrite": "/html/qa.html" },
-        { "route": "/games.html", "rewrite": "/html/games.html" },
-        { "route": "/winnen.html", "rewrite": "/html/winnen.html" }
-    ]
+  "routes": [
+    {
+      "route": "/*",
+      "allowedRoles": ["anonymous", "authenticated"]
+    }
+  ]
 }
