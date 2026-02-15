@@ -1,59 +1,41 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mechanic Four</title>
-
-<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic 4</title>
+    <link rel="icon" type="image/png" href="../images/logo/m4-icon.png">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="window.location.href='index.html'">&#8617;</button>
+        <div class="logo-title">
+            <img src="../images/logo/kpn-logo.png" class="logo">
+            <div class="header-title">Incentive</div>
+        </div>
+        <div class="countdown">Nog 3 dagen</div>
+    </header>
 
-<body class="video-page">
+    <main class="videos-main">
+        <div class="welcome">Hoi Colin,</div>
+        <div class="scroll-container">
+            <div class="grid">
+                <!-- 20 video cards -->
+                ${Array.from({length: 20}).map((_, i) => `
+                    <div class="card">
+                        <img src="../images/icons/videos.png">
+                        <h3>Video ${i+1}</h3>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
 
-<header class="header">
-    <div class="header-left">
-        <a href="index.html" class="back-button">&#8630;</a>
-    </div>
+        <img src="../images/mechanics/m4-jasper.gif" class="jasper-gif">
+    </main>
 
-    <div class="header-center">
-        <img src="kpn-logo.png" class="kpn-logo">
-        <div class="title">Incentive</div>
-    </div>
-</header>
-
-<div class="video-wrapper">
-    <div class="video-scroll">
-     <div class="video-thumb"><div class="thumb-inner">Video 1</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 2</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 3</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 4</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 5</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 6</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 7</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 8</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 9</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 10</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 11</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 12</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 13</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 14</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 15</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 16</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 17</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 18</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 19</div></div>
-    <div class="video-thumb"><div class="thumb-inner">Video 20</div></div>
-    </div>
-
-
-    <img src="m4-jasper.gif" class="jasper-fixed">
-
-</div>
-
-<footer class="footer">
-    © 2026 KPN Mechanic Four
-</footer>
-
+    <footer>
+        &copy; 2026 Mechanic 4
+    </footer>
 </body>
 </html>
