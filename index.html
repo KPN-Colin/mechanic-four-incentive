@@ -31,33 +31,50 @@ header {
     align-items: center;
     justify-content: space-between;
     padding: 0 30px;
-    font-size: 1.5rem;
-    font-weight: bold;
     position: relative;
 }
 
-header .logo-container {
+header .logo-back {
     display: flex;
     align-items: center;
-    gap: 5px; /* KPN-logo strak tegen tekst */
+    gap: 10px;
 }
 
+/* KPN-logo */
 .kpn-logo {
     height: 55px;
 }
 
-/* Terugknop startpagina leeg */
+/* Terugknop nieuwe stijl */
 .back-button {
-    display: none;
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Titel horizontaal gecentreerd */
 .header-title {
     font-size: 1.6rem;
     font-weight: bold;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
 }
 
+/* Countdown rechts */
 .countdown {
     font-size: 1rem;
+    position: absolute;
+    right: 30px;
 }
 
 /* Welkom */
@@ -107,11 +124,11 @@ header .logo-container {
 
 .card h3 {
     color: #00a000;
-    font-size: 0.95rem; /* iets kleiner */
+    font-size: 0.95rem;
     font-weight: bold;
 }
 
-/* GIF onder startknop */
+/* GIF onder grid */
 .m4-all {
     width: 100%;
     text-align: center;
@@ -138,10 +155,12 @@ footer {
 <body>
 
 <header>
-    <div class="logo-container">
+    <div class="logo-back">
+        <button class="back-button" onclick="window.history.back()">&larr;</button>
         <img src="images/logo/kpn-logo.png" class="kpn-logo">
-        <span class="header-title">Mechanic4</span>
     </div>
+
+    <div class="header-title">Mechanic4</div>
 
     <div class="countdown">Nog 3 dagen</div>
 </header>
@@ -183,7 +202,7 @@ footer {
 </div>
 
 <div class="m4-all">
-    <img src="images/mechanics/m4-all.gif">
+    <img src="images/mechanics/m4-dashol.gif" alt="Mechanic4 GIF">
 </div>
 
 <footer>
