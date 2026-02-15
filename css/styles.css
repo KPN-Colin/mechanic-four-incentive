@@ -1,138 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    --kpn-green: #00A651;
+    --kpn-dark: #007a3d;
+    --kpn-yellow: #FFD400;
+    --text-dark: #1a1a1a;
+}
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #ffffff;
+    background: #fbfdfa;
+    color: var(--text-dark);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 /* HEADER */
-
 .header {
-    height: 70px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    background: #ffffff;
+    justify-content: space-between;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 60px;
 }
 
-.header-left {
-    position: absolute;
-    left: 15px;
-}
-
-.header-center {
+.logo-title {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 5px;
 }
 
-.kpn-logo {
-    height: 28px;
-    margin-right: 8px;
+.logo-start, .logo {
+    height: 40px;
 }
 
-.title {
-    font-size: 20px;
-    font-weight: bold;
+.header-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.countdown {
+    font-size: 0.9rem;
 }
 
 .back-button {
-    font-size: 26px;
-    text-decoration: none;
-    color: black;
+    background: var(--kpn-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
 }
 
-/* MAIN */
-
-.main-content {
+/* WELCOME & MAIN */
+.start-main, .index-main, .videos-main {
     flex: 1;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+}
+
+.welcome {
+    margin: 20px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
     text-align: center;
 }
 
-.centered {
-    margin: 20px 0;
+/* BUTTON */
+.start-button {
+    background: var(--kpn-green);
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 15px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 15px;
+    width: 100%;
 }
 
 .card {
-    background: #f5f5f5;
-    padding: 20px;
-    margin: 10px auto;
-    width: 90%;
+    background-color: #ffffff;
     border-radius: 12px;
-}
-
-/* START */
-
-.start-main {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 15px;
-}
-
-.start-button {
-    background: #00A651;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 25px;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.08);
+    transition: 0.2s;
     text-decoration: none;
+    color: inherit;
 }
 
-/* GIF ONDERAAN */
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
 
-.bottom-gif {
+.card img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
+}
+
+.card h3 {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* GIFS */
+.start-gif, .m4-gif {
     width: 100%;
-    display: block;
+    height: auto;
+    margin-top: 10px;
 }
 
-/* VIDEO PAGINA */
-
-.video-page {
-    overflow: hidden;
-}
-
-.video-wrapper {
-    flex: 1;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.video-scroll {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.video-card {
-    background: #f5f5f5;
-    padding: 20px;
-    margin-bottom: 15px;
-    border-radius: 12px;
-}
-
-.jasper-fixed {
+.jasper-gif {
     position: absolute;
-    right: 0;
     bottom: 0;
-    height: 140px;
+    right: 0;
+    width: 200px;
+    height: auto;
+}
+
+/* SCROLL CONTAINER */
+.scroll-container {
+    width: 100%;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 /* FOOTER */
-
-.footer {
+footer {
+    background: var(--kpn-green);
+    color: white;
     text-align: center;
-    padding: 10px;
-    background: #ffffff;
+    padding: 15px;
 }
