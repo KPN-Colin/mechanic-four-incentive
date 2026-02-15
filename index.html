@@ -3,133 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPN Monteur Incentive</title>
+<title>Incentive - KPN Monteur</title>
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
-    background-color: #eae9ec;
-    color: #000;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  background-color: #eae9ec;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* HEADER */
 header {
-    background-color: #00c300;
-    color: #fff;
-    height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 0 15px;
-    font-size: 1.5rem;
-    font-weight: bold;
+  background-color: #00c300;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 15px;
+  position: relative;
 }
 
-header .logo-back {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: absolute;
-    left: 15px;
+/* TERUGKNOP */
+.back-button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* LOGO + TITEL */
+.logo-title {
+  display: flex;
+  align-items: center;
 }
 
 .kpn-logo {
-    height: 50px;
-}
-
-.back-button {
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 20px;
-    padding: 6px 15px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
+  height: 50px;
+  margin-right: 5px;
 }
 
 .header-title {
-    font-weight: bold;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 .countdown {
-    position: absolute;
-    right: 15px;
-    font-size: 1rem;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
 }
 
-/* Welkom */
+/* WELCOME */
+.welcome-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin-top: 10px;
+}
+
 .welcome {
-    text-align: center;
-    margin: 50px 15px 30px 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 /* GRID */
 .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(120px, 1fr));
-    gap: 15px;
-    padding: 0 15px;
-    margin-bottom: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, 1fr));
+  gap: 10px;
+  padding: 0 15px;
+  margin-bottom: 10px;
 }
 
 .card {
-    background-color: #ffffff;
-    border-radius: 15px;
-    height: 140px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    transition: 0.2s;
+  background-color: #fff;
+  border-radius: 12px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s;
 }
 
 .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
 .card img {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 10px;
+  width: 55px;
+  height: 55px;
+  margin-bottom: 5px;
 }
 
 .card h3 {
-    color: #00a000;
-    font-size: 0.9rem;
-    font-weight: bold;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #00a000;
+  text-decoration: none;
+  padding: 0 5px;
+  word-wrap: break-word;
 }
 
+/* GIF */
 .m4-all img {
-    width: 100%;
-    display: block;
-    margin-bottom: 0;
+  width: 100%;
+  display: block;
+  margin: 0;
 }
 
+/* FOOTER */
 footer {
-    background-color: #00c300;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    font-size: 1rem;
+  background-color: #00c300;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 1rem;
+  margin-top: auto;
 }
 </style>
 </head>
@@ -137,58 +147,51 @@ footer {
 <body>
 
 <header>
-    <div class="logo-back">
-        <img src="images/logo/kpn logo.png" class="kpn-logo">
-        <button class="back-button" onclick="window.location.href='start.html'">&larr; Terug</button>
-    </div>
-
-    <div class="header-title">KPN Monteur Incentive</div>
-
-    <div class="countdown">Nog 3 dagen</div>
+  <button class="back-button" onclick="window.location.href='start.html'">&#x21A9;</button>
+  <div class="logo-title">
+    <img src="images/logo/kpn-logo.png" class="kpn-logo">
+    <div class="header-title">Incentive</div>
+  </div>
+  <div class="countdown">Nog 3 dagen</div>
 </header>
 
-<div class="welcome">
-    Hoi Colin,
+<div class="welcome-container">
+  <div class="welcome">Hoi Colin,</div>
 </div>
 
 <div class="grid">
-    <a href="tussenstand.html" class="card">
-        <img src="images/icons/tussenstand.png">
-        <h3>Tussenstand</h3>
-    </a>
-
-    <a href="videos.html" class="card">
-        <img src="images/icons/videos.png">
-        <h3>Video's</h3>
-    </a>
-
-    <a href="uitleg.html" class="card">
-        <img src="images/icons/uitleg.png">
-        <h3>Uitleg</h3>
-    </a>
-
-    <a href="qa.html" class="card">
-        <img src="images/icons/qa.png">
-        <h3>Vraag & Antwoord</h3>
-    </a>
-
-    <a href="games.html" class="card">
-        <img src="images/icons/games.png">
-        <h3>Games</h3>
-    </a>
-
-    <a href="winnen.html" class="card">
-        <img src="images/icons/winnen.png">
-        <h3>WINNEN WINNEN WINNEN!</h3>
-    </a>
+  <a href="tussenstand.html" class="card">
+      <img src="images/icons/tussenstand.png">
+      <h3>Tussenstand</h3>
+  </a>
+  <a href="videos.html" class="card">
+      <img src="images/icons/videos.png">
+      <h3>Video's</h3>
+  </a>
+  <a href="uitleg.html" class="card">
+      <img src="images/icons/uitleg.png">
+      <h3>Uitleg</h3>
+  </a>
+  <a href="qa.html" class="card">
+      <img src="images/icons/qa.png">
+      <h3>Vraag & Antwoord</h3>
+  </a>
+  <a href="games.html" class="card">
+      <img src="images/icons/games.png">
+      <h3>Games</h3>
+  </a>
+  <a href="winnen.html" class="card">
+      <img src="images/icons/winnen.png">
+      <h3 style="font-size:0.7rem;">WINNEN WINNEN WINNEN!</h3>
+  </a>
 </div>
 
 <div class="m4-all">
-    <img src="images/mechanics/m4 all.gif">
+  <img src="images/mechanics/m4-all.gif">
 </div>
 
 <footer>
-    &copy; KPN 2026
+  &copy; KPN 2026
 </footer>
 
 </body>
