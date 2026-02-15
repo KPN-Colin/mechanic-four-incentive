@@ -1,63 +1,34 @@
-const pages = document.querySelectorAll(".page");
-const backBtn = document.getElementById("backBtn");
-const startBtn = document.getElementById("startBtn");
-const videoBadge = document.getElementById("videoBadge");
+// Simpele navigatie & helpers
 
-let incentiveEnd = new Date("2026-06-01T23:59:59");
+document.addEventListener('DOMContentLoaded', () => {
+  // Countdown voorbeeld
+  const countdownEl = document.querySelector('.countdown');
+  if (countdownEl) {
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 3); // Nog 3 dagen
+    const updateCountdown = () => {
+      const now = new Date();
+      const diff = endDate - now;
+      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      countdownEl.textContent = `Nog ${days} dagen`;
+    };
+    updateCountdown();
+    setInterval(updateCountdown, 1000 * 60 * 60); // update elk uur
+  }
 
-function showPage(id) {
-    pages.forEach(p => p.classList.remove("active"));
-    document.getElementById("page-" + id).classList.add("active");
+  // Startknop redirect
+  const startBtn = document.querySelector('.start-button');
+  if (startBtn) {
+    startBtn.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  }
 
-    if (id !== "start") {
-        document.getElementById("topbar").classList.remove("hidden");
-    } else {
-        document.getElementById("topbar").classList.add("hidden");
-    }
-}
-
-document.querySelectorAll("[data-page]").forEach(btn => {
-    btn.addEventListener("click", () => showPage(btn.dataset.page));
+  // Back button functionaliteit (optioneel fallback)
+  const backBtn = document.querySelector('.back-button');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      window.history.back();
+    });
+  }
 });
-
-backBtn.addEventListener("click", () => showPage("home"));
-
-startBtn.addEventListener("click", () => {
-    showPage("home");
-});
-
-function updateCountdown() {
-    let now = new Date();
-    let diff = incentiveEnd - now;
-
-    if (diff <= 0) {
-        document.getElementById("countdown").innerText = "Incentive afgelopen";
-        return;
-    }
-
-    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (days > 1) {
-        document.getElementById("countdown").innerText = `Nog ${days} dagen`;
-    } else {
-        let hours = Math.floor(diff / (1000 * 60 * 60));
-        if (hours >= 1) {
-            document.getElementById("countdown").innerText = `Nog ${hours} uur`;
-        } else {
-            let minutes = Math.floor(diff / (1000 * 60));
-            document.getElementById("countdown").innerText = `Nog ${minutes} minuten`;
-        }
-    }
-}
-
-setInterval(updateCountdown, 60000);
-updateCountdown();
-
-function checkVideoBadge() {
-    let unseen = localStorage.getItem("newVideos");
-    if (unseen === "true") {
-        videoBadge.innerText = "NIEUW";
-    }
-}
-
-checkVideoBadge();
