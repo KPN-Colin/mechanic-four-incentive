@@ -6,34 +6,40 @@
     <title>Mechanic 4</title>
     <link rel="icon" href="../images/logo/m4-icon.png" type="image/png">
     <link rel="stylesheet" href="../css/styles.css">
-    <script src="../js/app.js" defer></script>
 </head>
 <body>
-    <header>
-        <button class="back-btn">⤺</button>
+    <header class="header">
+        <a href="index.html" class="back-btn">&#x21A9;</a>
         <div class="header-center">
-            <img src="../images/logo/kpn-logo.png" alt="KPN Logo" class="kpn-logo">
-            <h1>Incentive</h1>
+            <img src="../images/logo/kpn-logo.png" alt="KPN Logo" class="logo">
+            <h1 class="incentive-title">Incentive</h1>
         </div>
         <div class="countdown">Nog 3 dagen</div>
-        <div class="hoi-colin">Hoi Colin</div>
+        <h2 class="hoi-colin">Hoi Colin</h2>
     </header>
 
-    <main>
-        <div class="video-scroll">
-            <!-- 20 test videocards -->
-            ${Array.from({length:20}, (_,i)=>`
-            <div class="video-card">
+    <main class="main-content videos-scrollable">
+        <div class="grid videos-grid">
+            <!-- 20 videocards -->
+            <!-- Dezelfde structuur, gewoon nummeren -->
+            ${Array.from({length: 20}, (_, i) => `
+            <a href="#" class="card video-card">
+                <img src="../images/icons/videos.png" alt="Video ${i+1}">
                 <h3>Video ${i+1}</h3>
-            </div>
+            </a>
             `).join('')}
         </div>
 
-        <img src="../images/mechanics/m4-jasper.gif" alt="Jasper GIF" class="footer-gif-right">
+        <!-- Jasper GIF -->
+        <div class="footer-gif">
+            <img src="../images/m4/m4-jasper.gif" alt="Jasper GIF" class="jasper-gif">
+        </div>
     </main>
 
-    <footer>
-        <p>© 2026 Mechanic 4</p>
+    <footer class="footer">
+        <p>&copy; 2026 Mechanic 4</p>
     </footer>
+
+    <script src="../js/app.js" defer></script>
 </body>
 </html>
