@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mechanic 4</title>
+<title>Mechanic4</title>
+<link rel="icon" type="image/png" href="images/logo/mvr-icon.png">
 
 <style>
 * {
@@ -35,42 +36,34 @@ header {
     position: relative;
 }
 
-header .logo-back {
+header .logo-container {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 5px; /* KPN-logo strak tegen tekst */
 }
 
 .kpn-logo {
     height: 55px;
 }
 
+/* Terugknop startpagina leeg */
 .back-button {
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 25px;
-    padding: 8px 18px;
-    cursor: pointer;
-    font-weight: bold;
+    display: none;
 }
 
 .header-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    font-size: 1.6rem;
+    font-weight: bold;
 }
 
 .countdown {
     font-size: 1rem;
-    position: absolute;
-    right: 30px;
 }
 
 /* Welkom */
 .welcome {
     text-align: center;
-    margin: 60px 0 40px 0;
+    margin: 60px 0 20px 0;
     font-size: 1.3rem;
     font-weight: bold;
 }
@@ -79,15 +72,15 @@ header .logo-back {
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 50px;
+    gap: 30px;
     max-width: 600px;
-    margin: 0 auto 80px auto;
+    margin: 0 auto 50px auto;
 }
 
 .card {
     background-color: #ffffff;
     border-radius: 18px;
-    height: 190px;
+    height: 160px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -98,6 +91,7 @@ header .logo-back {
     text-decoration: none;
     color: inherit;
     transition: 0.2s;
+    padding: 10px;
 }
 
 .card:hover {
@@ -106,28 +100,37 @@ header .logo-back {
 }
 
 .card img {
-    width: 85px;
-    height: 85px;
-    margin-bottom: 15px;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
 }
 
 .card h3 {
     color: #00a000;
-    font-size: 1.05rem;
+    font-size: 0.95rem; /* iets kleiner */
     font-weight: bold;
 }
 
-.m4-all img {
+/* GIF onder startknop */
+.m4-all {
     width: 100%;
-    display: block;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
+.m4-all img {
+    max-width: 80%;
+    height: auto;
+}
+
+/* FOOTER */
 footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
     padding: 25px 20px;
     font-size: 1rem;
+    margin-top: auto;
 }
 </style>
 </head>
@@ -135,12 +138,10 @@ footer {
 <body>
 
 <header>
-    <div class="logo-back">
+    <div class="logo-container">
         <img src="images/logo/kpn-logo.png" class="kpn-logo">
-        <button class="back-button" onclick="window.location.href='start.html'">&larr; Terug</button>
+        <span class="header-title">Mechanic4</span>
     </div>
-
-    <div class="header-title">KPN Monteur Incentive</div>
 
     <div class="countdown">Nog 3 dagen</div>
 </header>
@@ -182,11 +183,11 @@ footer {
 </div>
 
 <div class="m4-all">
-    <img src="images/mechanics/m4-all.gif">
+    <img src="images/mechanics/m4-dashol.gif" alt="Mechanic4 GIF">
 </div>
 
 <footer>
-    &copy; KPN 2026
+    &copy; Mechanic4 2026
 </footer>
 
 </body>
