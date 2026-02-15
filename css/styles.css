@@ -1,186 +1,117 @@
-/* Reset & base */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    --kpn-green: #00A651;
+    --kpn-dark: #007a3d;
+    --kpn-yellow: #FFD400;
+    --text-dark: #1a1a1a;
+}
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
-    overflow-x: hidden;
+body {
+    background: linear-gradient(135deg, #f5f7fa, #eef2f5);
+    color: var(--text-dark);
+    min-height: 100vh;
 }
 
-/* Header */
+/* HEADER */
+
 .header {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(15px);
+    padding: 20px 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 20px;
-    background-color: #f7f7f7;
-    position: relative;
-}
-
-.header-center {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .logo {
-    height: 50px;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--kpn-green);
 }
 
-.incentive-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
+/* HERO */
 
-.countdown {
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.hoi-colin {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
+.hero {
+    padding: 60px 40px;
     text-align: center;
 }
 
-/* Terugknop */
-.back-btn {
-    font-size: 1.5rem;
-    text-decoration: none;
-    color: #000;
+.hero h1 {
+    font-size: 40px;
+    margin-bottom: 15px;
 }
 
-/* Main content */
-.main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+.hero p {
+    font-size: 18px;
+    opacity: 0.7;
 }
 
-/* Start knop */
-.start-btn-container {
-    margin: 20px 0;
-}
+/* GRID */
 
-.start-btn {
-    display: inline-block;
-    padding: 15px 30px;
-    background-color: #0072c6;
-    color: white;
-    text-decoration: none;
-    font-size: 1.5rem;
-    border-radius: 8px;
-}
-
-/* GIFs */
-.start-gif-container,
-.footer-gif {
-    width: 100%;
-    text-align: center;
-    margin: 20px 0 0 0;
-}
-
-.start-gif,
-.index-gif,
-.jasper-gif {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* Footer */
-.footer {
-    width: 100%;
-    padding: 10px;
-    background-color: #f7f7f7;
-    text-align: center;
-    position: relative;
-}
-
-/* Cards */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    width: 100%;
-    margin: 20px 0;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 40px;
 }
+
+/* CARD */
 
 .card {
-    background-color: #eaeaea;
-    border-radius: 8px;
-    text-align: center;
-    padding: 15px;
-    text-decoration: none;
-    color: #000;
-    transition: transform 0.2s;
-}
-
-.card img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    margin-bottom: 10px;
-}
-
-.card h3 {
-    font-size: 1rem;
-    margin: 0;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: all 0.25s ease;
+    cursor: pointer;
 }
 
 .card:hover {
-    transform: scale(1.05);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
 }
 
-/* Video page scrollable content */
-.videos-scrollable {
-    overflow-y: auto;
-    height: calc(100vh - 120px); /* header + footer */
+.card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
 }
 
-.videos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-    padding-bottom: 100px; /* ruimte voor Jasper GIF */
+.card p {
+    opacity: 0.7;
+    font-size: 14px;
 }
 
-/* Jasper GIF */
-.footer-gif {
-    position: relative;
+/* BUTTON */
+
+.button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 25px;
+    border-radius: 999px;
+    background: var(--kpn-green);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
-.jasper-gif {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 150px; /* vaste breedte, kan later aangepast worden */
+.button:hover {
+    background: var(--kpn-dark);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .header-center {
-        flex-direction: column;
-    }
-
-    .hoi-colin {
-        font-size: 1.5rem;
-    }
-
-    .start-btn {
-        font-size: 1.2rem;
-        padding: 12px 25px;
-    }
+.button-yellow {
+    background: var(--kpn-yellow);
+    color: black;
 }
