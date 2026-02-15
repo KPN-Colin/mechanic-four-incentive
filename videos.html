@@ -3,66 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Video's - Incentive</title>
-<style>
-* {margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif;}
-html, body {height:100%; display:flex; flex-direction:column; background:#fbfdfa;}
-
-/* HEADER */
-header {
-  background:#00c300;
-  height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.back-button {
-  background:none;
-  border:none;
-  font-size:1.5rem;
-  color:#fff;
-  cursor:pointer;
-  position:absolute;
-  left:10px;
-  top:50%;
-  transform:translateY(-50%);
-}
-
-.logo-title {display:flex; align-items:center; justify-content:center;}
-.kpn-logo {height:40px; margin-right:5px;}
-.header-title {font-size:1.4rem; font-weight:bold; color:#fff; display:flex; align-items:center;}
-.countdown {position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:1rem; color:#fff;}
-
-/* SCROLLABLE VIDEO GRID */
-.video-container {flex:1; overflow-y:auto; padding:10px 15px;}
-.video-grid {display:grid; grid-template-columns:repeat(2, minmax(100px,1fr)); gap:10px; margin-bottom:10px;}
-.video-thumb {background:#fff; border-radius:12px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.08); transition:0.2s;}
-.video-thumb:hover {transform:translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,0.15);}
-.thumb-inner {font-weight:bold; color:#00c300;}
-
-/* FOOTER + FIXED GIF */
-.footer-wrapper {position:relative; flex-shrink:0;}
-.m4-gif {position:absolute; bottom:100%; right:0; max-width:180px; height:auto;}
-footer {background:#00c300; color:#fff; text-align:center; padding:20px; font-size:1rem;}
-</style>
+<title>Video's - KPN Incentive</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
 
-<header>
-  <button class="back-button" onclick="window.location.href='index.html'">&#x21A9;</button>
-  <div class="logo-title">
-    <img src="images/logo/kpn logo.png" class="kpn-logo">
-    <div class="header-title">Incentive</div>
-  </div>
-  <div class="countdown">Nog 3 dagen</div>
+<body class="video-page">
+
+<header class="header">
+    <div class="header-left">
+        <a href="index.html" class="back-button">&#8630;</a>
+    </div>
+
+    <div class="header-center">
+        <img src="kpn-logo.png" class="kpn-logo">
+        <div class="title">Incentive</div>
+    </div>
+
+    <div class="header-right"></div>
 </header>
 
-<div class="video-container">
-  <div class="video-grid">
-    <!-- 20 placeholder video cards -->
-    <div class="video-thumb"><div class="thumb-inner">Video 1</div></div>
+<div class="video-wrapper">
+    <div class="video-scroll">
+     <div class="video-thumb"><div class="thumb-inner">Video 1</div></div>
     <div class="video-thumb"><div class="thumb-inner">Video 2</div></div>
     <div class="video-thumb"><div class="thumb-inner">Video 3</div></div>
     <div class="video-thumb"><div class="thumb-inner">Video 4</div></div>
@@ -82,17 +44,14 @@ footer {background:#00c300; color:#fff; text-align:center; padding:20px; font-si
     <div class="video-thumb"><div class="thumb-inner">Video 18</div></div>
     <div class="video-thumb"><div class="thumb-inner">Video 19</div></div>
     <div class="video-thumb"><div class="thumb-inner">Video 20</div></div>
-  </div>
+    </div>
+
+    <img src="jasper.gif" class="jasper-fixed">
 </div>
 
-<div class="footer-wrapper">
-  <div class="m4-gif">
-    <img src="images/mechanics/Mechanic 4 Jasper.gif">
-  </div>
-  <footer>
-    &copy; KPN 2026
-  </footer>
-</div>
+<footer class="footer">
+    © 2026 KPN
+</footer>
 
 </body>
 </html>
