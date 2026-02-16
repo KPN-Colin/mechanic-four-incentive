@@ -15,14 +15,10 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
-html, body {
-    height: 100%;
-    overflow: hidden;
-}
+html, body { height: 100%; overflow: hidden; }
 
 body {
     background-color: #fbfdfa;
-    color: #000;
     display: flex;
     flex-direction: column;
 }
@@ -79,18 +75,15 @@ header {
     font-weight: bold;
 }
 
-/* CAROUSEL SECTIE */
+/* CAROUSEL */
 .carousel-section {
     flex-shrink: 0;
-    padding: 25px 0 15px 0;
-    position: relative;
+    padding: 20px 0 15px 0;
 }
 
-.carousel-wrapper {
-    position: relative;
-}
+.carousel-wrapper { position: relative; }
 
-/* ANIMERENDE PIJL */
+/* PIJL - gaat terug naar eerste video bij klik */
 .scroll-hint {
     position: absolute;
     right: 10px;
@@ -106,13 +99,19 @@ header {
     color: #fff;
     font-size: 1.2rem;
     z-index: 10;
-    pointer-events: none;
+    cursor: pointer;
     animation: nudge 1.8s ease-in-out infinite;
 }
 
 @keyframes nudge {
     0%, 100% { transform: translateY(-50%) translateX(0); opacity: 1; }
     50% { transform: translateY(-50%) translateX(7px); opacity: 0.5; }
+}
+
+/* Pijl stopt met animeren na eerste scroll */
+.scroll-hint.reset-mode {
+    animation: none;
+    background-color: #009900;
 }
 
 .carousel {
@@ -143,24 +142,73 @@ header {
     text-decoration: none;
     color: inherit;
     flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
 }
 
 .video-card img { width: 55px; height: 55px; margin-bottom: 10px; }
 .video-card h3 { color: #00a000; font-size: 1rem; font-weight: bold; }
 
-/* GIF vult rest van pagina, raakt footer */
-.gif-section {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    line-height: 0;
+/* NIEUW badge */
+.new-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4444;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 10px;
 }
 
+/* ONDERSTE SECTIE: quote links, Jasper rechts */
+.bottom-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* QUOTE LINKS */
+.jasper-quote {
+    flex: 1;
+    padding: 0 10px 20px 15px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.quote-bubble {
+    background-color: #fff;
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-size: 0.85rem;
+    color: #333;
+    font-style: italic;
+    line-height: 1.4;
+    max-width: 160px;
+}
+
+.quote-bubble .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: #00c300;
+    vertical-align: text-bottom;
+    animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* JASPER RECHTS */
 .jasper-gif {
-    width: 65vw;
+    width: 52vw;
+    flex-shrink: 0;
     line-height: 0;
 }
 
@@ -196,8 +244,8 @@ footer {
 
 <div class="carousel-section">
     <div class="carousel-wrapper">
-        <div class="carousel">
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></a>
+        <div class="carousel" id="carousel">
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3><span class="new-badge" id="newBadge">NIEUW</span></a>
             <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
             <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
             <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
@@ -218,11 +266,16 @@ footer {
             <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
             <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
         </div>
-        <div class="scroll-hint">›</div>
+        <div class="scroll-hint" id="scrollBtn">›</div>
     </div>
 </div>
 
-<div class="gif-section">
+<div class="bottom-section">
+    <div class="jasper-quote">
+        <div class="quote-bubble">
+            <span id="quoteText"></span><span class="cursor"></span>
+        </div>
+    </div>
     <div class="jasper-gif">
         <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
     </div>
@@ -242,6 +295,55 @@ if (window.navigator.standalone) {
     }, false);
 }
 
+// ── NIEUW VIDEO CHECK ──────────────────────────────────────
+// Zet dit op true als er een nieuwe video is toegevoegd
+const NIEUWE_VIDEO = true;
+const NIEUWE_VIDEO_ID = 1; // welk video-nummer is nieuw
+
+const badge = document.getElementById("newBadge");
+if (!NIEUWE_VIDEO) badge.style.display = "none";
+
+// ── CAROUSEL PIJL ─────────────────────────────────────────
+const carousel = document.getElementById("carousel");
+const scrollBtn = document.getElementById("scrollBtn");
+let hasScrolled = false;
+
+carousel.addEventListener('scroll', function() {
+    if (!hasScrolled && carousel.scrollLeft > 10) {
+        hasScrolled = true;
+        scrollBtn.classList.add('reset-mode');
+        scrollBtn.innerHTML = '«';
+    }
+    if (carousel.scrollLeft < 10) {
+        hasScrolled = false;
+        scrollBtn.classList.remove('reset-mode');
+        scrollBtn.innerHTML = '›';
+    }
+});
+
+scrollBtn.addEventListener('click', function() {
+    carousel.scrollTo({ left: 0, behavior: 'smooth' });
+});
+
+// ── TYPEWRITER QUOTE ──────────────────────────────────────
+const defaultQuote = "Jij en video's... naam een ideaal stel! 😄";
+const newVideoQuote = "Psst! Er is een nieuwe video voor je! 🎬";
+
+const quote = NIEUWE_VIDEO ? newVideoQuote : defaultQuote;
+const quoteEl = document.getElementById("quoteText");
+let i = 0;
+
+function typeWriter() {
+    if (i < quote.length) {
+        quoteEl.textContent += quote.charAt(i);
+        i++;
+        setTimeout(typeWriter, 45);
+    }
+}
+
+setTimeout(typeWriter, 800);
+
+// ── COUNTDOWN ─────────────────────────────────────────────
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
@@ -256,6 +358,5 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000);
 updateCountdown();
 </script>
-
 </body>
 </html>
