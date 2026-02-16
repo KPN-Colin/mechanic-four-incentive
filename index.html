@@ -7,12 +7,7 @@
 <link rel="icon" type="image/png" href="images/logo/m4-icon.png">
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
 body {
     background-color: #eae9ec;
@@ -30,7 +25,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 20px;
     position: relative;
 }
 
@@ -46,43 +41,34 @@ header {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    flex-shrink: 0;
 }
 
-/* KPN logo + titel gecentreerd als één geheel */
 .header-center {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     white-space: nowrap;
 }
 
-.kpn-logo {
-    height: 45px;
-}
+.kpn-logo { height: 40px; }
 
 .header-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: bold;
     color: #fff;
 }
 
-/* Countdown rechts */
 .countdown {
-    font-size: 1rem;
+    font-size: 0.7rem;
     color: #fff;
     position: absolute;
-    right: 30px;
-}
-
-/* Welkom */
-.welcome {
+    right: 15px;
     text-align: center;
-    margin: 60px 0 20px 0;
-    font-size: 1.3rem;
+    line-height: 1.3;
     font-weight: bold;
 }
 
@@ -90,15 +76,15 @@ header {
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    max-width: 600px;
-    margin: 0 auto 50px auto;
+    gap: 15px;
+    padding: 20px 15px;
+    flex: 1;
 }
 
 .card {
     background-color: #ffffff;
     border-radius: 18px;
-    height: 160px;
+    height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -118,22 +104,21 @@ header {
 }
 
 .card img {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 10px;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 8px;
 }
 
 .card h3 {
     color: #00a000;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: bold;
 }
 
-/* GIF onder grid - volledige breedte, geen ruimte naar footer */
+/* GIF */
 .m4-all {
     width: 100%;
     line-height: 0;
-    margin-top: auto;
 }
 
 .m4-all img {
@@ -146,7 +131,7 @@ footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    padding: 25px 20px;
+    padding: 20px;
     font-size: 1rem;
 }
 </style>
@@ -155,46 +140,35 @@ footer {
 <body>
 
 <header>
-    <button class="back-button" onclick="window.history.back()">&larr;</button>
-
+    <button class="back-button" onclick="window.location.href='start.html'">&larr;</button>
     <div class="header-center">
         <img src="images/logo/kpn-logo.png" class="kpn-logo">
         <span class="header-title">Mechanic 4</span>
     </div>
-
     <div class="countdown" id="countdown">Laden...</div>
 </header>
-
-<div class="welcome">
-    Hoi Colin,
-</div>
 
 <div class="grid">
     <a href="tussenstand.html" class="card">
         <img src="images/icons/tussenstand.png">
         <h3>Tussenstand</h3>
     </a>
-
     <a href="videos.html" class="card">
         <img src="images/icons/videos.png">
         <h3>Video's</h3>
     </a>
-
     <a href="uitleg.html" class="card">
         <img src="images/icons/uitleg.png">
         <h3>Uitleg</h3>
     </a>
-
     <a href="qa.html" class="card">
         <img src="images/icons/qa.png">
         <h3>Vraag & Antwoord</h3>
     </a>
-
     <a href="games.html" class="card">
         <img src="images/icons/games.png">
         <h3>Games</h3>
     </a>
-
     <a href="winnen.html" class="card">
         <img src="images/icons/winnen.png">
         <h3>WINNEN WINNEN WINNEN!</h3>
@@ -205,9 +179,7 @@ footer {
     <img src="images/mechanics/m4-all.gif" alt="Mechanic4 GIF">
 </div>
 
-<footer>
-    &copy; 2026 KPN Mechanic 4
-</footer>
+<footer>&copy; 2026 KPN Mechanic 4</footer>
 
 <script>
 let incentiveEnd = new Date("2026-06-01T23:59:59");
@@ -215,23 +187,24 @@ let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let now = new Date();
     let diff = incentiveEnd - now;
+    let el = document.getElementById("countdown");
 
     if (diff <= 0) {
-        document.getElementById("countdown").innerText = "Incentive afgelopen";
+        el.innerHTML = "Incentive<br>afgelopen";
         return;
     }
 
     let days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (days > 1) {
-        document.getElementById("countdown").innerText = `Nog ${days} dagen`;
+        el.innerHTML = `Nog<br>${days}<br>dagen`;
     } else {
         let hours = Math.floor(diff / (1000 * 60 * 60));
         if (hours >= 1) {
-            document.getElementById("countdown").innerText = `Nog ${hours} uur`;
+            el.innerHTML = `Nog<br>${hours}<br>uur`;
         } else {
             let minutes = Math.floor(diff / (1000 * 60));
-            document.getElementById("countdown").innerText = `Nog ${minutes} minuten`;
+            el.innerHTML = `Nog<br>${minutes}<br>min`;
         }
     }
 }
