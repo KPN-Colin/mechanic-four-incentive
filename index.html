@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mechanic4</title>
+<title>Mechanic 4</title>
 <link rel="icon" type="image/png" href="images/logo/m4-icon.png">
 
 <style>
@@ -34,18 +34,6 @@ header {
     position: relative;
 }
 
-header .logo-back {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* KPN-logo */
-.kpn-logo {
-    height: 55px;
-}
-
-/* Terugknop nieuwe stijl */
 .back-button {
     background-color: #fff;
     color: #00c300;
@@ -58,21 +46,34 @@ header .logo-back {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
 }
 
-/* Titel horizontaal gecentreerd */
-.header-title {
-    font-size: 1.6rem;
-    font-weight: bold;
+/* KPN logo + titel gecentreerd als één geheel */
+.header-center {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
     white-space: nowrap;
+}
+
+.kpn-logo {
+    height: 45px;
+}
+
+.header-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #fff;
 }
 
 /* Countdown rechts */
 .countdown {
     font-size: 1rem;
+    color: #fff;
     position: absolute;
     right: 30px;
 }
@@ -128,16 +129,16 @@ header .logo-back {
     font-weight: bold;
 }
 
-/* GIF onder grid */
+/* GIF onder grid - volledige breedte, geen ruimte naar footer */
 .m4-all {
     width: 100%;
-    text-align: center;
-    margin-bottom: 30px;
+    line-height: 0;
+    margin-top: auto;
 }
 
 .m4-all img {
-    max-width: 80%;
-    height: auto;
+    width: 100%;
+    display: block;
 }
 
 /* FOOTER */
@@ -147,7 +148,6 @@ footer {
     text-align: center;
     padding: 25px 20px;
     font-size: 1rem;
-    margin-top: auto;
 }
 </style>
 </head>
@@ -155,14 +155,14 @@ footer {
 <body>
 
 <header>
-    <div class="logo-back">
-        <button class="back-button" onclick="window.history.back()">&larr;</button>
+    <button class="back-button" onclick="window.history.back()">&larr;</button>
+
+    <div class="header-center">
         <img src="images/logo/kpn-logo.png" class="kpn-logo">
+        <span class="header-title">Mechanic 4</span>
     </div>
 
-    <div class="header-title">Mechanic4</div>
-
-    <div class="countdown">Nog 3 dagen</div>
+    <div class="countdown" id="countdown">Laden...</div>
 </header>
 
 <div class="welcome">
@@ -206,8 +206,39 @@ footer {
 </div>
 
 <footer>
-    &copy; 2026 KPN Mechanic 4 
+    &copy; 2026 KPN Mechanic 4
 </footer>
+
+<script>
+let incentiveEnd = new Date("2026-06-01T23:59:59");
+
+function updateCountdown() {
+    let now = new Date();
+    let diff = incentiveEnd - now;
+
+    if (diff <= 0) {
+        document.getElementById("countdown").innerText = "Incentive afgelopen";
+        return;
+    }
+
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (days > 1) {
+        document.getElementById("countdown").innerText = `Nog ${days} dagen`;
+    } else {
+        let hours = Math.floor(diff / (1000 * 60 * 60));
+        if (hours >= 1) {
+            document.getElementById("countdown").innerText = `Nog ${hours} uur`;
+        } else {
+            let minutes = Math.floor(diff / (1000 * 60));
+            document.getElementById("countdown").innerText = `Nog ${minutes} minuten`;
+        }
+    }
+}
+
+setInterval(updateCountdown, 60000);
+updateCountdown();
+</script>
 
 </body>
 </html>
