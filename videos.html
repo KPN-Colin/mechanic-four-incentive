@@ -83,7 +83,7 @@ header {
 
 .carousel-wrapper { position: relative; }
 
-/* PIJL - gaat terug naar eerste video bij klik */
+/* PIJL — wijst naar LINKS, springt naar eerste/oudste video rechts */
 .scroll-hint {
     position: absolute;
     right: 10px;
@@ -97,7 +97,8 @@ header {
     align-items: center;
     justify-content: center;
     color: #fff;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: bold;
     z-index: 10;
     cursor: pointer;
     animation: nudge 1.8s ease-in-out infinite;
@@ -105,13 +106,7 @@ header {
 
 @keyframes nudge {
     0%, 100% { transform: translateY(-50%) translateX(0); opacity: 1; }
-    50% { transform: translateY(-50%) translateX(7px); opacity: 0.5; }
-}
-
-/* Pijl stopt met animeren na eerste scroll */
-.scroll-hint.reset-mode {
-    animation: none;
-    background-color: #009900;
+    50% { transform: translateY(-50%) translateX(-7px); opacity: 0.6; }
 }
 
 .carousel {
@@ -126,6 +121,7 @@ header {
 
 .carousel::-webkit-scrollbar { display: none; }
 
+/* Videokaarten: onclick i.p.v. <a href> — iOS PWA fix */
 .video-card {
     scroll-snap-align: start;
     flex: 0 0 72vw;
@@ -139,8 +135,6 @@ header {
     text-align: center;
     box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     cursor: pointer;
-    text-decoration: none;
-    color: inherit;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
@@ -149,7 +143,6 @@ header {
 .video-card img { width: 55px; height: 55px; margin-bottom: 10px; }
 .video-card h3 { color: #00a000; font-size: 1rem; font-weight: bold; }
 
-/* NIEUW badge */
 .new-badge {
     position: absolute;
     top: 10px;
@@ -162,47 +155,47 @@ header {
     border-radius: 10px;
 }
 
-/* ONDERSTE SECTIE: quote links, Jasper rechts */
+/* ONDERSTE SECTIE */
 .bottom-section {
     flex: 1;
     min-height: 0;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    padding-top: 15px;
 }
 
-/* QUOTE LINKS */
+/* TEKSTBALLON LINKS — staartje rechtsboven (van Jasper) */
 .jasper-quote {
     flex: 1;
-    padding: 0 10px 20px 15px;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 8px 0 12px;
 }
 
 .quote-bubble {
     background-color: #fff;
     border-radius: 16px;
-    border-bottom-left-radius: 4px;
-    padding: 10px 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    font-size: 0.85rem;
+    padding: 11px 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    font-size: 0.82rem;
     color: #333;
     font-style: italic;
-    line-height: 1.4;
-    max-width: 160px;
+    line-height: 1.45;
+    max-width: 155px;
+    position: relative;
 }
 
-.quote-bubble .cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background-color: #00c300;
-    vertical-align: text-bottom;
-    animation: blink 0.8s step-end infinite;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+/* Staartje rechtsboven — wijst naar Jasper rechts */
+.quote-bubble::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    right: -13px;
+    border: 8px solid transparent;
+    border-left-color: #fff;
+    border-right: 0;
+    filter: drop-shadow(3px 1px 2px rgba(0,0,0,0.08));
 }
 
 /* JASPER RECHTS */
@@ -210,6 +203,9 @@ header {
     width: 52vw;
     flex-shrink: 0;
     line-height: 0;
+    display: flex;
+    align-items: flex-end;
+    align-self: flex-end;
 }
 
 .jasper-gif img {
@@ -245,35 +241,37 @@ footer {
 <div class="carousel-section">
     <div class="carousel-wrapper">
         <div class="carousel" id="carousel">
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3><span class="new-badge" id="newBadge">NIEUW</span></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 5</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 6</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 7</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 8</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 9</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 10</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 11</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 12</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 13</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 14</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 15</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 16</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 17</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
-            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
+            <!-- Nieuwste video links, oudste/eerste rechts -->
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3><span class="new-badge" id="newBadge">NIEUW</span></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 17</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 16</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 15</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 14</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 13</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 12</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 11</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 10</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 9</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 8</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 7</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 6</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 5</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></div>
+            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></div>
         </div>
-        <div class="scroll-hint" id="scrollBtn">›</div>
+        <!-- Pijl wijst links, klik = spring naar Video 1 (uiterst rechts) -->
+        <div class="scroll-hint" id="scrollBtn">&#8249;</div>
     </div>
 </div>
 
 <div class="bottom-section">
     <div class="jasper-quote">
         <div class="quote-bubble">
-            <span id="quoteText"></span><span class="cursor"></span>
+            <span id="quoteText"></span>
         </div>
     </div>
     <div class="jasper-gif">
@@ -284,49 +282,22 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-if (window.navigator.standalone) {
-    document.addEventListener('click', function(e) {
-        var el = e.target;
-        while (el && el.tagName !== 'A') { el = el.parentElement; }
-        if (el && el.tagName === 'A' && el.href && !el.href.startsWith('javascript')) {
-            e.preventDefault();
-            window.location.href = el.href;
-        }
-    }, false);
-}
-
 // ── NIEUW VIDEO CHECK ──────────────────────────────────────
-// Zet dit op true als er een nieuwe video is toegevoegd
 const NIEUWE_VIDEO = true;
-const NIEUWE_VIDEO_ID = 1; // welk video-nummer is nieuw
 
 const badge = document.getElementById("newBadge");
 if (!NIEUWE_VIDEO) badge.style.display = "none";
 
-// ── CAROUSEL PIJL ─────────────────────────────────────────
+// ── CAROUSEL PIJL — springt naar uiterst rechts (Video 1) ─
 const carousel = document.getElementById("carousel");
 const scrollBtn = document.getElementById("scrollBtn");
-let hasScrolled = false;
-
-carousel.addEventListener('scroll', function() {
-    if (!hasScrolled && carousel.scrollLeft > 10) {
-        hasScrolled = true;
-        scrollBtn.classList.add('reset-mode');
-        scrollBtn.innerHTML = '«';
-    }
-    if (carousel.scrollLeft < 10) {
-        hasScrolled = false;
-        scrollBtn.classList.remove('reset-mode');
-        scrollBtn.innerHTML = '›';
-    }
-});
 
 scrollBtn.addEventListener('click', function() {
-    carousel.scrollTo({ left: 0, behavior: 'smooth' });
+    carousel.scrollTo({ left: carousel.scrollWidth, behavior: 'smooth' });
 });
 
-// ── TYPEWRITER QUOTE ──────────────────────────────────────
-const defaultQuote = "Jij en video's... naam een ideaal stel! 😄";
+// ── TYPEWRITER QUOTE (geen knipperende cursor) ─────────────
+const defaultQuote = "Jij en video's... noem het een ideaal stel! 😄";
 const newVideoQuote = "Psst! Er is een nieuwe video voor je! 🎬";
 
 const quote = NIEUWE_VIDEO ? newVideoQuote : defaultQuote;
