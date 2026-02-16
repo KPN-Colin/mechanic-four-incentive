@@ -82,7 +82,6 @@ header {
     flex-shrink: 0;
 }
 
-/* KAARTEN: geen <a> tag meer — iOS PWA fix */
 .card {
     background-color: #ffffff;
     border-radius: 14px;
@@ -99,8 +98,6 @@ header {
 }
 
 .card:active { transform: scale(0.97); }
-
-/* Iconen zo groot als ze kunnen zonder de tekst te verdringen */
 .card img { width: 52px; height: 52px; margin-bottom: 3px; }
 .card span { color: #00a000; font-size: 0.68rem; font-weight: bold; }
 
@@ -144,7 +141,6 @@ footer {
 </header>
 
 <div class="grid">
-    <!-- onclick i.p.v. <a href> — werkt correct in iOS PWA -->
     <div class="card" onclick="window.location.href='tussenstand.html'">
         <img src="images/icons/tussenstand.png">
         <span>Tussenstand</span>
@@ -178,6 +174,10 @@ footer {
 <footer>&copy; 2026 KPN Mechanic 4</footer>
 
 <script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
+
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
