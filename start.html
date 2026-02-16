@@ -15,14 +15,10 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
-html, body {
-    height: 100%;
-    overflow: hidden;
-}
+html, body { height: 100%; overflow: hidden; }
 
 body {
     background-color: #eae9ec;
-    color: #000;
     display: flex;
     flex-direction: column;
 }
@@ -66,15 +62,21 @@ header {
 
 .welcome {
     text-align: center;
-    padding: 20px 0 5px 0;
+    padding: 15px 0 0 0;
     font-size: 1.2rem;
     font-weight: bold;
     flex-shrink: 0;
 }
 
+/* Knop verticaal gecentreerd in de lege ruimte boven de GIF */
+.button-area {
+    flex: 0 0 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .start-button {
-    display: block;
-    margin: 15px auto;
     padding: 22px 60px;
     font-size: 1.4rem;
     background-color: #00c300;
@@ -83,12 +85,10 @@ header {
     border-radius: 15px;
     cursor: pointer;
     font-weight: bold;
-    flex-shrink: 0;
 }
 
 .start-button:active { background-color: #00a000; }
 
-/* GIF vult exact de resterende ruimte, raakt footer */
 .m4-all {
     flex: 1;
     min-height: 0;
@@ -121,7 +121,7 @@ footer {
 
 <header>
     <div class="header-center">
-        <img src="images/logo/m4-icon.png" class="kpn-logo">
+        <img src="images/logo/kpn-logo.png" class="kpn-logo">
         <span class="header-title">Mechanic 4</span>
     </div>
     <div class="countdown" id="countdown">Laden...</div>
@@ -129,7 +129,9 @@ footer {
 
 <div class="welcome">Hoi Colin,</div>
 
-<button class="start-button" onclick="window.location.href='index.html'">Start</button>
+<div class="button-area">
+    <button class="start-button" onclick="window.location.href='index.html'">Start</button>
+</div>
 
 <div class="m4-all">
     <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
@@ -138,7 +140,6 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// iOS PWA fix: voorkom dat links openen in Safari
 if (window.navigator.standalone) {
     document.addEventListener('click', function(e) {
         var el = e.target;
@@ -164,6 +165,5 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000);
 updateCountdown();
 </script>
-
 </body>
 </html>
