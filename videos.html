@@ -75,7 +75,6 @@ header {
     font-weight: bold;
 }
 
-/* CAROUSEL */
 .carousel-section {
     flex-shrink: 0;
     padding: 20px 0 15px 0;
@@ -83,7 +82,7 @@ header {
 
 .carousel-wrapper { position: relative; }
 
-/* PIJL — wijst naar LINKS, springt naar eerste/oudste video rechts */
+/* PIJL — wijst naar RECHTS, springt naar Video 1 (uiterst rechts) */
 .scroll-hint {
     position: absolute;
     right: 10px;
@@ -106,7 +105,7 @@ header {
 
 @keyframes nudge {
     0%, 100% { transform: translateY(-50%) translateX(0); opacity: 1; }
-    50% { transform: translateY(-50%) translateX(-7px); opacity: 0.6; }
+    50% { transform: translateY(-50%) translateX(7px); opacity: 0.6; }
 }
 
 .carousel {
@@ -121,7 +120,6 @@ header {
 
 .carousel::-webkit-scrollbar { display: none; }
 
-/* Videokaarten: onclick i.p.v. <a href> — iOS PWA fix */
 .video-card {
     scroll-snap-align: start;
     flex: 0 0 72vw;
@@ -161,10 +159,10 @@ header {
     min-height: 0;
     display: flex;
     align-items: flex-start;
-    padding-top: 15px;
+    padding-top: 40px;
 }
 
-/* TEKSTBALLON LINKS — staartje rechtsboven (van Jasper) */
+/* TEKSTBALLON LINKS */
 .jasper-quote {
     flex: 1;
     display: flex;
@@ -203,8 +201,6 @@ header {
     width: 52vw;
     flex-shrink: 0;
     line-height: 0;
-    display: flex;
-    align-items: flex-end;
     align-self: flex-end;
 }
 
@@ -241,7 +237,7 @@ footer {
 <div class="carousel-section">
     <div class="carousel-wrapper">
         <div class="carousel" id="carousel">
-            <!-- Nieuwste video links, oudste/eerste rechts -->
+            <!-- Nieuwste links, oudste rechts -->
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3><span class="new-badge" id="newBadge">NIEUW</span></div>
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></div>
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></div>
@@ -263,8 +259,8 @@ footer {
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></div>
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></div>
         </div>
-        <!-- Pijl wijst links, klik = spring naar Video 1 (uiterst rechts) -->
-        <div class="scroll-hint" id="scrollBtn">&#8249;</div>
+        <!-- Pijl wijst rechts, klik = spring naar Video 1 uiterst rechts -->
+        <div class="scroll-hint" id="scrollBtn">&#8250;</div>
     </div>
 </div>
 
@@ -282,13 +278,14 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// ── NIEUW VIDEO CHECK ──────────────────────────────────────
-const NIEUWE_VIDEO = true;
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
 
+const NIEUWE_VIDEO = true;
 const badge = document.getElementById("newBadge");
 if (!NIEUWE_VIDEO) badge.style.display = "none";
 
-// ── CAROUSEL PIJL — springt naar uiterst rechts (Video 1) ─
 const carousel = document.getElementById("carousel");
 const scrollBtn = document.getElementById("scrollBtn");
 
@@ -296,10 +293,8 @@ scrollBtn.addEventListener('click', function() {
     carousel.scrollTo({ left: carousel.scrollWidth, behavior: 'smooth' });
 });
 
-// ── TYPEWRITER QUOTE (geen knipperende cursor) ─────────────
 const defaultQuote = "Jij en video's... noem het een ideaal stel! 😄";
 const newVideoQuote = "Psst! Er is een nieuwe video voor je! 🎬";
-
 const quote = NIEUWE_VIDEO ? newVideoQuote : defaultQuote;
 const quoteEl = document.getElementById("quoteText");
 let i = 0;
@@ -311,10 +306,8 @@ function typeWriter() {
         setTimeout(typeWriter, 45);
     }
 }
-
 setTimeout(typeWriter, 800);
 
-// ── COUNTDOWN ─────────────────────────────────────────────
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
