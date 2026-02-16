@@ -12,25 +12,22 @@
 body {
     background-color: #fbfdfa;
     color: #000;
-    display: flex;
-    flex-direction: column;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-/* HEADER - fixed, scrolt niet mee */
+/* HEADER - fixed */
 header {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     background-color: #00c300;
     color: #fff;
     height: 90px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
+    padding: 0 20px;
     z-index: 100;
 }
 
@@ -45,8 +42,7 @@ header {
     font-size: 1rem;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    z-index: 1;
+    flex-shrink: 0;
 }
 
 .header-center {
@@ -55,72 +51,94 @@ header {
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     white-space: nowrap;
 }
 
-.kpn-logo { height: 45px; }
+.kpn-logo { height: 40px; }
 
 .header-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: bold;
     color: #fff;
 }
 
 .countdown {
-    font-size: 1rem;
+    font-size: 0.7rem;
     color: #fff;
     position: absolute;
-    right: 30px;
+    right: 15px;
+    text-align: center;
+    line-height: 1.3;
+    font-weight: bold;
 }
 
-/* SCROLLBAAR GEBIED - alleen dit scrolt */
-.scroll-area {
-    margin-top: 90px;
-    margin-bottom: 75px;
-    overflow-y: auto;
-    flex: 1;
-    padding: 20px 20px 20px 20px;
+/* CAROUSEL GEBIED */
+.carousel-area {
+    position: fixed;
+    top: 90px;
+    left: 0;
+    right: 0;
+    bottom: 75px;
+    display: flex;
+    align-items: center;
 }
 
-/* GRID - naar links zodat cards niet over GIF komen */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    max-width: 420px;
-    margin: 0 0 0 10px;
+/* HORIZONTALE CAROUSEL */
+.carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 15px;
+    padding: 0 20px;
+    width: 100%;
 }
 
-.card {
+.carousel::-webkit-scrollbar { display: none; }
+
+.video-card {
+    scroll-snap-align: start;
+    flex: 0 0 72vw;
+    height: 200px;
     background-color: #fff;
     border-radius: 18px;
-    height: 130px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
     cursor: pointer;
     text-decoration: none;
     color: inherit;
     transition: 0.2s;
-    padding: 10px;
+    flex-shrink: 0;
 }
 
-.card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-.card img { width: 55px; height: 55px; margin-bottom: 8px; }
-.card h3 { color: #00a000; font-size: 0.9rem; font-weight: bold; }
+.video-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
 
-/* JASPER GIF - fixed rechtsonder, scrolt niet mee, ~25% breedte */
+.video-card img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 12px;
+}
+
+.video-card h3 {
+    color: #00a000;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* JASPER GIF - fixed rechtsonder, naadloos op footer */
 .jasper-gif {
     position: fixed;
     bottom: 75px;
     right: 0;
-    width: 25vw;
-    z-index: 50;
+    width: 38vw;
     line-height: 0;
+    z-index: 50;
 }
 
 .jasper-gif img {
@@ -128,12 +146,10 @@ header {
     display: block;
 }
 
-/* FOOTER - fixed onderaan, scrolt niet mee */
+/* FOOTER - fixed onderaan */
 footer {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     background-color: #00c300;
     color: #fff;
     text-align: center;
@@ -155,28 +171,28 @@ footer {
     <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="scroll-area">
-    <div class="grid">
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 1</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 5</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 6</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 7</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 8</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 9</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 10</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 11</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 12</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 13</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 14</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 15</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 16</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 17</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 18</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
-        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
+<div class="carousel-area">
+    <div class="carousel">
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 5</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 6</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 7</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 8</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 9</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 10</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 11</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 12</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 13</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 14</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 15</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 16</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 17</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
+        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
     </div>
 </div>
 
@@ -192,23 +208,24 @@ let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let now = new Date();
     let diff = incentiveEnd - now;
+    let el = document.getElementById("countdown");
 
     if (diff <= 0) {
-        document.getElementById("countdown").innerText = "Incentive afgelopen";
+        el.innerHTML = "Incentive<br>afgelopen";
         return;
     }
 
     let days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (days > 1) {
-        document.getElementById("countdown").innerText = `Nog ${days} dagen`;
+        el.innerHTML = `Nog<br>${days}<br>dagen`;
     } else {
         let hours = Math.floor(diff / (1000 * 60 * 60));
         if (hours >= 1) {
-            document.getElementById("countdown").innerText = `Nog ${hours} uur`;
+            el.innerHTML = `Nog<br>${hours}<br>uur`;
         } else {
             let minutes = Math.floor(diff / (1000 * 60));
-            document.getElementById("countdown").innerText = `Nog ${minutes} minuten`;
+            el.innerHTML = `Nog<br>${minutes}<br>min`;
         }
     }
 }
