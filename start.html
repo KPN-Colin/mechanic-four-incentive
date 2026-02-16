@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4</title>
 <link rel="icon" type="image/png" href="images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,13 +15,16 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     background-color: #eae9ec;
     color: #000;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
 }
 
 header {
@@ -62,15 +66,15 @@ header {
 
 .welcome {
     text-align: center;
-    margin: 30px 0 10px 0;
-    font-size: 1.3rem;
+    padding: 20px 0 5px 0;
+    font-size: 1.2rem;
     font-weight: bold;
     flex-shrink: 0;
 }
 
 .start-button {
     display: block;
-    margin: 20px auto 20px auto;
+    margin: 15px auto;
     padding: 22px 60px;
     font-size: 1.4rem;
     background-color: #00c300;
@@ -82,19 +86,20 @@ header {
     flex-shrink: 0;
 }
 
-.start-button:hover { background-color: #00a000; }
+.start-button:active { background-color: #00a000; }
 
+/* GIF vult exact de resterende ruimte, raakt footer */
 .m4-all {
     flex: 1;
+    min-height: 0;
     overflow: hidden;
+    display: flex;
+    align-items: flex-end;
     line-height: 0;
 }
 
 .m4-all img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top;
     display: block;
 }
 
@@ -116,7 +121,7 @@ footer {
 
 <header>
     <div class="header-center">
-        <img src="images/logo/kpn-logo.png" class="kpn-logo">
+        <img src="images/logo/m4-icon.png" class="kpn-logo">
         <span class="header-title">Mechanic 4</span>
     </div>
     <div class="countdown" id="countdown">Laden...</div>
@@ -127,35 +132,35 @@ footer {
 <button class="start-button" onclick="window.location.href='index.html'">Start</button>
 
 <div class="m4-all">
-    <img src="images/mechanics/m4-all.gif">
+    <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
 </div>
 
 <footer>&copy; KPN 2026</footer>
 
 <script>
-let incentiveEnd = new Date("2026-06-01T23:59:59");
-
-function updateCountdown() {
-    let now = new Date();
-    let diff = incentiveEnd - now;
-    let el = document.getElementById("countdown");
-
-    if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
-
-    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days > 1) {
-        el.innerHTML = `Nog<br>${days}<br>dagen`;
-    } else {
-        let hours = Math.floor(diff / (1000 * 60 * 60));
-        if (hours >= 1) {
-            el.innerHTML = `Nog<br>${hours}<br>uur`;
-        } else {
-            let minutes = Math.floor(diff / (1000 * 60));
-            el.innerHTML = `Nog<br>${minutes}<br>min`;
+// iOS PWA fix: voorkom dat links openen in Safari
+if (window.navigator.standalone) {
+    document.addEventListener('click', function(e) {
+        var el = e.target;
+        while (el && el.tagName !== 'A') { el = el.parentElement; }
+        if (el && el.tagName === 'A' && el.href && !el.href.startsWith('javascript')) {
+            e.preventDefault();
+            window.location.href = el.href;
         }
-    }
+    }, false);
 }
 
+let incentiveEnd = new Date("2026-06-01T23:59:59");
+function updateCountdown() {
+    let diff = incentiveEnd - new Date();
+    let el = document.getElementById("countdown");
+    if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
+    let days = Math.floor(diff / 86400000);
+    if (days > 1) { el.innerHTML = `Nog<br>${days}<br>dagen`; return; }
+    let hours = Math.floor(diff / 3600000);
+    if (hours >= 1) { el.innerHTML = `Nog<br>${hours}<br>uur`; return; }
+    el.innerHTML = `Nog<br>${Math.floor(diff / 60000)}<br>min`;
+}
 setInterval(updateCountdown, 60000);
 updateCountdown();
 </script>
