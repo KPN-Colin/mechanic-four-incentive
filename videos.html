@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Video's</title>
 <link rel="icon" type="image/png" href="images/logo/m4-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00c300">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -18,16 +23,16 @@ body {
     flex-direction: column;
 }
 
-/* HEADER - fixed */
+/* HEADER */
 header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
     background-color: #00c300;
     color: #fff;
-    height: 90px;
+    height: 70px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     padding: 0 20px;
+    position: relative;
     z-index: 100;
 }
 
@@ -36,12 +41,10 @@ header {
     color: #00c300;
     border: none;
     border-radius: 25px;
-    padding: 8px 14px;
+    padding: 7px 12px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
+    font-size: 0.95rem;
     flex-shrink: 0;
 }
 
@@ -55,16 +58,16 @@ header {
     white-space: nowrap;
 }
 
-.kpn-logo { height: 40px; }
+.kpn-logo { height: 38px; }
 
 .header-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: bold;
     color: #fff;
 }
 
 .countdown {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #fff;
     position: absolute;
     right: 15px;
@@ -73,18 +76,43 @@ header {
     font-weight: bold;
 }
 
-/* CAROUSEL GEBIED */
-.carousel-area {
-    position: fixed;
-    top: 90px;
-    left: 0;
-    right: 0;
-    bottom: 75px;
-    display: flex;
-    align-items: center;
+/* CAROUSEL SECTIE - bovenste deel van content */
+.carousel-section {
+    flex-shrink: 0;
+    padding: 20px 0 15px 0;
+    position: relative;
 }
 
-/* HORIZONTALE CAROUSEL */
+.carousel-wrapper {
+    position: relative;
+}
+
+/* PIJL INDICATOR */
+.scroll-hint {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background-color: #00c300;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.1rem;
+    z-index: 10;
+    pointer-events: none;
+    animation: nudge 1.8s ease-in-out infinite;
+}
+
+@keyframes nudge {
+    0%, 100% { transform: translateY(-50%) translateX(0); opacity: 1; }
+    50% { transform: translateY(-50%) translateX(6px); opacity: 0.6; }
+}
+
+/* CAROUSEL */
 .carousel {
     display: flex;
     overflow-x: auto;
@@ -92,8 +120,7 @@ header {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     gap: 15px;
-    padding: 0 20px;
-    width: 100%;
+    padding: 5px 20px 5px 20px;
 }
 
 .carousel::-webkit-scrollbar { display: none; }
@@ -101,7 +128,7 @@ header {
 .video-card {
     scroll-snap-align: start;
     flex: 0 0 72vw;
-    height: 200px;
+    height: 180px;
     background-color: #fff;
     border-radius: 18px;
     display: flex;
@@ -117,28 +144,22 @@ header {
     flex-shrink: 0;
 }
 
-.video-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.video-card img { width: 55px; height: 55px; margin-bottom: 10px; }
+.video-card h3 { color: #00a000; font-size: 1rem; font-weight: bold; }
 
-.video-card img {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 12px;
-}
-
-.video-card h3 {
-    color: #00a000;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-/* JASPER GIF - fixed rechtsonder, naadloos op footer */
-.jasper-gif {
-    position: fixed;
-    bottom: 75px;
-    right: 0;
-    width: 38vw;
+/* GIF SECTIE - vult resterende ruimte */
+.gif-section {
+    flex: 1;
+    overflow: hidden;
     line-height: 0;
-    z-index: 50;
+    display: flex;
+    align-items: flex-end;
+}
+
+.jasper-gif {
+    width: 45vw;
+    margin-left: auto;
+    line-height: 0;
 }
 
 .jasper-gif img {
@@ -146,15 +167,17 @@ header {
     display: block;
 }
 
-/* FOOTER - fixed onderaan */
+/* FOOTER */
 footer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    padding: 25px 20px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1rem;
+    flex-shrink: 0;
     z-index: 100;
 }
 </style>
@@ -171,33 +194,38 @@ footer {
     <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="carousel-area">
-    <div class="carousel">
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 5</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 6</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 7</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 8</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 9</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 10</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 11</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 12</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 13</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 14</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 15</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 16</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 17</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
-        <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
+<div class="carousel-section">
+    <div class="carousel-wrapper">
+        <div class="carousel">
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 5</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 6</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 7</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 8</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 9</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 10</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 11</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 12</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 13</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 14</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 15</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 16</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 17</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
+            <a href="#" class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
+        </div>
+        <div class="scroll-hint">›</div>
     </div>
 </div>
 
-<div class="jasper-gif">
-    <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
+<div class="gif-section">
+    <div class="jasper-gif">
+        <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
+    </div>
 </div>
 
 <footer>&copy; KPN 2026</footer>
@@ -210,13 +238,9 @@ function updateCountdown() {
     let diff = incentiveEnd - now;
     let el = document.getElementById("countdown");
 
-    if (diff <= 0) {
-        el.innerHTML = "Incentive<br>afgelopen";
-        return;
-    }
+    if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
 
     let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
     if (days > 1) {
         el.innerHTML = `Nog<br>${days}<br>dagen`;
     } else {
