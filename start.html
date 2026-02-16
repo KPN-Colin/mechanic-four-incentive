@@ -60,20 +60,19 @@ header {
     font-weight: bold;
 }
 
-.welcome {
-    text-align: center;
-    padding: 15px 0 0 0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    flex-shrink: 0;
-}
-
-/* Knop verticaal gecentreerd in de lege ruimte boven de GIF */
-.button-area {
-    flex: 0 0 120px;
+/* Alles tussen header en GIF als één flex sectie */
+.top-section {
+    flex: 0 0 42vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 20px;
+}
+
+.welcome {
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .start-button {
@@ -127,9 +126,8 @@ footer {
     <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="welcome">Hoi Colin,</div>
-
-<div class="button-area">
+<div class="top-section">
+    <div class="welcome">Hoi Colin,</div>
     <button class="start-button" onclick="window.location.href='index.html'">Start</button>
 </div>
 
@@ -140,17 +138,6 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-if (window.navigator.standalone) {
-    document.addEventListener('click', function(e) {
-        var el = e.target;
-        while (el && el.tagName !== 'A') { el = el.parentElement; }
-        if (el && el.tagName === 'A' && el.href && !el.href.startsWith('javascript')) {
-            e.preventDefault();
-            window.location.href = el.href;
-        }
-    }, false);
-}
-
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
