@@ -15,14 +15,10 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
-html, body {
-    height: 100%;
-    overflow: hidden;
-}
+html, body { height: 100%; overflow: hidden; }
 
 body {
     background-color: #eae9ec;
-    color: #000;
     display: flex;
     flex-direction: column;
 }
@@ -104,10 +100,10 @@ header {
 }
 
 .card:active { transform: translateY(-3px); }
-.card img { width: 32px; height: 32px; margin-bottom: 5px; }
-.card h3 { color: #00a000; font-size: 0.75rem; font-weight: bold; }
+/* Iconen groter gemaakt */
+.card img { width: 44px; height: 44px; margin-bottom: 4px; }
+.card h3 { color: #00a000; font-size: 0.72rem; font-weight: bold; }
 
-/* GIF vult resterende ruimte, breedte = scherm */
 .m4-all {
     flex: 1;
     min-height: 0;
@@ -206,6 +202,5 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000);
 updateCountdown();
 </script>
-
 </body>
 </html>
