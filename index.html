@@ -82,6 +82,7 @@ header {
     flex-shrink: 0;
 }
 
+/* KAARTEN: geen <a> tag meer — iOS PWA fix */
 .card {
     background-color: #ffffff;
     border-radius: 14px;
@@ -93,16 +94,15 @@ header {
     text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    transition: 0.2s;
-    padding: 8px;
+    transition: 0.15s;
+    padding: 6px;
 }
 
-.card:active { transform: translateY(-3px); }
-/* Iconen groter gemaakt */
-.card img { width: 44px; height: 44px; margin-bottom: 4px; }
-.card h3 { color: #00a000; font-size: 0.72rem; font-weight: bold; }
+.card:active { transform: scale(0.97); }
+
+/* Iconen zo groot als ze kunnen zonder de tekst te verdringen */
+.card img { width: 52px; height: 52px; margin-bottom: 3px; }
+.card span { color: #00a000; font-size: 0.68rem; font-weight: bold; }
 
 .m4-all {
     flex: 1;
@@ -144,30 +144,31 @@ footer {
 </header>
 
 <div class="grid">
-    <a href="tussenstand.html" class="card">
+    <!-- onclick i.p.v. <a href> — werkt correct in iOS PWA -->
+    <div class="card" onclick="window.location.href='tussenstand.html'">
         <img src="images/icons/tussenstand.png">
-        <h3>Tussenstand</h3>
-    </a>
-    <a href="videos.html" class="card">
+        <span>Tussenstand</span>
+    </div>
+    <div class="card" onclick="window.location.href='videos.html'">
         <img src="images/icons/videos.png">
-        <h3>Video's</h3>
-    </a>
-    <a href="uitleg.html" class="card">
+        <span>Video's</span>
+    </div>
+    <div class="card" onclick="window.location.href='uitleg.html'">
         <img src="images/icons/uitleg.png">
-        <h3>Uitleg</h3>
-    </a>
-    <a href="qa.html" class="card">
+        <span>Uitleg</span>
+    </div>
+    <div class="card" onclick="window.location.href='qa.html'">
         <img src="images/icons/qa.png">
-        <h3>Vraag & Antwoord</h3>
-    </a>
-    <a href="games.html" class="card">
+        <span>Vraag & Antwoord</span>
+    </div>
+    <div class="card" onclick="window.location.href='games.html'">
         <img src="images/icons/games.png">
-        <h3>Games</h3>
-    </a>
-    <a href="winnen.html" class="card">
+        <span>Games</span>
+    </div>
+    <div class="card" onclick="window.location.href='winnen.html'">
         <img src="images/icons/winnen.png">
-        <h3>WINNEN WINNEN WINNEN!</h3>
-    </a>
+        <span>WINNEN WINNEN WINNEN!</span>
+    </div>
 </div>
 
 <div class="m4-all">
@@ -177,17 +178,6 @@ footer {
 <footer>&copy; 2026 KPN Mechanic 4</footer>
 
 <script>
-if (window.navigator.standalone) {
-    document.addEventListener('click', function(e) {
-        var el = e.target;
-        while (el && el.tagName !== 'A') { el = el.parentElement; }
-        if (el && el.tagName === 'A' && el.href && !el.href.startsWith('javascript')) {
-            e.preventDefault();
-            window.location.href = el.href;
-        }
-    }, false);
-}
-
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
