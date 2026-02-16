@@ -39,7 +39,6 @@ header {
     display: flex;
     align-items: center;
     gap: 10px;
-    white-space: nowrap;
 }
 
 .kpn-logo { height: 40px; }
@@ -60,19 +59,24 @@ header {
     font-weight: bold;
 }
 
-/* Alles tussen header en GIF als één flex sectie */
-.top-section {
-    flex: 0 0 42vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}
-
+/* Hoi Colin — bovenaan */
 .welcome {
+    text-align: center;
+    padding-top: 22px;
     font-size: 1.2rem;
     font-weight: bold;
+    flex-shrink: 0;
+}
+
+/* Lege ruimte die de knop omlaag duwt */
+.spacer { flex: 1; }
+
+/* Knop meer naar beneden */
+.button-area {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 25px;
 }
 
 .start-button {
@@ -88,9 +92,9 @@ header {
 
 .start-button:active { background-color: #00a000; }
 
+/* GIF onderaan — 38% van schermhoogte */
 .m4-all {
-    flex: 1;
-    min-height: 0;
+    flex: 0 0 38vh;
     overflow: hidden;
     display: flex;
     align-items: flex-end;
@@ -126,8 +130,11 @@ footer {
     <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="top-section">
-    <div class="welcome">Hoi Colin,</div>
+<div class="welcome">Hoi Colin,</div>
+
+<div class="spacer"></div>
+
+<div class="button-area">
     <button class="start-button" onclick="window.location.href='index.html'">Start</button>
 </div>
 
@@ -138,6 +145,10 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
+
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
