@@ -4,71 +4,218 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Video's</title>
+<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
 
 <style>
-* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
-body {background-color: #eae9ec; color:#000; display:flex; flex-direction:column; min-height:100vh;}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
-/* HEADER */
-header {background-color:#00c300; color:#fff; height:90px; display:flex; align-items:center; justify-content:space-between; padding:0 30px; font-size:1.5rem; font-weight:bold; position:relative;}
-header .logo-back {display:flex; align-items:center; gap:15px;}
-.kpn-logo {height:55px;}
-.back-button {background-color:#fff; color:#00c300; border:none; border-radius:25px; padding:8px 18px; cursor:pointer; font-weight:bold;}
-.header-title {position:absolute; left:50%; transform:translateX(-50%);}
-.countdown {font-size:1rem; position:absolute; right:30px;}
+body {
+    background-color: #fbfdfa;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
 
-/* GRID */
-.grid {display:grid; grid-template-columns:repeat(2,1fr); gap:30px; max-width:800px; margin:20px auto 80px auto;}
-.card {background-color:#fff; border-radius:18px; height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; box-shadow:0 6px 15px rgba(0,0,0,0.08); cursor:pointer; text-decoration:none; color:inherit; transition:0.2s;}
-.card:hover {transform:translateY(-4px); box-shadow:0 10px 20px rgba(0,0,0,0.15);}
-.card img {width:70px; height:70px; margin-bottom:10px;}
-.card h3 {color:#00a000; font-size:1rem; font-weight:bold;}
+/* HEADER - fixed, scrolt niet mee */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #00c300;
+    color: #fff;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    z-index: 100;
+}
 
-/* FOOTER */
-footer {background-color:#00c300; color:#fff; text-align:center; padding:25px 20px; font-size:1rem; position:relative;}
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
 
-/* JASPER GIF */
-.jasper-gif {position:absolute; bottom:0; right:0; width:150px;}
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.kpn-logo { height: 45px; }
+
+.header-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.countdown {
+    font-size: 1rem;
+    color: #fff;
+    position: absolute;
+    right: 30px;
+}
+
+/* SCROLLBAAR GEBIED - alleen dit scrolt */
+.scroll-area {
+    margin-top: 90px;
+    margin-bottom: 75px;
+    overflow-y: auto;
+    flex: 1;
+    padding: 20px 20px 20px 20px;
+}
+
+/* GRID - naar links zodat cards niet over GIF komen */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 420px;
+    margin: 0 0 0 10px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 18px;
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s;
+    padding: 10px;
+}
+
+.card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+.card img { width: 55px; height: 55px; margin-bottom: 8px; }
+.card h3 { color: #00a000; font-size: 0.9rem; font-weight: bold; }
+
+/* JASPER GIF - fixed rechtsonder, scrolt niet mee, ~25% breedte */
+.jasper-gif {
+    position: fixed;
+    bottom: 75px;
+    right: 0;
+    width: 25vw;
+    z-index: 50;
+    line-height: 0;
+}
+
+.jasper-gif img {
+    width: 100%;
+    display: block;
+}
+
+/* FOOTER - fixed onderaan, scrolt niet mee */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    padding: 25px 20px;
+    font-size: 1rem;
+    z-index: 100;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo-back">
-    <img src="/images/logo/kpn-logo.png" class="kpn-logo">
-    <button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
-  </div>
-  <div class="header-title">Video's</div>
-  <div class="countdown">Nog 3 dagen</div>
+    <button class="back-button" onclick="window.location.href='index.html'">&larr;</button>
+    <div class="header-center">
+        <img src="images/logo/kpn-logo.png" class="kpn-logo">
+        <span class="header-title">Video's</span>
+    </div>
+    <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="grid">
-  <!-- 20 videocards -->
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 1</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 2</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 3</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 4</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 5</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 6</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 7</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 8</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 9</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 10</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 11</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 12</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 13</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 14</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 15</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 16</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 17</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 18</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 19</h3></a>
-  <a href="#" class="card"><img src="/images/icons/videos.png"><h3>Video 20</h3></a>
+<div class="scroll-area">
+    <div class="grid">
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 1</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 2</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 3</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 4</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 5</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 6</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 7</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 8</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 9</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 10</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 11</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 12</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 13</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 14</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 15</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 16</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 17</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 18</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 19</h3></a>
+        <a href="#" class="card"><img src="images/icons/videos.png"><h3>Video 20</h3></a>
+    </div>
 </div>
 
-<img src="/images/mechanics/m4-jasper.gif" class="jasper-gif">
+<div class="jasper-gif">
+    <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
+</div>
 
 <footer>&copy; KPN 2026</footer>
+
+<script>
+let incentiveEnd = new Date("2026-06-01T23:59:59");
+
+function updateCountdown() {
+    let now = new Date();
+    let diff = incentiveEnd - now;
+
+    if (diff <= 0) {
+        document.getElementById("countdown").innerText = "Incentive afgelopen";
+        return;
+    }
+
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (days > 1) {
+        document.getElementById("countdown").innerText = `Nog ${days} dagen`;
+    } else {
+        let hours = Math.floor(diff / (1000 * 60 * 60));
+        if (hours >= 1) {
+            document.getElementById("countdown").innerText = `Nog ${hours} uur`;
+        } else {
+            let minutes = Math.floor(diff / (1000 * 60));
+            document.getElementById("countdown").innerText = `Nog ${minutes} minuten`;
+        }
+    }
+}
+
+setInterval(updateCountdown, 60000);
+updateCountdown();
+</script>
+
 </body>
 </html>
