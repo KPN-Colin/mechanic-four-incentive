@@ -4,38 +4,734 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Tussenstand</title>
+<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00c300">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
 
 <style>
-* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
-body {background-color:#eae9ec; color:#000; display:flex; flex-direction:column; min-height:100vh;}
-header {background-color:#00c300; color:#fff; height:90px; display:flex; align-items:center; justify-content:space-between; padding:0 30px; font-size:1.5rem; font-weight:bold; position:relative;}
-header .logo-back {display:flex; align-items:center; gap:15px;}
-.kpn-logo {height:55px;}
-.back-button {background-color:#fff; color:#00c300; border:none; border-radius:25px; padding:8px 18px; cursor:pointer; font-weight:bold;}
-.header-title {position:absolute; left:50%; transform:translateX(-50%);}
-.countdown {font-size:1rem; position:absolute; right:30px;}
-.content {padding:40px; max-width:800px; margin:0 auto; text-align:left;}
-.content h2 {margin-bottom:20px; color:#00a000;}
-.content p {margin-bottom:15px; line-height:1.5;}
-footer {background-color:#00c300; color:#fff; text-align:center; padding:25px 20px; font-size:1rem;}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background-color: #fbfdfa;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+header {
+    background-color: #00c300;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.kpn-logo { height: 38px; }
+
+.header-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.countdown {
+    font-size: 0.65rem;
+    color: #fff;
+    position: absolute;
+    right: 15px;
+    text-align: center;
+    line-height: 1.3;
+    font-weight: bold;
+}
+
+/* HOOFD LAYOUT — 4 kwadranten */
+.main-content {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px 12px 12px 12px;
+}
+
+/* BOVEN — data sectie overspant beide kolommen */
+.data-sectie {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Navigatiebalk bovenin data sectie */
+.nav-balk {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+    min-height: 40px;
+}
+
+.nav-pijl {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: #00a000;
+    font-size: 0.78rem;
+    font-weight: bold;
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: background-color 0.15s;
+    white-space: nowrap;
+    user-select: none;
+    min-width: 10px;
+}
+
+.nav-pijl:active { background-color: #f0f9f0; }
+
+.nav-pijl.verborgen { visibility: hidden; pointer-events: none; }
+
+.nav-pijl-icoon {
+    font-size: 1rem;
+    color: #00c300;
+}
+
+.view-titel {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    flex: 1;
+}
+
+/* Data inhoud — scrollbaar */
+.data-inhoud {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 12px;
+}
+
+/* Ranglijst tabel */
+.ranglijst {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.ranglijst th {
+    text-align: left;
+    color: #888;
+    font-weight: bold;
+    padding: 4px 6px;
+    border-bottom: 1px solid #eee;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+}
+
+.ranglijst td {
+    padding: 6px 6px;
+    border-bottom: 1px solid #f5f5f5;
+    color: #333;
+}
+
+.ranglijst tr:last-child td { border-bottom: none; }
+
+.ranglijst tr.eigen-rij td {
+    background-color: #f0fdf0;
+    font-weight: bold;
+    color: #00a000;
+}
+
+.rang-nr {
+    font-weight: bold;
+    color: #00a000;
+    width: 24px;
+}
+
+.medaille { font-size: 1rem; }
+
+/* Laadindicator */
+.laden {
+    text-align: center;
+    color: #bbb;
+    font-style: italic;
+    padding: 20px;
+    font-size: 0.85rem;
+}
+
+/* LINKS ONDER — persoonlijke KPIs */
+.kpi-sectie {
+    grid-column: 1;
+    grid-row: 2;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.kpi-header {
+    padding: 7px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.78rem;
+    font-weight: bold;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.kpi-inhoud {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 10px;
+}
+
+.kpi-rij {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 0.78rem;
+}
+
+.kpi-rij:last-child { border-bottom: none; }
+
+.kpi-label { color: #666; flex: 1; }
+
+.kpi-waarde {
+    font-weight: bold;
+    color: #00a000;
+    margin-left: 8px;
+}
+
+.kpi-waarde.rood { color: #ff4444; }
+
+/* RECHTS ONDER — Colin GIF */
+.gif-sectie {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.gif-sectie img {
+    width: 100%;
+    display: block;
+}
+
+/* FOOTER */
+footer {
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
 </style>
 </head>
 
 <body>
+
 <header>
-  <div class="logo-back">
-    <img src="/images/logo/kpn-logo.png" class="kpn-logo">
-    <button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
-  </div>
-  <div class="header-title">Tussenstand</div>
-  <div class="countdown">Nog 3 dagen</div>
+    <button class="back-button" onclick="window.location.href='index.html'">&larr;</button>
+    <div class="header-center">
+        <img src="images/logo/kpn-logo.png" class="kpn-logo">
+        <span class="header-title">Tussenstand</span>
+    </div>
+    <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="content">
-  <h2>Jouw huidige punten</h2>
-  <p>Bekijk hier hoeveel punten je hebt gescoord tot nu toe in Mechanic 4.</p>
+<div class="main-content">
+
+    <!-- BOVEN: data sectie -->
+    <div class="data-sectie">
+        <div class="nav-balk">
+            <div class="nav-pijl verborgen" id="pijlLinks" onclick="navigeerLinks()">
+                <span class="nav-pijl-icoon">&#8249;</span>
+                <span id="pijlLinksTekst"></span>
+            </div>
+            <div class="view-titel" id="viewTitel">Totaaloverzicht</div>
+            <div class="nav-pijl" id="pijlRechts" onclick="navigeerRechts()">
+                <span id="pijlRechtsTekst">Weekoverzicht</span>
+                <span class="nav-pijl-icoon">&#8250;</span>
+            </div>
+        </div>
+        <div class="data-inhoud" id="dataInhoud">
+            <div class="laden">Gegevens laden...</div>
+        </div>
+    </div>
+
+    <!-- LINKS ONDER: persoonlijke KPIs -->
+    <div class="kpi-sectie">
+        <div class="kpi-header">📊 Jouw prestaties</div>
+        <div class="kpi-inhoud" id="kpiInhoud">
+            <div class="laden">Laden...</div>
+        </div>
+    </div>
+
+    <!-- RECHTS ONDER: Colin GIF -->
+    <div class="gif-sectie">
+        <img src="images/mechanics/m4-colin.gif" alt="Colin">
+    </div>
+
 </div>
 
 <footer>&copy; KPN 2026</footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW fout:', e));
+}
+
+// ══════════════════════════════════════════════════════
+// CONFIGURATIE — vul in wanneer SharePoint gekoppeld wordt
+// ══════════════════════════════════════════════════════
+const SHAREPOINT_CONFIG = {
+    // Vind je in de SharePoint URL:
+    // https://{tenant}.sharepoint.com/sites/{sitenaam}
+    siteUrl:        'JOUW_SHAREPOINT_SITE_URL',
+
+    // Bestandsnaam in SharePoint (inclusief .xlsx)
+    overzichtBestand:    'JOUW_OVERZICHT_BESTAND.xlsx',
+    persoonlijkBestand:  'JOUW_PERSOONLIJK_BESTAND.xlsx',
+
+    // Tabbladnamen in Excel
+    totaalTabblad:       'Totaaloverzicht',  // eerste tabblad
+    weekTabblad:         'Week',             // prefix — Week1, Week2, etc.
+
+    // Kolommen in het totaaloverzicht tabblad (0-gebaseerd)
+    // Pas aan op basis van jouw Excel structuur
+    kolom_rang:   0,   // Kolom A
+    kolom_naam:   1,   // Kolom B
+    kolom_score:  2,   // Kolom C
+    // Voeg kolommen toe als nodig
+
+    // Gebruik demo data zolang SharePoint niet gekoppeld is
+    demoModus: true
+};
+
+// ══════════════════════════════════════════════════════
+// NAVIGATIE STATE
+// ══════════════════════════════════════════════════════
+const VIEWS = { TOTAAL: 'totaal', WEEK: 'week' };
+let huidigeView = VIEWS.TOTAAL;
+let beschikbareWeken = []; // gevuld vanuit Excel, nieuwste eerst
+let huidigeWeekIndex = 0;  // 0 = nieuwste week
+
+// ══════════════════════════════════════════════════════
+// DEMO DATA — wordt vervangen door SharePoint data
+// ══════════════════════════════════════════════════════
+const demoTotaal = [
+    { rang: 1, naam: 'Colin B.',   score: 142, extra: '🏆' },
+    { rang: 2, naam: 'Arie V.',    score: 138, extra: '' },
+    { rang: 3, naam: 'Jasper K.',  score: 125, extra: '' },
+    { rang: 4, naam: 'Alberto M.', score: 119, extra: '' },
+    { rang: 5, naam: 'Team lid 5', score: 108, extra: '' },
+    { rang: 6, naam: 'Team lid 6', score: 97,  extra: '' },
+    { rang: 7, naam: 'Team lid 7', score: 88,  extra: '' },
+    { rang: 8, naam: 'Team lid 8', score: 76,  extra: '' },
+];
+
+const demoWeken = [
+    {
+        label: 'Week 7',
+        rijen: [
+            { rang: 1, naam: 'Arie V.',    score: 38 },
+            { rang: 2, naam: 'Colin B.',   score: 35 },
+            { rang: 3, naam: 'Jasper K.',  score: 30 },
+            { rang: 4, naam: 'Alberto M.', score: 28 },
+        ]
+    },
+    {
+        label: 'Week 6',
+        rijen: [
+            { rang: 1, naam: 'Colin B.',   score: 40 },
+            { rang: 2, naam: 'Alberto M.', score: 36 },
+            { rang: 3, naam: 'Arie V.',    score: 32 },
+            { rang: 4, naam: 'Jasper K.',  score: 29 },
+        ]
+    },
+    {
+        label: 'Week 5',
+        rijen: [
+            { rang: 1, naam: 'Jasper K.',  score: 42 },
+            { rang: 2, naam: 'Colin B.',   score: 38 },
+            { rang: 3, naam: 'Arie V.',    score: 35 },
+            { rang: 4, naam: 'Alberto M.', score: 30 },
+        ]
+    },
+];
+
+const demoKPIs = [
+    { label: 'Jouw positie',    waarde: '#1',   rood: false },
+    { label: 'Totaal punten',   waarde: '142',  rood: false },
+    { label: 'Deze week',       waarde: '35',   rood: false },
+    { label: 'Vs. vorige week', waarde: '-3',   rood: true  },
+    { label: 'Doel %',          waarde: '94%',  rood: false },
+];
+
+// ══════════════════════════════════════════════════════
+// NAVIGATIE LOGICA
+// ══════════════════════════════════════════════════════
+function updateNavigatie() {
+    const pijlLinks     = document.getElementById('pijlLinks');
+    const pijlRechts    = document.getElementById('pijlRechts');
+    const linksTekst    = document.getElementById('pijlLinksTekst');
+    const rechtsTekst   = document.getElementById('pijlRechtsTekst');
+    const viewTitel     = document.getElementById('viewTitel');
+
+    if (huidigeView === VIEWS.TOTAAL) {
+        // Totaaloverzicht: alleen rechts pijl naar weekoverzicht
+        pijlLinks.classList.add('verborgen');
+        pijlRechts.classList.remove('verborgen');
+        rechtsTekst.textContent = 'Weekoverzicht';
+        viewTitel.textContent   = 'Totaaloverzicht';
+
+    } else if (huidigeView === VIEWS.WEEK) {
+        const isNieuwsteWeek = huidigeWeekIndex === 0;
+        const isOudsteWeek   = huidigeWeekIndex === beschikbareWeken.length - 1;
+
+        viewTitel.textContent = beschikbareWeken[huidigeWeekIndex]?.label || 'Weekoverzicht';
+
+        // Links pijl
+        pijlLinks.classList.remove('verborgen');
+        linksTekst.textContent = isNieuwsteWeek ? 'Totaaloverzicht' : 'Volgende week';
+
+        // Rechts pijl
+        if (isOudsteWeek) {
+            pijlRechts.classList.add('verborgen');
+        } else {
+            pijlRechts.classList.remove('verborgen');
+            rechtsTekst.textContent = 'Vorige week';
+        }
+    }
+}
+
+function navigeerLinks() {
+    if (huidigeView === VIEWS.WEEK) {
+        if (huidigeWeekIndex === 0) {
+            // Terug naar totaaloverzicht
+            huidigeView = VIEWS.TOTAAL;
+            toonTotaalData();
+        } else {
+            // Volgende (nieuwere) week
+            huidigeWeekIndex--;
+            toonWeekData();
+        }
+    }
+    updateNavigatie();
+}
+
+function navigeerRechts() {
+    if (huidigeView === VIEWS.TOTAAL) {
+        // Naar weekoverzicht, nieuwste week
+        huidigeView = VIEWS.WEEK;
+        huidigeWeekIndex = 0;
+        toonWeekData();
+    } else if (huidigeView === VIEWS.WEEK) {
+        // Vorige (oudere) week
+        if (huidigeWeekIndex < beschikbareWeken.length - 1) {
+            huidigeWeekIndex++;
+            toonWeekData();
+        }
+    }
+    updateNavigatie();
+}
+
+// ══════════════════════════════════════════════════════
+// DATA WEERGAVE
+// ══════════════════════════════════════════════════════
+function toonTotaalData() {
+    const container = document.getElementById('dataInhoud');
+    const data      = SHAREPOINT_CONFIG.demoModus
+        ? demoTotaal
+        : totaalData; // gevuld vanuit SharePoint
+
+    if (!data || data.length === 0) {
+        container.innerHTML = '<div class="laden">Geen data beschikbaar.</div>';
+        return;
+    }
+
+    const medailles = ['🥇','🥈','🥉'];
+    const eigenNaam = getMSALNaam(); // eigen naam voor markering
+
+    container.innerHTML = `
+        <table class="ranglijst">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Naam</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${data.map((rij, i) => `
+                    <tr class="${rij.naam === eigenNaam ? 'eigen-rij' : ''}">
+                        <td class="rang-nr">${medailles[i] || rij.rang}</td>
+                        <td>${rij.naam}</td>
+                        <td><strong>${rij.score}</strong></td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function toonWeekData() {
+    const container = document.getElementById('dataInhoud');
+    const week      = SHAREPOINT_CONFIG.demoModus
+        ? demoWeken[huidigeWeekIndex]
+        : beschikbareWeken[huidigeWeekIndex];
+
+    if (!week) {
+        container.innerHTML = '<div class="laden">Geen data voor deze week.</div>';
+        return;
+    }
+
+    const medailles = ['🥇','🥈','🥉'];
+    const eigenNaam = getMSALNaam();
+
+    container.innerHTML = `
+        <table class="ranglijst">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Naam</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${week.rijen.map((rij, i) => `
+                    <tr class="${rij.naam === eigenNaam ? 'eigen-rij' : ''}">
+                        <td class="rang-nr">${medailles[i] || rij.rang}</td>
+                        <td>${rij.naam}</td>
+                        <td><strong>${rij.score}</strong></td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function toonKPIData() {
+    const container = document.getElementById('kpiInhoud');
+    const data      = SHAREPOINT_CONFIG.demoModus
+        ? demoKPIs
+        : persoonlijkData; // gevuld vanuit SharePoint
+
+    if (!data || data.length === 0) {
+        container.innerHTML = '<div class="laden">Geen KPI data.</div>';
+        return;
+    }
+
+    container.innerHTML = data.map(kpi => `
+        <div class="kpi-rij">
+            <div class="kpi-label">${kpi.label}</div>
+            <div class="kpi-waarde ${kpi.rood ? 'rood' : ''}">${kpi.waarde}</div>
+        </div>
+    `).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// SHAREPOINT / GRAPH API
+// (Activeren zodra bestand gedeeld is)
+// ══════════════════════════════════════════════════════
+let totaalData      = [];
+let persoonlijkData = [];
+
+async function laadSharePointData() {
+    if (SHAREPOINT_CONFIG.demoModus) {
+        // Demo modus: gebruik demo data
+        beschikbareWeken = demoWeken;
+        toonTotaalData();
+        toonKPIData();
+        updateNavigatie();
+        return;
+    }
+
+    // Stap 1: Graph API token ophalen via MSAL
+    try {
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+        const account      = msalInstance.getAllAccounts()[0];
+        if (!account) return;
+
+        const tokenResponse = await msalInstance.acquireTokenSilent({
+            scopes: ['Sites.Read.All', 'Files.Read.All'],
+            account
+        });
+
+        const token = tokenResponse.accessToken;
+
+        // Stap 2: Excel bestand ophalen via Graph API
+        // Zoek bestand op naam in SharePoint
+        const zoekUrl = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets`;
+
+        const wsResp    = await fetch(zoekUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const wsData    = await wsResp.json();
+
+        // Filter alleen weken met data (tabbladen die beginnen met weekTabblad prefix)
+        const weekTabbladen = wsData.value
+            .filter(ws => ws.name.startsWith(SHAREPOINT_CONFIG.weekTabblad))
+            .sort((a, b) => {
+                // Sorteer op weeknummer, nieuwste eerst
+                const numA = parseInt(a.name.replace(SHAREPOINT_CONFIG.weekTabblad, '')) || 0;
+                const numB = parseInt(b.name.replace(SHAREPOINT_CONFIG.weekTabblad, '')) || 0;
+                return numB - numA;
+            });
+
+        // Laad totaaloverzicht tabblad
+        const totaalUrl  = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets/${SHAREPOINT_CONFIG.totaalTabblad}/usedRange`;
+        const totaalResp = await fetch(totaalUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const totaalRaw  = await totaalResp.json();
+
+        // Verwerk rijen (sla eerste rij over als header)
+        totaalData = totaalRaw.values.slice(1)
+            .filter(rij => rij[SHAREPOINT_CONFIG.kolom_naam]) // alleen rijen met naam
+            .map((rij, i) => ({
+                rang:  rij[SHAREPOINT_CONFIG.kolom_rang]  || i + 1,
+                naam:  rij[SHAREPOINT_CONFIG.kolom_naam]  || '',
+                score: rij[SHAREPOINT_CONFIG.kolom_score] || 0,
+            }));
+
+        // Laad weekdata
+        beschikbareWeken = [];
+        for (const ws of weekTabbladen) {
+            const weekUrl  = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets/${ws.name}/usedRange`;
+            const weekResp = await fetch(weekUrl, { headers: { Authorization: `Bearer ${token}` } });
+            const weekRaw  = await weekResp.json();
+
+            const rijen = weekRaw.values.slice(1)
+                .filter(rij => rij[SHAREPOINT_CONFIG.kolom_naam])
+                .map((rij, i) => ({
+                    rang:  rij[SHAREPOINT_CONFIG.kolom_rang]  || i + 1,
+                    naam:  rij[SHAREPOINT_CONFIG.kolom_naam]  || '',
+                    score: rij[SHAREPOINT_CONFIG.kolom_score] || 0,
+                }));
+
+            if (rijen.length > 0) {
+                beschikbareWeken.push({ label: ws.name, rijen });
+            }
+        }
+
+        // Laad persoonlijke KPIs
+        const eigenNaam = getMSALNaam();
+        const persUrl   = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.persoonlijkBestand}:/workbook/worksheets/Sheet1/usedRange`;
+        const persResp  = await fetch(persUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const persRaw   = await persResp.json();
+
+        // Persoonlijk bestand: kolom A = label, kolom B = waarde
+        persoonlijkData = persRaw.values
+            .filter(rij => rij[0] && rij[1] !== undefined)
+            .map(rij => ({
+                label:  rij[0],
+                waarde: rij[1],
+                rood:   typeof rij[1] === 'string' && rij[1].startsWith('-')
+            }));
+
+        toonTotaalData();
+        toonKPIData();
+        updateNavigatie();
+
+    } catch (e) {
+        console.error('SharePoint laden mislukt:', e);
+        document.getElementById('dataInhoud').innerHTML =
+            '<div class="laden">Kon data niet laden. Probeer opnieuw.</div>';
+    }
+}
+
+// ══════════════════════════════════════════════════════
+// HULPFUNCTIES
+// ══════════════════════════════════════════════════════
+function getMSALNaam() {
+    // Haal naam op uit MSAL cache — voor markering eigen rij
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key) continue;
+            try {
+                const val = JSON.parse(localStorage.getItem(key));
+                if (val && val.username && val.username.includes('@kpn.com')) {
+                    const naam = val.name || '';
+                    if (naam) {
+                        const delen = naam.split(' ');
+                        return delen[0] + ' ' + (delen[1]?.[0] || '') + '.';
+                    }
+                }
+            } catch(e) {}
+        }
+    } catch(e) {}
+    return '';
+}
+
+// COUNTDOWN
+let incentiveEnd = new Date("2026-06-01T23:59:59");
+function updateCountdown() {
+    let diff = incentiveEnd - new Date();
+    let el   = document.getElementById("countdown");
+    if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
+    let days = Math.floor(diff / 86400000);
+    if (days > 1) { el.innerHTML = `Nog<br>${days}<br>dagen`; return; }
+    let hours = Math.floor(diff / 3600000);
+    if (hours >= 1) { el.innerHTML = `Nog<br>${hours}<br>uur`; return; }
+    el.innerHTML = `Nog<br>${Math.floor(diff / 60000)}<br>min`;
+}
+setInterval(updateCountdown, 60000);
+updateCountdown();
+
+// ══════════════════════════════════════════════════════
+// START
+// ══════════════════════════════════════════════════════
+window.addEventListener('load', () => {
+    laadSharePointData();
+});
+</script>
+
 </body>
 </html>
