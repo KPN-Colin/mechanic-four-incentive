@@ -6,7 +6,7 @@
 <title>Mechanic 4</title>
 <link rel="icon" type="image/png" href="images/logo/m4-icon.png">
 <link rel="apple-touch-icon" href="images/logo/m4-icon.png">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,12 +16,19 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
 
+/* html achtergrond groen — dekt Android witte balk af */
+html {
+    background-color: #00c300;
+}
+
 body {
     background-color: #eae9ec;
     display: flex;
     flex-direction: column;
-    /* Android safe area onderkant */
-    padding-bottom: env(safe-area-inset-bottom);
+    /* Android safe area */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: 100%;
+    min-height: -webkit-fill-available;
 }
 
 header {
@@ -66,13 +73,15 @@ header {
     font-size: 2.6rem;
     font-weight: bold;
     color: #222;
-    margin-bottom: 35px;
-    margin-top: -20px;
+    /* Naam blijft waar hij is */
+    margin-bottom: 0;
 }
 
 .knop-wrapper {
     position: relative;
     display: inline-block;
+    /* Knop omlaag zodat kat niet over naam heen valt */
+    margin-top: 60px;
 }
 
 .start-button {
@@ -119,11 +128,10 @@ header {
     line-height: 1;
 }
 
-/* ZITTENDE KAT — precies op de bovenrand van de knop */
+/* ZITTENDE KAT — op bovenrand knop */
 .kat-zit {
     position: absolute;
     font-size: 2.4rem;
-    /* Emoji hoogte ~2.4rem ≈ 38px, dus -38px plaatst hem net boven de knop rand */
     top: -38px;
     left: 50%;
     transform: translateX(-50%);
@@ -158,6 +166,10 @@ footer {
     justify-content: center;
     font-size: 1rem;
     flex-shrink: 0;
+    /* Safe area padding zodat footer inhoud boven Android balk blijft */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* Hoogte compenseert voor safe area */
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
@@ -213,15 +225,12 @@ function startKatAnimatie() {
     if (katBezig) return;
     katBezig = true;
 
-    // Stop pulse soepel op scale(1)
     startBtn.classList.add('geen-pulse');
 
-    // Wacht op transition (0.2s) voor sprong begint
     setTimeout(() => {
         const knopRect = startBtn.getBoundingClientRect();
 
-        // Doel: springende kat (3.2rem ≈ 51px hoog) landt met onderkant
-        // precies op de bovenrand van de knop
+        // Springende kat (3.2rem ≈ 51px) landt met onderkant op bovenrand knop
         const doelX = knopRect.left + knopRect.width / 2 - 24;
         const doelY = knopRect.top - 51;
 
@@ -286,18 +295,15 @@ function katLandt(doelX, doelY) {
         } else {
             katEl.style.top = doelY + 'px';
 
-            // 1 seconde als 🐈, dan wissel naar zittende emoji
             setTimeout(() => {
                 katEl.style.display    = 'none';
                 katZitEl.style.display = 'block';
                 katZitEl.textContent   = randomZitEmoji();
 
-                // Wissel emoji elke 2 seconden
                 emojiWisselInterval = setInterval(() => {
                     katZitEl.textContent = randomZitEmoji();
                 }, 2000);
 
-                // Zittijd 4 tot 8 seconden
                 const zitTijd = 4000 + Math.random() * 4000;
                 setTimeout(() => springWeg(doelX, doelY), zitTijd);
 
