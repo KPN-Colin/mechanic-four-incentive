@@ -2,15 +2,7 @@
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": ["anonymous", "authenticated"]
-    }
-  ]
-}
-
-{
-  "routes": [
-    {
-      "route": "/*",
+      "allowedRoles": ["anonymous", "authenticated"],
       "headers": {
         "Cache-Control": "no-cache, no-store, must-revalidate",
         "Service-Worker-Allowed": "/"
@@ -27,4 +19,3 @@
     }
   }
 }
-
