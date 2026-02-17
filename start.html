@@ -60,11 +60,13 @@ header {
     z-index: 0;
 }
 
+/* Iets hoger dan voorheen */
 .welcome {
     font-size: 2.6rem;
     font-weight: bold;
     color: #222;
-    margin-bottom: 40px;
+    margin-bottom: 35px;
+    margin-top: -20px;
 }
 
 .knop-wrapper {
@@ -86,12 +88,15 @@ header {
     animation: pulse 2.5s ease-in-out infinite;
     position: relative;
     z-index: 2;
+    /* Smooth terugkeer naar scale(1) bij stoppen */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Pulse stopt als kat op de knop zit */
+/* Pulse gestopt — snap naar scale(1) via transition */
 .start-button.geen-pulse {
     animation: none !important;
-    transform: none !important;
+    transform: scale(1) !important;
+    box-shadow: 0 6px 20px rgba(0,195,0,0.3) !important;
 }
 
 @keyframes pulse {
@@ -104,7 +109,7 @@ header {
     animation: none;
 }
 
-/* SPRINGENDE KAT — groter */
+/* SPRINGENDE KAT */
 .kat {
     position: fixed;
     font-size: 3.2rem;
@@ -115,12 +120,11 @@ header {
     line-height: 1;
 }
 
-/* ZITTENDE KAT — direct tegen bovenkant knop */
+/* ZITTENDE KAT — iets lager dan voorheen */
 .kat-zit {
     position: absolute;
     font-size: 2.4rem;
-    /* Negatieve top gelijk aan emoji hoogte zodat hij recht op de knop zit */
-    top: -36px;
+    top: -28px;
     left: 50%;
     transform: translateX(-50%);
     display: none;
@@ -129,7 +133,7 @@ header {
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
 }
 
-/* VEER — position: fixed, wordt via JS geplaatst */
+/* VEER — position: fixed, via JS geplaatst op onderkant knop */
 .staart {
     position: fixed;
     font-size: 1.6rem;
@@ -219,14 +223,16 @@ let katBezig             = false;
 let volgendeKantVanLinks = Math.random() < 0.5;
 let emojiWisselInterval  = null;
 
+function stopPulseOpSchaal1() {
+    // Voeg geen-pulse class toe — transition zorgt voor soepele terugkeer naar scale(1)
+    startBtn.classList.add('geen-pulse');
+}
+
 function plaatsSstaart() {
-    // Haal exacte positie van de knop op
     const knopRect = startBtn.getBoundingClientRect();
-
-    // Veer: horizontaal iets links van het midden, verticaal op de onderrand van de knop
-    const veerX = knopRect.left + knopRect.width / 2 - 20;
-    const veerY = knopRect.bottom - 10; // 10px overlap met onderkant knop
-
+    // Veel lager: ruim voorbij de onderkant van de knop
+    const veerX = knopRect.left + knopRect.width / 2 - 18;
+    const veerY = knopRect.bottom + 2;
     staartEl.style.left = veerX + 'px';
     staartEl.style.top  = veerY + 'px';
 }
@@ -240,33 +246,39 @@ function startKatAnimatie() {
     if (katBezig) return;
     katBezig = true;
 
-    const knopRect = startBtn.getBoundingClientRect();
+    // Stop pulse VOOR de sprong, soepel op scale(1)
+    stopPulseOpSchaal1();
 
-    // Kat landt precies boven de knop — geen ruimte ertussen
-    const doelX = knopRect.left + knopRect.width / 2 - 24;
-    const doelY = knopRect.top - 38;
+    // Kleine vertraging zodat de transition naar scale(1) klaar is
+    setTimeout(() => {
+        const knopRect = startBtn.getBoundingClientRect();
 
-    const vanLinks       = volgendeKantVanLinks;
-    volgendeKantVanLinks = !volgendeKantVanLinks;
+        // Iets hoger dan voorheen
+        const doelX = knopRect.left + knopRect.width / 2 - 24;
+        const doelY = knopRect.top - 32;
 
-    const startX     = vanLinks ? -80 : window.innerWidth + 20;
-    const startY     = doelY;
-    const boogHoogte = 130 + Math.random() * 80;
-    const springDuur = 750 + Math.random() * 200;
+        const vanLinks       = volgendeKantVanLinks;
+        volgendeKantVanLinks = !volgendeKantVanLinks;
 
-    katEl.textContent     = KAT_SPRINGEND;
-    katEl.style.display   = 'block';
-    katEl.style.left      = startX + 'px';
-    katEl.style.top       = startY + 'px';
-    katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
+        const startX     = vanLinks ? -80 : window.innerWidth + 20;
+        const startY     = doelY;
+        const boogHoogte = 130 + Math.random() * 80;
+        const springDuur = 750 + Math.random() * 200;
 
-    animeerBoog(
-        startX, startY,
-        doelX,  doelY,
-        boogHoogte, springDuur,
-        vanLinks,
-        () => katLandt(doelX, doelY)
-    );
+        katEl.textContent     = KAT_SPRINGEND;
+        katEl.style.display   = 'block';
+        katEl.style.left      = startX + 'px';
+        katEl.style.top       = startY + 'px';
+        katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
+
+        animeerBoog(
+            startX, startY,
+            doelX,  doelY,
+            boogHoogte, springDuur,
+            vanLinks,
+            () => katLandt(doelX, doelY)
+        );
+    }, 220); // wacht op transition (0.2s + klein buffer)
 }
 
 function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
@@ -294,7 +306,6 @@ function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
 }
 
 function katLandt(doelX, doelY) {
-    // Bounce als 🐈
     const bounceStart = performance.now();
 
     function bounce(nu) {
@@ -308,26 +319,21 @@ function katLandt(doelX, doelY) {
         } else {
             katEl.style.top = doelY + 'px';
 
-            // 1 seconde wachten als 🐈
+            // 1 seconde als 🐈 dan wissel naar zittende kat
             setTimeout(() => {
-                // Stop pulse animatie op de knop
-                startBtn.classList.add('geen-pulse');
-
-                // Verberg springende kat, toon zittende kat
                 katEl.style.display    = 'none';
                 katZitEl.style.display = 'block';
                 katZitEl.textContent   = randomZitEmoji();
 
-                // Plaats veer exact op onderkant van de knop via JS
+                // Veer op onderkant knop via JS
                 plaatsSstaart();
                 staartEl.style.display = 'block';
 
-                // Wissel emoji elke 2 seconden
                 emojiWisselInterval = setInterval(() => {
                     katZitEl.textContent = randomZitEmoji();
                 }, 2000);
 
-                // Zittijd: 4 tot 8 seconden
+                // Zittijd 4 tot 8 seconden
                 const zitTijd = 4000 + Math.random() * 4000;
                 setTimeout(() => springWeg(doelX, doelY), zitTijd);
 
@@ -342,14 +348,9 @@ function springWeg(doelX, doelY) {
     clearInterval(emojiWisselInterval);
     emojiWisselInterval = null;
 
-    // Herstel pulse animatie
-    startBtn.classList.remove('geen-pulse');
-
-    // Verberg zittende kat en veer
     katZitEl.style.display = 'none';
     staartEl.style.display = 'none';
 
-    // Toon springende kat terug op knop positie
     katEl.textContent     = KAT_SPRINGEND;
     katEl.style.display   = 'block';
     katEl.style.left      = doelX + 'px';
@@ -363,12 +364,14 @@ function springWeg(doelX, doelY) {
     katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
 
     animeerBoog(
-        doelX,  doelY,
-        eindX,  doelY - 20,
+        doelX, doelY,
+        eindX, doelY - 20,
         boogHoogte, springDuur,
         naarRechts,
         () => {
             katEl.style.display = 'none';
+            // Herstel pulse animatie
+            startBtn.classList.remove('geen-pulse');
             katBezig = false;
             wachtEnSpringSoms();
         }
