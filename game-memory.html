@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background-color: #fbfdfa;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #00c300;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.stats {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 0 15px 15px 15px;
+    align-content: center;
+}
+
+.card {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease;
+}
+
+.card.flipped { transform: rotateY(180deg); }
+.card.matched { transform: rotateY(180deg); opacity: 0.7; cursor: default; }
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    backface-visibility: hidden;
+}
+
+.card-back {
+    background-color: #00c300;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+.card-back::after {
+    content: '🔒';
+    font-size: 1.4rem;
+}
+
+.card-front {
+    background-color: #fff;
+    transform: rotateY(180deg);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+.win-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    color: #fff;
+}
+
+.win-overlay.show { display: flex; }
+.win-emoji { font-size: 4rem; }
+.win-title { font-size: 1.6rem; font-weight: bold; }
+.win-sub { font-size: 1rem; opacity: 0.9; }
+
+.win-btn {
+    padding: 14px 35px;
+    background-color: #00c300;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+}
+
+footer {
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <button class="back-button" onclick="window.location.href='games.html'">&larr;</button>
+    <div class="header-title">🃏 Memory</div>
+</header>
+
+<div class="stats">
+    <span>Pogingen: <strong id="pogingen">0</strong></span>
+    <span>Gevonden: <strong id="gevonden">0</strong> / 8</span>
+    <span>Tijd: <strong id="timer">0:00</strong></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="win-overlay" id="winOverlay">
+    <div class="win-emoji">🏆</div>
+    <div class="win-title">Geweldig!</div>
+    <div class="win-sub" id="winSub"></div>
+    <div>
+        <button class="win-btn" onclick="startGame()">Opnieuw</button>
+        <button class="win-btn" style="background:#555" onclick="window.location.href='games.html'">Terug</button>
+    </div>
+</div>
+
+<footer>&copy; KPN 2026</footer>
+
+<script>
+const symbolen = ['📱','📡','🌐','💻','☎️','🔌','📶','🛜'];
+let kaarten = [], omgedraaid = [], gevondenParen = 0, pogingen = 0;
+let geblokkeerd = false, timerInterval, seconden = 0;
+
+function shuffle(arr) {
+    return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+    document.getElementById('winOverlay').classList.remove('show');
+    gevondenParen = 0; pogingen = 0; seconden = 0; omgedraaid = [];
+    clearInterval(timerInterval);
+    document.getElementById('pogingen').textContent = '0';
+    document.getElementById('gevonden').textContent = '0';
+    document.getElementById('timer').textContent = '0:00';
+
+    const dubbel = shuffle([...symbolen, ...symbolen]);
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+
+    dubbel.forEach((sym, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.sym = sym;
+        card.dataset.index = i;
+        card.innerHTML = `
+            <div class="card-face card-back"></div>
+            <div class="card-face card-front">${sym}</div>
+        `;
+        card.onclick = () => flip(card);
+        grid.appendChild(card);
+    });
+
+    timerInterval = setInterval(() => {
+        seconden++;
+        const m = Math.floor(seconden / 60);
+        const s = seconden % 60;
+        document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    }, 1000);
+}
+
+function flip(card) {
+    if (geblokkeerd || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+    card.classList.add('flipped');
+    omgedraaid.push(card);
+
+    if (omgedraaid.length === 2) {
+        geblokkeerd = true;
+        pogingen++;
+        document.getElementById('pogingen').textContent = pogingen;
+
+        if (omgedraaid[0].dataset.sym === omgedraaid[1].dataset.sym) {
+            omgedraaid.forEach(c => c.classList.add('matched'));
+            gevondenParen++;
+            document.getElementById('gevonden').textContent = gevondenParen;
+            omgedraaid = [];
+            geblokkeerd = false;
+
+            if (gevondenParen === symbolen.length) {
+                clearInterval(timerInterval);
+                const m = Math.floor(seconden / 60);
+                const s = seconden % 60;
+                document.getElementById('winSub').textContent =
+                    `${pogingen} pogingen • Tijd: ${m}:${s.toString().padStart(2,'0')}`;
+                setTimeout(() => document.getElementById('winOverlay').classList.add('show'), 500);
+            }
+        } else {
+            setTimeout(() => {
+                omgedraaid.forEach(c => c.classList.remove('flipped'));
+                omgedraaid = [];
+                geblokkeerd = false;
+            }, 1000);
+        }
+    }
+}
+
+startGame();
+</script>
+</body>
+</html>
