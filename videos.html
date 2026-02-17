@@ -82,7 +82,6 @@ header {
 
 .carousel-wrapper { position: relative; }
 
-/* PIJL — wijst naar RECHTS, springt naar Video 1 (uiterst rechts) */
 .scroll-hint {
     position: absolute;
     right: 10px;
@@ -153,7 +152,6 @@ header {
     border-radius: 10px;
 }
 
-/* ONDERSTE SECTIE */
 .bottom-section {
     flex: 1;
     min-height: 0;
@@ -162,7 +160,6 @@ header {
     padding-top: 40px;
 }
 
-/* TEKSTBALLON LINKS */
 .jasper-quote {
     flex: 1;
     display: flex;
@@ -184,11 +181,11 @@ header {
     position: relative;
 }
 
-/* Staartje rechtsboven — wijst naar Jasper rechts */
+/* Staartje RECHTSONDER — wijst naar Jasper rechts */
 .quote-bubble::after {
     content: '';
     position: absolute;
-    top: 14px;
+    bottom: 12px;
     right: -13px;
     border: 8px solid transparent;
     border-left-color: #fff;
@@ -196,7 +193,6 @@ header {
     filter: drop-shadow(3px 1px 2px rgba(0,0,0,0.08));
 }
 
-/* JASPER RECHTS */
 .jasper-gif {
     width: 52vw;
     flex-shrink: 0;
@@ -237,7 +233,6 @@ footer {
 <div class="carousel-section">
     <div class="carousel-wrapper">
         <div class="carousel" id="carousel">
-            <!-- Nieuwste links, oudste rechts -->
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3><span class="new-badge" id="newBadge">NIEUW</span></div>
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></div>
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></div>
@@ -259,7 +254,6 @@ footer {
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></div>
             <div class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></div>
         </div>
-        <!-- Pijl wijst rechts, klik = spring naar Video 1 uiterst rechts -->
         <div class="scroll-hint" id="scrollBtn">&#8250;</div>
     </div>
 </div>
@@ -279,7 +273,9 @@ footer {
 
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.log('Service Worker registratie mislukt:', err);
+    });
 }
 
 const NIEUWE_VIDEO = true;
