@@ -59,16 +59,23 @@ header {
     font-weight: bold;
 }
 
-/* Hoi Colin — groter en bovenaan */
+/* Bovenste spacer kleiner */
+.spacer-top {
+    flex: 0.8;
+}
+
+/* Hoi Colin — veel groter, gecentreerd */
 .welcome {
     text-align: center;
-    padding-top: 25px;
-    font-size: 1.8rem;
+    font-size: 2.6rem;
     font-weight: bold;
     flex-shrink: 0;
 }
 
-.spacer { flex: 1; }
+/* Onderste spacer groter */
+.spacer-bottom {
+    flex: 1.2;
+}
 
 .button-area {
     flex-shrink: 0;
@@ -127,9 +134,11 @@ footer {
     <div class="countdown" id="countdown">Laden...</div>
 </header>
 
+<div class="spacer-top"></div>
+
 <div class="welcome">Hoi Colin,</div>
 
-<div class="spacer"></div>
+<div class="spacer-bottom"></div>
 
 <div class="button-area">
     <button class="start-button" onclick="window.location.href='index.html'">Start</button>
