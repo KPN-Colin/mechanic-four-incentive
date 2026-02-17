@@ -18,7 +18,7 @@
 html, body { height: 100%; overflow: hidden; }
 
 body {
-    background-color: #fbfdfa;
+    background-color: #eae9ec;
     display: flex;
     flex-direction: column;
 }
@@ -59,8 +59,9 @@ header {
 
 .kpn-logo { height: 38px; }
 
+/* Titel iets kleiner */
 .header-title {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: bold;
     color: #fff;
 }
@@ -75,7 +76,7 @@ header {
     font-weight: bold;
 }
 
-/* COLLAGE SECTIE — vult ruimte tussen header en gif */
+/* COLLAGE SECTIE */
 .collage-section {
     flex: 1;
     min-height: 0;
@@ -83,7 +84,6 @@ header {
     overflow: hidden;
 }
 
-/* Foto stijl — Polaroid look */
 .photo {
     position: absolute;
     background-color: #fff;
@@ -107,9 +107,9 @@ header {
     display: block;
 }
 
-/* GIF onderaan — volledige breedte tegen footer */
+/* GIF onderaan */
 .m4-all {
-    flex: 0 0 38vh;
+    flex: 0 0 35vh;
     overflow: hidden;
     display: flex;
     align-items: flex-end;
@@ -147,9 +147,7 @@ footer {
     <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="collage-section" id="collageSection">
-    <!-- Foto's worden dynamisch geladen via JavaScript -->
-</div>
+<div class="collage-section" id="collageSection"></div>
 
 <div class="m4-all">
     <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
@@ -165,7 +163,6 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── FOTO CONFIGURATIE ──────────────────────────────────────
-// Voeg hier de bestandsnamen toe van je foto's in images/pics/
 const fotos = [
     'foto1.jpg',
     'foto2.jpg',
@@ -183,21 +180,21 @@ function buildCollage() {
     const W = container.offsetWidth;
     const H = container.offsetHeight;
 
-    // Foto afmetingen
     const fotoW = Math.round(W * 0.38);
     const fotoH = Math.round(fotoW * 0.85);
 
-    // Vaste rotaties en posities zodat het er natuurlijk uitziet
-    // maar toch altijd goed valt binnen het scherm
+    // yPct: klein beetje van header af (0.05 ipv 0.02)
+    // Meer gespreid: grotere xPct verschillen
+    // Iets dichter bij gif: yPct max rond 0.72 ipv 0.80
     const plaatsingData = [
-        { xPct: 0.05, yPct: 0.04, rot: -8,  z: 3 },
-        { xPct: 0.45, yPct: 0.02, rot:  5,  z: 5 },
-        { xPct: 0.55, yPct: 0.18, rot: -12, z: 2 },
-        { xPct: 0.08, yPct: 0.28, rot:  7,  z: 6 },
-        { xPct: 0.38, yPct: 0.35, rot: -4,  z: 4 },
-        { xPct: 0.60, yPct: 0.50, rot:  9,  z: 1 },
-        { xPct: 0.04, yPct: 0.55, rot: -6,  z: 7 },
-        { xPct: 0.42, yPct: 0.62, rot:  11, z: 3 },
+        { xPct: 0.03, yPct: 0.05, rot: -8,  z: 3 },
+        { xPct: 0.52, yPct: 0.06, rot:  6,  z: 5 },
+        { xPct: 0.58, yPct: 0.30, rot: -12, z: 2 },
+        { xPct: 0.04, yPct: 0.32, rot:  7,  z: 6 },
+        { xPct: 0.30, yPct: 0.18, rot: -4,  z: 4 },
+        { xPct: 0.55, yPct: 0.58, rot:  9,  z: 1 },
+        { xPct: 0.02, yPct: 0.60, rot: -6,  z: 7 },
+        { xPct: 0.28, yPct: 0.55, rot:  11, z: 3 },
     ];
 
     fotos.forEach((bestand, i) => {
@@ -205,7 +202,6 @@ function buildCollage() {
 
         const data = plaatsingData[i];
 
-        // Bereken positie zodat foto binnen container blijft
         const maxX = W - fotoW - 20;
         const maxY = H - fotoH - 20;
         const x = Math.min(Math.round(data.xPct * W), maxX);
@@ -213,19 +209,18 @@ function buildCollage() {
 
         const photo = document.createElement('div');
         photo.className = 'photo';
-        photo.style.width    = fotoW + 'px';
-        photo.style.height   = fotoH + 'px';
-        photo.style.left     = x + 'px';
-        photo.style.top      = y + 'px';
+        photo.style.width     = fotoW + 'px';
+        photo.style.height    = fotoH + 'px';
+        photo.style.left      = x + 'px';
+        photo.style.top       = y + 'px';
         photo.style.transform = `rotate(${data.rot}deg)`;
-        photo.style.zIndex   = data.z;
+        photo.style.zIndex    = data.z;
 
         const img = document.createElement('img');
         img.src = `images/pics/${bestand}`;
         img.alt = `Foto ${i + 1}`;
         photo.appendChild(img);
 
-        // Tik op foto brengt hem naar voren
         photo.addEventListener('click', function() {
             document.querySelectorAll('.photo').forEach(p => {
                 p.style.zIndex = p.dataset.originalZ;
@@ -238,7 +233,6 @@ function buildCollage() {
     });
 }
 
-// Wacht tot layout klaar is
 window.addEventListener('load', buildCollage);
 
 // COUNTDOWN
