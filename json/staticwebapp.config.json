@@ -6,3 +6,25 @@
     }
   ]
 }
+
+{
+  "routes": [
+    {
+      "route": "/*",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Service-Worker-Allowed": "/"
+      }
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*", "/js/*", "/css/*", "*.{css,js,png,jpg,gif,svg,json,ico}"]
+  },
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/index.html"
+    }
+  }
+}
+
