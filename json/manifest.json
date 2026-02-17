@@ -2,19 +2,18 @@
   "name": "Mechanic 4",
   "short_name": "M4",
   "start_url": "/start.html",
-  "scope": "/",
   "display": "standalone",
-  "background_color": "#eae9ec",
+  "background_color": "#00c300",
   "theme_color": "#00c300",
   "icons": [
     {
-      "src": "/images/logo/m4-icon.png",
+      "src": "images/logo/m4-icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/logo/m4-icon.png",
+      "src": "images/logo/m4-icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
