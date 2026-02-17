@@ -7,143 +7,95 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
-
-body {
-    background-color: #fbfdfa;
-    display: flex;
-    flex-direction: column;
-}
+body { background-color: #fbfdfa; display: flex; flex-direction: column; }
 
 header {
-    background-color: #00c300;
-    height: 70px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    position: relative;
+    background-color: #00c300; height: 70px; flex-shrink: 0;
+    display: flex; align-items: center; padding: 0 20px; position: relative;
 }
-
 .back-button {
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 25px;
-    padding: 7px 12px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.95rem;
+    background-color: #fff; color: #00c300; border: none; border-radius: 25px;
+    padding: 7px 12px; cursor: pointer; font-weight: bold; font-size: 0.95rem;
 }
-
 .header-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    font-size: 1.3rem;
-    font-weight: bold;
+    position: absolute; left: 50%; transform: translateX(-50%);
+    color: #fff; font-size: 1.3rem; font-weight: bold;
+}
+.lb-btn {
+    position: absolute; right: 15px; background-color: #fff; color: #00c300;
+    border: none; border-radius: 20px; padding: 6px 12px;
+    cursor: pointer; font-weight: bold; font-size: 0.8rem;
 }
 
 .stats {
-    flex-shrink: 0;
-    display: flex;
-    justify-content: space-around;
-    padding: 12px 20px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #555;
+    flex-shrink: 0; display: flex; justify-content: space-around;
+    padding: 10px 20px; font-size: 0.85rem; font-weight: bold; color: #555;
 }
 
 .grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    padding: 0 15px 15px 15px;
-    align-content: center;
+    flex: 1; display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; padding: 0 15px 15px 15px; align-content: center;
 }
 
 .card {
-    aspect-ratio: 1;
-    border-radius: 10px;
-    cursor: pointer;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.4s ease;
+    aspect-ratio: 1; border-radius: 10px; cursor: pointer;
+    position: relative; transform-style: preserve-3d; transition: transform 0.4s ease;
 }
-
 .card.flipped { transform: rotateY(180deg); }
 .card.matched { transform: rotateY(180deg); opacity: 0.7; cursor: default; }
-
 .card-face {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    backface-visibility: hidden;
+    position: absolute; width: 100%; height: 100%; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; backface-visibility: hidden;
 }
-
-.card-back {
-    background-color: #00c300;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-}
-
-.card-back::after {
-    content: '🔒';
-    font-size: 1.4rem;
-}
-
-.card-front {
-    background-color: #fff;
-    transform: rotateY(180deg);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-}
+.card-back { background-color: #00c300; box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
+.card-back::after { content: '🔒'; font-size: 1.4rem; }
+.card-front { background-color: #fff; transform: rotateY(180deg); box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
 
 .win-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 50;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-    color: #fff;
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 50; align-items: center; justify-content: center;
+    flex-direction: column; gap: 14px; text-align: center; color: #fff;
 }
-
 .win-overlay.show { display: flex; }
-.win-emoji { font-size: 4rem; }
-.win-title { font-size: 1.6rem; font-weight: bold; }
-.win-sub { font-size: 1rem; opacity: 0.9; }
-
+.win-emoji { font-size: 3.5rem; }
+.win-title { font-size: 1.5rem; font-weight: bold; }
+.win-sub   { font-size: 1rem; opacity: 0.9; }
 .win-btn {
-    padding: 14px 35px;
-    background-color: #00c300;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 5px;
+    padding: 13px 32px; background-color: #00c300; color: #fff; border: none;
+    border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; margin: 4px;
 }
+
+/* LEADERBOARD */
+.lb-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+    z-index: 100; align-items: center; justify-content: center;
+}
+.lb-overlay.show { display: flex; }
+.lb-box {
+    background: #fff; border-radius: 20px; padding: 25px 20px;
+    width: 85vw; max-width: 340px; text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.lb-title { font-size: 1.3rem; font-weight: bold; color: #00a000; margin-bottom: 15px; }
+.lb-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid #eee; font-size: 0.9rem;
+}
+.lb-item:last-child { border-bottom: none; }
+.lb-rank { font-size: 1.3rem; width: 30px; text-align: center; }
+.lb-name { flex: 1; font-weight: bold; color: #333; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-score { font-weight: bold; color: #00c300; }
+.lb-close {
+    margin-top: 15px; padding: 10px 30px; background-color: #00c300; color: #fff;
+    border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem;
+}
+.lb-loading { color: #aaa; font-style: italic; padding: 20px; }
 
 footer {
-    background-color: #00c300;
-    color: #fff;
-    text-align: center;
-    height: 55px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
+    background-color: #00c300; color: #fff; text-align: center;
+    height: 55px; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
 }
 </style>
 </head>
@@ -152,10 +104,11 @@ footer {
 <header>
     <button class="back-button" onclick="window.location.href='games.html'">&larr;</button>
     <div class="header-title">🃏 Memory</div>
+    <button class="lb-btn" onclick="toonLeaderboard()">🏆 Top 5</button>
 </header>
 
 <div class="stats">
-    <span>Pogingen: <strong id="pogingen">0</strong></span>
+    <span>Score: <strong id="score">0</strong></span>
     <span>Gevonden: <strong id="gevonden">0</strong> / 8</span>
     <span>Tijd: <strong id="timer">0:00</strong></span>
 </div>
@@ -172,24 +125,110 @@ footer {
     </div>
 </div>
 
+<div class="lb-overlay" id="lbOverlay">
+    <div class="lb-box">
+        <div class="lb-title">🏆 Top 5 — Memory</div>
+        <div id="lbContent"><div class="lb-loading">Laden...</div></div>
+        <button class="lb-close" onclick="sluitLeaderboard()">Sluiten</button>
+    </div>
+</div>
+
 <footer>&copy; KPN 2026</footer>
 
 <script>
-const symbolen = ['📱','📡','🌐','💻','☎️','🔌','📶','🛜'];
-let kaarten = [], omgedraaid = [], gevondenParen = 0, pogingen = 0;
-let geblokkeerd = false, timerInterval, seconden = 0;
+const AT_KEY  = 'JOUW_AIRTABLE_API_KEY';
+const AT_BASE = 'JOUW_BASE_ID';
+const AT_LB   = 'Leaderboard';
+const SPEL    = 'memory';
+const LB_URL  = `https://api.airtable.com/v0/${AT_BASE}/${AT_LB}`;
+const AT_HDR  = { 'Authorization': `Bearer ${AT_KEY}`, 'Content-Type': 'application/json' };
 
-function shuffle(arr) {
-    return [...arr].sort(() => Math.random() - 0.5);
+function getMSALUser() {
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key) continue;
+            try {
+                const val = JSON.parse(localStorage.getItem(key));
+                if (val && val.username && val.username.includes('@kpn.com')) {
+                    return { email: val.username, naam: val.name || val.username.split('@')[0] };
+                }
+            } catch(e) {}
+        }
+    } catch(e) {}
+    return { email: 'onbekend@kpn.com', naam: 'Onbekend' };
 }
+
+async function slaScoreOp(score) {
+    const user = getMSALUser();
+    try {
+        const params = new URLSearchParams({ filterByFormula: `AND({email}="${user.email}", {spel}="${SPEL}")` });
+        const res  = await fetch(`${LB_URL}?${params}`, { headers: AT_HDR });
+        const data = await res.json();
+        if (data.records && data.records.length > 0) {
+            const record = data.records[0];
+            if (score > (record.fields.score || 0)) {
+                await fetch(`${LB_URL}/${record.id}`, {
+                    method: 'PATCH', headers: AT_HDR,
+                    body: JSON.stringify({ fields: { score, naam: user.naam } })
+                });
+            }
+        } else {
+            await fetch(LB_URL, {
+                method: 'POST', headers: AT_HDR,
+                body: JSON.stringify({ records: [{ fields: { naam: user.naam, email: user.email, spel: SPEL, score } }] })
+            });
+        }
+    } catch(e) {}
+}
+
+async function toonLeaderboard() {
+    document.getElementById('lbOverlay').classList.add('show');
+    document.getElementById('lbContent').innerHTML = '<div class="lb-loading">Laden...</div>';
+    try {
+        const params = new URLSearchParams({
+            filterByFormula: `{spel}="${SPEL}"`,
+            'sort[0][field]': 'score', 'sort[0][direction]': 'desc', maxRecords: 5
+        });
+        const res  = await fetch(`${LB_URL}?${params}`, { headers: AT_HDR });
+        const data = await res.json();
+        const medailles = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+        if (!data.records || data.records.length === 0) {
+            document.getElementById('lbContent').innerHTML = '<div class="lb-loading">Nog geen scores!</div>';
+            return;
+        }
+        document.getElementById('lbContent').innerHTML = data.records.map((r, i) => `
+            <div class="lb-item">
+                <div class="lb-rank">${medailles[i]}</div>
+                <div class="lb-name">${r.fields.naam || 'Onbekend'}</div>
+                <div class="lb-score">${r.fields.score} pts</div>
+            </div>`).join('');
+    } catch(e) {
+        document.getElementById('lbContent').innerHTML = '<div class="lb-loading">Fout bij laden.</div>';
+    }
+}
+
+function sluitLeaderboard() { document.getElementById('lbOverlay').classList.remove('show'); }
+
+// ── MEMORY LOGICA ──────────────────────────────────────────
+const symbolen = ['📱','📡','🌐','💻','☎️','🔌','📶','🛜'];
+let kaarten = [], omgedraaid = [], gevondenParen = 0, score = 0;
+let geblokkeerd = false, timerInterval, seconden = 0;
+// Bijhouden: hoeveel pogingen per paar (per symbool)
+let pogingPerSymbool = {};
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
 function startGame() {
     document.getElementById('winOverlay').classList.remove('show');
-    gevondenParen = 0; pogingen = 0; seconden = 0; omgedraaid = [];
+    gevondenParen = 0; score = 0; seconden = 0; omgedraaid = [];
+    pogingPerSymbool = {};
     clearInterval(timerInterval);
-    document.getElementById('pogingen').textContent = '0';
+    document.getElementById('score').textContent   = '0';
     document.getElementById('gevonden').textContent = '0';
-    document.getElementById('timer').textContent = '0:00';
+    document.getElementById('timer').textContent   = '0:00';
+
+    symbolen.forEach(s => { pogingPerSymbool[s] = 0; });
 
     const dubbel = shuffle([...symbolen, ...symbolen]);
     const grid = document.getElementById('grid');
@@ -199,11 +238,9 @@ function startGame() {
         const card = document.createElement('div');
         card.className = 'card';
         card.dataset.sym = sym;
-        card.dataset.index = i;
         card.innerHTML = `
             <div class="card-face card-back"></div>
-            <div class="card-face card-front">${sym}</div>
-        `;
+            <div class="card-face card-front">${sym}</div>`;
         card.onclick = () => flip(card);
         grid.appendChild(card);
     });
@@ -223,10 +260,21 @@ function flip(card) {
 
     if (omgedraaid.length === 2) {
         geblokkeerd = true;
-        pogingen++;
-        document.getElementById('pogingen').textContent = pogingen;
+        const sym = omgedraaid[0].dataset.sym;
+        pogingPerSymbool[sym] = (pogingPerSymbool[sym] || 0) + 1;
 
         if (omgedraaid[0].dataset.sym === omgedraaid[1].dataset.sym) {
+            // Match! Bereken punten
+            const pogingen = pogingPerSymbool[sym];
+            let punten;
+            if (pogingen === 1)      punten = 5;
+            else if (pogingen === 2) punten = 3;
+            else if (pogingen === 3) punten = 2;
+            else                     punten = 1;
+
+            score += punten;
+            document.getElementById('score').textContent = score;
+
             omgedraaid.forEach(c => c.classList.add('matched'));
             gevondenParen++;
             document.getElementById('gevonden').textContent = gevondenParen;
@@ -238,8 +286,11 @@ function flip(card) {
                 const m = Math.floor(seconden / 60);
                 const s = seconden % 60;
                 document.getElementById('winSub').textContent =
-                    `${pogingen} pogingen • Tijd: ${m}:${s.toString().padStart(2,'0')}`;
-                setTimeout(() => document.getElementById('winOverlay').classList.add('show'), 500);
+                    `Score: ${score} punten • Tijd: ${m}:${s.toString().padStart(2,'0')}`;
+                setTimeout(() => {
+                    document.getElementById('winOverlay').classList.add('show');
+                    slaScoreOp(score);
+                }, 500);
             }
         } else {
             setTimeout(() => {
