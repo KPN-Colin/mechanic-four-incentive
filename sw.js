@@ -1,6 +1,5 @@
-const CACHE_NAAM = 'mechanic4-v1';
+const CACHE_NAAM = 'mechanic4-v2';
 
-// Alle bestanden die gecached worden bij installatie
 const CACHE_BESTANDEN = [
     '/start.html',
     '/index.html',
@@ -17,6 +16,7 @@ const CACHE_BESTANDEN = [
     '/manifest.json',
     '/images/logo/kpn-logo.png',
     '/images/logo/m4-icon.png',
+    '/images/logo/m4-favicon.ico',
     '/images/mechanics/m4-all.gif',
     '/images/mechanics/m4-jasper.gif',
     '/images/mechanics/m4-alberto.gif',
@@ -30,7 +30,6 @@ const CACHE_BESTANDEN = [
     '/images/icons/winnen.png',
 ];
 
-// Installatie — cache alle bestanden
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(CACHE_NAAM).then(function(cache) {
@@ -40,7 +39,6 @@ self.addEventListener('install', function(e) {
     self.skipWaiting();
 });
 
-// Activatie — verwijder oude caches
 self.addEventListener('activate', function(e) {
     e.waitUntil(
         caches.keys().then(function(cacheNamen) {
@@ -54,26 +52,20 @@ self.addEventListener('activate', function(e) {
     e.waitUntil(clients.claim());
 });
 
-// Fetch — probeer netwerk eerst, val terug op cache
 self.addEventListener('fetch', function(e) {
-    // Sla niet-GET verzoeken over (bijv. Airtable POST)
     if (e.request.method !== 'GET') return;
 
-    // Sla externe API verzoeken over — alleen cachen wat van onze eigen server komt
     const url = new URL(e.request.url);
     const isEigen = url.origin === self.location.origin;
 
     if (!isEigen) {
-        // Externe verzoeken (Airtable, Graph API) altijd via netwerk
         e.respondWith(fetch(e.request));
         return;
     }
 
-    // Eigen bestanden: netwerk eerst, dan cache als fallback
     e.respondWith(
         fetch(e.request)
             .then(function(response) {
-                // Sla verse versie op in cache
                 if (response && response.status === 200) {
                     const responseKopie = response.clone();
                     caches.open(CACHE_NAAM).then(function(cache) {
@@ -83,7 +75,6 @@ self.addEventListener('fetch', function(e) {
                 return response;
             })
             .catch(function() {
-                // Geen netwerk — gebruik cache
                 return caches.match(e.request);
             })
     );
