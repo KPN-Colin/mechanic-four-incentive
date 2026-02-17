@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M4 Quiz</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background-color: #fbfdfa;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #00c300;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 16px;
+    overflow: hidden;
+}
+
+.score-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #00c300;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.question-card {
+    background-color: #fff;
+    border-radius: 18px;
+    padding: 22px 20px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    font-size: 1rem;
+    font-weight: bold;
+    color: #222;
+    line-height: 1.4;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+.answer-btn {
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 12px 10px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: 0.15s;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.answer-btn.correct { background-color: #00c300; border-color: #00c300; color: #fff; }
+.answer-btn.wrong   { background-color: #ff4444; border-color: #ff4444; color: #fff; }
+.answer-btn:disabled { cursor: default; }
+
+.feedback {
+    font-size: 1rem;
+    font-weight: bold;
+    min-height: 24px;
+    color: #00a000;
+}
+
+.result-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.result-emoji { font-size: 4rem; }
+.result-title { font-size: 1.5rem; font-weight: bold; color: #222; }
+.result-score { font-size: 1.1rem; color: #555; }
+
+.play-again-btn {
+    padding: 14px 40px;
+    background-color: #00c300;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,195,0,0.3);
+}
+
+footer {
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <button class="back-button" onclick="window.location.href='games.html'">&larr;</button>
+    <div class="header-title">🧠 M4 Quiz</div>
+</header>
+
+<div class="content" id="quizContent">
+    <div class="score-bar">
+        <span id="questionNum">Vraag 1 / 8</span>
+        <span id="scoreDisplay">Score: 0</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="question-card" id="questionCard"></div>
+    <div class="answers" id="answersGrid"></div>
+    <div class="feedback" id="feedback"></div>
+</div>
+
+<div class="content result-screen" id="resultScreen">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <button class="play-again-btn" onclick="startQuiz()">Opnieuw spelen</button>
+    <button class="play-again-btn" style="background:#555" onclick="window.location.href='games.html'">Terug naar Games</button>
+</div>
+
+<footer>&copy; KPN 2026</footer>
+
+<script>
+const vragen = [
+    {
+        vraag: "Wat staat KPN voor?",
+        antwoorden: ["Koninklijke PTT Nederland", "Klanten Primair Netwerk", "KPN Persoonlijk Netwerk", "Koninklijk Post Netwerk"],
+        goed: 0
+    },
+    {
+        vraag: "Welk product biedt KPN aan voor thuis internet?",
+        antwoorden: ["4G Router", "Glasvezel", "Satelliet", "Kabel"],
+        goed: 1
+    },
+    {
+        vraag: "Wat is de KPN huiskleur?",
+        antwoorden: ["Blauw", "Rood", "Groen", "Oranje"],
+        goed: 2
+    },
+    {
+        vraag: "Welke dienst biedt KPN aan voor zakelijke klanten?",
+        antwoorden: ["KPN Zakelijk", "KPN Office", "KPN Business Plus", "KPN Pro"],
+        goed: 0
+    },
+    {
+        vraag: "Wat betekent 5G?",
+        antwoorden: ["5 Gigabyte", "5e Generatie mobiel netwerk", "5 Gigahertz", "5 Gelijktijdige verbindingen"],
+        goed: 1
+    },
+    {
+        vraag: "Wat is een belangrijk voordeel van glasvezel?",
+        antwoorden: ["Goedkoper dan 4G", "Werkt zonder stroom", "Hoge snelheid en stabiele verbinding", "Geen installatie nodig"],
+        goed: 2
+    },
+    {
+        vraag: "Wat is de naam van de KPN klantenservice app?",
+        antwoorden: ["KPN Connect", "Mijn KPN", "KPN Direct", "KPN Go"],
+        goed: 1
+    },
+    {
+        vraag: "Welke generatie netwerk gebruiken de meeste smartphones nu?",
+        antwoorden: ["3G", "4G", "5G", "2G"],
+        goed: 2
+    }
+];
+
+let huidigIndex = 0;
+let score = 0;
+let beantwoord = false;
+
+function startQuiz() {
+    huidigIndex = 0;
+    score = 0;
+    beantwoord = false;
+    document.getElementById('quizContent').style.display = 'flex';
+    document.getElementById('resultScreen').style.display = 'none';
+    laadVraag();
+}
+
+function laadVraag() {
+    beantwoord = false;
+    const v = vragen[huidigIndex];
+    document.getElementById('questionNum').textContent = `Vraag ${huidigIndex + 1} / ${vragen.length}`;
+    document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+    document.getElementById('progressFill').style.width = `${(huidigIndex / vragen.length) * 100}%`;
+    document.getElementById('questionCard').textContent = v.vraag;
+    document.getElementById('feedback').textContent = '';
+
+    const grid = document.getElementById('answersGrid');
+    grid.innerHTML = '';
+
+    v.antwoorden.forEach((ant, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = ant;
+        btn.onclick = () => checkAntwoord(i, btn);
+        grid.appendChild(btn);
+    });
+}
+
+function checkAntwoord(index, btn) {
+    if (beantwoord) return;
+    beantwoord = true;
+
+    const v = vragen[huidigIndex];
+    const btns = document.querySelectorAll('.answer-btn');
+    btns.forEach(b => b.disabled = true);
+
+    if (index === v.goed) {
+        btn.classList.add('correct');
+        score++;
+        document.getElementById('feedback').textContent = '✅ Goed zo!';
+        document.getElementById('feedback').style.color = '#00a000';
+    } else {
+        btn.classList.add('wrong');
+        btns[v.goed].classList.add('correct');
+        document.getElementById('feedback').textContent = '❌ Helaas, niet goed!';
+        document.getElementById('feedback').style.color = '#ff4444';
+    }
+
+    setTimeout(() => {
+        huidigIndex++;
+        if (huidigIndex < vragen.length) {
+            laadVraag();
+        } else {
+            toonResultaat();
+        }
+    }, 1400);
+}
+
+function toonResultaat() {
+    document.getElementById('quizContent').style.display = 'none';
+    document.getElementById('resultScreen').style.display = 'flex';
+
+    const pct = score / vragen.length;
+    let emoji, titel;
+
+    if (pct === 1)        { emoji = '🏆'; titel = 'Perfect! Je weet alles!'; }
+    else if (pct >= 0.75) { emoji = '🎉'; titel = 'Heel goed gedaan!'; }
+    else if (pct >= 0.5)  { emoji = '👍'; titel = 'Niet slecht!'; }
+    else                  { emoji = '📚'; titel = 'Nog wat oefenen...'; }
+
+    document.getElementById('resultEmoji').textContent = emoji;
+    document.getElementById('resultTitle').textContent = titel;
+    document.getElementById('resultScore').textContent = `Jouw score: ${score} van de ${vragen.length}`;
+}
+
+startQuiz();
+</script>
+</body>
+</html>
