@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Winnen</title>
-<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
-<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
-<link rel="manifest" href="manifest.json">
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,6 +17,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
 html, body { height: 100%; overflow: hidden; }
+
+html { background-color: #00c300; }
 
 body {
     background-color: #eae9ec;
@@ -59,7 +62,6 @@ header {
 
 .kpn-logo { height: 38px; }
 
-/* Titel iets kleiner */
 .header-title {
     font-size: 0.95rem;
     font-weight: bold;
@@ -76,7 +78,6 @@ header {
     font-weight: bold;
 }
 
-/* COLLAGE SECTIE */
 .collage-section {
     flex: 1;
     min-height: 0;
@@ -107,7 +108,6 @@ header {
     display: block;
 }
 
-/* GIF onderaan */
 .m4-all {
     flex: 0 0 35vh;
     overflow: hidden;
@@ -126,12 +126,13 @@ footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
     flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
@@ -157,35 +158,18 @@ footer {
 
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-        console.log('SW fout:', err);
-    });
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-// ── FOTO CONFIGURATIE ──────────────────────────────────────
-const fotos = [
-    'foto1.jpg',
-    'foto2.jpg',
-    'foto3.jpg',
-    'foto4.jpg',
-    'foto5.jpg',
-    'foto6.jpg',
-    'foto7.jpg',
-    'foto8.jpg',
-];
-// ──────────────────────────────────────────────────────────
+const fotos = ['foto1.jpg','foto2.jpg','foto3.jpg','foto4.jpg','foto5.jpg','foto6.jpg','foto7.jpg','foto8.jpg'];
 
 function buildCollage() {
     const container = document.getElementById('collageSection');
     const W = container.offsetWidth;
     const H = container.offsetHeight;
-
     const fotoW = Math.round(W * 0.38);
     const fotoH = Math.round(fotoW * 0.85);
 
-    // yPct: klein beetje van header af (0.05 ipv 0.02)
-    // Meer gespreid: grotere xPct verschillen
-    // Iets dichter bij gif: yPct max rond 0.72 ipv 0.80
     const plaatsingData = [
         { xPct: 0.03, yPct: 0.05, rot: -8,  z: 3 },
         { xPct: 0.52, yPct: 0.06, rot:  6,  z: 5 },
@@ -199,9 +183,7 @@ function buildCollage() {
 
     fotos.forEach((bestand, i) => {
         if (i >= plaatsingData.length) return;
-
         const data = plaatsingData[i];
-
         const maxX = W - fotoW - 20;
         const maxY = H - fotoH - 20;
         const x = Math.min(Math.round(data.xPct * W), maxX);
@@ -222,9 +204,7 @@ function buildCollage() {
         photo.appendChild(img);
 
         photo.addEventListener('click', function() {
-            document.querySelectorAll('.photo').forEach(p => {
-                p.style.zIndex = p.dataset.originalZ;
-            });
+            document.querySelectorAll('.photo').forEach(p => { p.style.zIndex = p.dataset.originalZ; });
             this.style.zIndex = 99;
         });
 
@@ -235,7 +215,6 @@ function buildCollage() {
 
 window.addEventListener('load', buildCollage);
 
-// COUNTDOWN
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
@@ -250,6 +229,5 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000);
 updateCountdown();
 </script>
-
 </body>
 </html>
