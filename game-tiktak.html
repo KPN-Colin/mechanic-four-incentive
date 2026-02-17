@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tik de Mechanic</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background-color: #fbfdfa;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #00c300;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.stats {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.timer-bar {
+    flex-shrink: 0;
+    height: 8px;
+    background-color: #ddd;
+    margin: 0 20px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.timer-fill {
+    height: 100%;
+    background-color: #00c300;
+    border-radius: 4px;
+    transition: width 0.1s linear, background-color 0.3s;
+}
+
+/* SPEEL VELD */
+.speelveld {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+    background-color: #eae9ec;
+    border-radius: 18px;
+}
+
+.mechanic {
+    position: absolute;
+    font-size: 3rem;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s;
+    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.2));
+    animation: popin 0.2s ease;
+}
+
+@keyframes popin {
+    from { transform: scale(0.3); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+.mechanic.verdwijn {
+    opacity: 0;
+    transform: scale(0.3);
+    transition: all 0.2s;
+}
+
+.hit-effect {
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00c300;
+    pointer-events: none;
+    animation: floatUp 0.7s ease forwards;
+    z-index: 10;
+}
+
+@keyframes floatUp {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-50px); }
+}
+
+.start-overlay, .end-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    text-align: center;
+    background-color: rgba(234,233,236,0.95);
+    border-radius: 18px;
+    z-index: 20;
+}
+
+.overlay-emoji { font-size: 3.5rem; }
+.overlay-title { font-size: 1.4rem; font-weight: bold; color: #222; }
+.overlay-sub   { font-size: 0.9rem; color: #666; line-height: 1.4; }
+
+.start-btn {
+    padding: 14px 40px;
+    background-color: #00c300;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,195,0,0.3);
+    margin: 4px;
+}
+
+footer {
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <button class="back-button" onclick="window.location.href='games.html'">&larr;</button>
+    <div class="header-title">👊 Tik de Mechanic</div>
+</header>
+
+<div class="stats">
+    <span>Score: <strong id="score">0</strong></span>
+    <span>Gemist: <strong id="gemist">0</strong> / 3</span>
+</div>
+
+<div class="timer-bar">
+    <div class="timer-fill" id="timerFill" style="width:100%"></div>
+</div>
+
+<div class="speelveld" id="speelveld">
+    <div class="start-overlay" id="startOverlay">
+        <div class="overlay-emoji">👊</div>
+        <div class="overlay-title">Tik de Mechanic!</div>
+        <div class="overlay-sub">Tik zo snel mogelijk op de mechanics.<br>3 keer missen = game over!</div>
+        <button class="start-btn" onclick="startGame()">Spelen!</button>
+    </div>
+    <div class="end-overlay" id="endOverlay" style="display:none">
+        <div class="overlay-emoji" id="endEmoji">💀</div>
+        <div class="overlay-title" id="endTitle">Game over!</div>
+        <div class="overlay-sub" id="endSub"></div>
+        <button class="start-btn" onclick="startGame()">Opnieuw</button>
+        <button class="start-btn" style="background:#555" onclick="window.location.href='games.html'">Terug</button>
+    </div>
+</div>
+
+<footer>&copy; KPN 2026</footer>
+
+<script>
+const emojis = ['🔧','📱','📡','💻','☎️','🌐'];
+let score = 0, gemist = 0, actief = [], spawnInterval, timerInterval;
+let tijdOver = 30, tijdResterend = 30;
+const MAX_GEMIST = 3;
+const SPEEL_TIJD = 30;
+
+function startGame() {
+    score = 0; gemist = 0; tijdResterend = SPEEL_TIJD;
+    actief = [];
+    document.getElementById('score').textContent = '0';
+    document.getElementById('gemist').textContent = '0';
+    document.getElementById('timerFill').style.width = '100%';
+    document.getElementById('timerFill').style.backgroundColor = '#00c300';
+    document.getElementById('startOverlay').style.display = 'none';
+    document.getElementById('endOverlay').style.display = 'none';
+
+    // Verwijder oude mechanics
+    document.querySelectorAll('.mechanic').forEach(m => m.remove());
+
+    clearInterval(spawnInterval);
+    clearInterval(timerInterval);
+
+    spawnInterval = setInterval(spawnMechanic, 900);
+
+    timerInterval = setInterval(() => {
+        tijdResterend -= 0.1;
+        const pct = (tijdResterend / SPEEL_TIJD) * 100;
+        document.getElementById('timerFill').style.width = pct + '%';
+        if (pct < 30) document.getElementById('timerFill').style.backgroundColor = '#ff4444';
+        else if (pct < 60) document.getElementById('timerFill').style.backgroundColor = '#ffaa00';
+
+        if (tijdResterend <= 0) eindSpel('tijd');
+    }, 100);
+}
+
+function spawnMechanic() {
+    const veld = document.getElementById('speelveld');
+    const W = veld.offsetWidth;
+    const H = veld.offsetHeight;
+
+    const mech = document.createElement('div');
+    mech.className = 'mechanic';
+    mech.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+    const x = Math.random() * (W - 70);
+    const y = Math.random() * (H - 70);
+    mech.style.left = x + 'px';
+    mech.style.top  = y + 'px';
+
+    const leefTijd = 1800 + Math.random() * 600;
+
+    mech.onclick = (e) => {
+        e.stopPropagation();
+        score++;
+        document.getElementById('score').textContent = score;
+        showHit(x + 35, y, '+1');
+        mech.classList.add('verdwijn');
+        setTimeout(() => mech.remove(), 200);
+    };
+
+    veld.appendChild(mech);
+
+    setTimeout(() => {
+        if (mech.parentElement) {
+            gemist++;
+            document.getElementById('gemist').textContent = gemist;
+            mech.classList.add('verdwijn');
+            setTimeout(() => mech.remove(), 200);
+            if (gemist >= MAX_GEMIST) eindSpel('gemist');
+        }
+    }, leefTijd);
+}
+
+function showHit(x, y, tekst) {
+    const veld = document.getElementById('speelveld');
+    const el = document.createElement('div');
+    el.className = 'hit-effect';
+    el.textContent = tekst;
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    veld.appendChild(el);
+    setTimeout(() => el.remove(), 700);
+}
+
+function eindSpel(reden) {
+    clearInterval(spawnInterval);
+    clearInterval(timerInterval);
+    document.querySelectorAll('.mechanic').forEach(m => m.remove());
+
+    const overlay = document.getElementById('endOverlay');
+    let emoji, titel, sub;
+
+    if (reden === 'tijd') {
+        if (score >= 20)      { emoji = '🏆'; titel = 'Waanzinnig!'; }
+        else if (score >= 12) { emoji = '🎉'; titel = 'Goed gedaan!'; }
+        else                  { emoji = '👍'; titel = 'Niet slecht!'; }
+        sub = `Jouw score: ${score} mechanics getikt in ${SPEEL_TIJD} seconden.`;
+    } else {
+        emoji = '😅'; titel = '3x gemist!';
+        sub = `Je hebt ${score} mechanics getikt voordat je 3x miste.`;
+    }
+
+    document.getElementById('endEmoji').textContent = emoji;
+    document.getElementById('endTitle').textContent = titel;
+    document.getElementById('endSub').textContent = sub;
+    overlay.style.display = 'flex';
+}
+</script>
+</body>
+</html>
