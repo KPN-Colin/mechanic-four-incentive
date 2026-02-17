@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4</title>
-<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
-<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
-<link rel="manifest" href="manifest.json">
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,6 +17,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
 html, body { height: 100%; overflow: hidden; }
+
+html { background-color: #00c300; }
 
 body {
     background-color: #eae9ec;
@@ -119,12 +122,13 @@ footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
     flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
@@ -175,7 +179,7 @@ footer {
 
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
 let incentiveEnd = new Date("2026-06-01T23:59:59");
