@@ -83,7 +83,7 @@ header {
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    padding: 12px 12px 12px 12px;
+    padding: 12px 12px 0 12px;
 }
 
 .data-sectie {
@@ -182,8 +182,6 @@ header {
     width: 24px;
 }
 
-.medaille { font-size: 1rem; }
-
 .laden {
     text-align: center;
     color: #bbb;
@@ -202,6 +200,7 @@ header {
     flex-direction: column;
     overflow: hidden;
     min-height: 0;
+    margin-bottom: 12px;
 }
 
 .kpi-header {
@@ -246,7 +245,7 @@ header {
     align-items: flex-end;
     justify-content: flex-end;
     overflow: hidden;
-    border-radius: 16px;
+    border-radius: 16px 16px 0 0;
 }
 
 .gif-sectie img {
@@ -445,24 +444,15 @@ function navigeerRechts() {
 function toonTotaalData() {
     const container = document.getElementById('dataInhoud');
     const data      = SHAREPOINT_CONFIG.demoModus ? demoTotaal : totaalData;
-
     if (!data || data.length === 0) {
         container.innerHTML = '<div class="laden">Geen data beschikbaar.</div>';
         return;
     }
-
     const medailles = ['🥇','🥈','🥉'];
     const eigenNaam = getMSALNaam();
-
     container.innerHTML = `
         <table class="ranglijst">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Naam</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
+            <thead><tr><th>#</th><th>Naam</th><th>Score</th></tr></thead>
             <tbody>
                 ${data.map((rij, i) => `
                     <tr class="${rij.naam === eigenNaam ? 'eigen-rij' : ''}">
@@ -472,33 +462,18 @@ function toonTotaalData() {
                     </tr>
                 `).join('')}
             </tbody>
-        </table>
-    `;
+        </table>`;
 }
 
 function toonWeekData() {
     const container = document.getElementById('dataInhoud');
-    const week      = SHAREPOINT_CONFIG.demoModus
-        ? demoWeken[huidigeWeekIndex]
-        : beschikbareWeken[huidigeWeekIndex];
-
-    if (!week) {
-        container.innerHTML = '<div class="laden">Geen data voor deze week.</div>';
-        return;
-    }
-
+    const week = SHAREPOINT_CONFIG.demoModus ? demoWeken[huidigeWeekIndex] : beschikbareWeken[huidigeWeekIndex];
+    if (!week) { container.innerHTML = '<div class="laden">Geen data voor deze week.</div>'; return; }
     const medailles = ['🥇','🥈','🥉'];
     const eigenNaam = getMSALNaam();
-
     container.innerHTML = `
         <table class="ranglijst">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Naam</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
+            <thead><tr><th>#</th><th>Naam</th><th>Score</th></tr></thead>
             <tbody>
                 ${week.rijen.map((rij, i) => `
                     <tr class="${rij.naam === eigenNaam ? 'eigen-rij' : ''}">
@@ -508,29 +483,21 @@ function toonWeekData() {
                     </tr>
                 `).join('')}
             </tbody>
-        </table>
-    `;
+        </table>`;
 }
 
 function toonKPIData() {
     const container = document.getElementById('kpiInhoud');
-    const data      = SHAREPOINT_CONFIG.demoModus ? demoKPIs : persoonlijkData;
-
-    if (!data || data.length === 0) {
-        container.innerHTML = '<div class="laden">Geen KPI data.</div>';
-        return;
-    }
-
+    const data = SHAREPOINT_CONFIG.demoModus ? demoKPIs : persoonlijkData;
+    if (!data || data.length === 0) { container.innerHTML = '<div class="laden">Geen KPI data.</div>'; return; }
     container.innerHTML = data.map(kpi => `
         <div class="kpi-rij">
             <div class="kpi-label">${kpi.label}</div>
             <div class="kpi-waarde ${kpi.rood ? 'rood' : ''}">${kpi.waarde}</div>
-        </div>
-    `).join('');
+        </div>`).join('');
 }
 
-let totaalData      = [];
-let persoonlijkData = [];
+let totaalData = [], persoonlijkData = [];
 
 async function laadSharePointData() {
     if (SHAREPOINT_CONFIG.demoModus) {
@@ -540,83 +507,42 @@ async function laadSharePointData() {
         updateNavigatie();
         return;
     }
-
     try {
         const msalInstance = new msal.PublicClientApplication(msalConfig);
-        const account      = msalInstance.getAllAccounts()[0];
+        const account = msalInstance.getAllAccounts()[0];
         if (!account) return;
-
-        const tokenResponse = await msalInstance.acquireTokenSilent({
-            scopes: ['Sites.Read.All', 'Files.Read.All'],
-            account
-        });
-
+        const tokenResponse = await msalInstance.acquireTokenSilent({ scopes: ['Sites.Read.All', 'Files.Read.All'], account });
         const token = tokenResponse.accessToken;
-
         const zoekUrl = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets`;
-        const wsResp  = await fetch(zoekUrl, { headers: { Authorization: `Bearer ${token}` } });
-        const wsData  = await wsResp.json();
-
-        const weekTabbladen = wsData.value
-            .filter(ws => ws.name.startsWith(SHAREPOINT_CONFIG.weekTabblad))
-            .sort((a, b) => {
-                const numA = parseInt(a.name.replace(SHAREPOINT_CONFIG.weekTabblad, '')) || 0;
-                const numB = parseInt(b.name.replace(SHAREPOINT_CONFIG.weekTabblad, '')) || 0;
-                return numB - numA;
-            });
-
-        const totaalUrl  = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets/${SHAREPOINT_CONFIG.totaalTabblad}/usedRange`;
+        const wsResp = await fetch(zoekUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const wsData = await wsResp.json();
+        const weekTabbladen = wsData.value.filter(ws => ws.name.startsWith(SHAREPOINT_CONFIG.weekTabblad)).sort((a, b) => {
+            const numA = parseInt(a.name.replace(SHAREPOINT_CONFIG.weekTabblad, '')) || 0;
+            const numB = parseInt(b.name.replace(SHAREPOINT_CONFIG.weekTabblad, '')) || 0;
+            return numB - numA;
+        });
+        const totaalUrl = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets/${SHAREPOINT_CONFIG.totaalTabblad}/usedRange`;
         const totaalResp = await fetch(totaalUrl, { headers: { Authorization: `Bearer ${token}` } });
-        const totaalRaw  = await totaalResp.json();
-
-        totaalData = totaalRaw.values.slice(1)
-            .filter(rij => rij[SHAREPOINT_CONFIG.kolom_naam])
-            .map((rij, i) => ({
-                rang:  rij[SHAREPOINT_CONFIG.kolom_rang]  || i + 1,
-                naam:  rij[SHAREPOINT_CONFIG.kolom_naam]  || '',
-                score: rij[SHAREPOINT_CONFIG.kolom_score] || 0,
-            }));
-
+        const totaalRaw = await totaalResp.json();
+        totaalData = totaalRaw.values.slice(1).filter(rij => rij[SHAREPOINT_CONFIG.kolom_naam]).map((rij, i) => ({ rang: rij[SHAREPOINT_CONFIG.kolom_rang] || i + 1, naam: rij[SHAREPOINT_CONFIG.kolom_naam] || '', score: rij[SHAREPOINT_CONFIG.kolom_score] || 0 }));
         beschikbareWeken = [];
         for (const ws of weekTabbladen) {
-            const weekUrl  = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets/${ws.name}/usedRange`;
+            const weekUrl = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.overzichtBestand}:/workbook/worksheets/${ws.name}/usedRange`;
             const weekResp = await fetch(weekUrl, { headers: { Authorization: `Bearer ${token}` } });
-            const weekRaw  = await weekResp.json();
-
-            const rijen = weekRaw.values.slice(1)
-                .filter(rij => rij[SHAREPOINT_CONFIG.kolom_naam])
-                .map((rij, i) => ({
-                    rang:  rij[SHAREPOINT_CONFIG.kolom_rang]  || i + 1,
-                    naam:  rij[SHAREPOINT_CONFIG.kolom_naam]  || '',
-                    score: rij[SHAREPOINT_CONFIG.kolom_score] || 0,
-                }));
-
-            if (rijen.length > 0) {
-                beschikbareWeken.push({ label: ws.name, rijen });
-            }
+            const weekRaw = await weekResp.json();
+            const rijen = weekRaw.values.slice(1).filter(rij => rij[SHAREPOINT_CONFIG.kolom_naam]).map((rij, i) => ({ rang: rij[SHAREPOINT_CONFIG.kolom_rang] || i + 1, naam: rij[SHAREPOINT_CONFIG.kolom_naam] || '', score: rij[SHAREPOINT_CONFIG.kolom_score] || 0 }));
+            if (rijen.length > 0) beschikbareWeken.push({ label: ws.name, rijen });
         }
-
-        const eigenNaam = getMSALNaam();
-        const persUrl   = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.persoonlijkBestand}:/workbook/worksheets/Sheet1/usedRange`;
-        const persResp  = await fetch(persUrl, { headers: { Authorization: `Bearer ${token}` } });
-        const persRaw   = await persResp.json();
-
-        persoonlijkData = persRaw.values
-            .filter(rij => rij[0] && rij[1] !== undefined)
-            .map(rij => ({
-                label:  rij[0],
-                waarde: rij[1],
-                rood:   typeof rij[1] === 'string' && rij[1].startsWith('-')
-            }));
-
+        const persUrl = `https://graph.microsoft.com/v1.0/sites/${SHAREPOINT_CONFIG.siteUrl}/drive/root:/${SHAREPOINT_CONFIG.persoonlijkBestand}:/workbook/worksheets/Sheet1/usedRange`;
+        const persResp = await fetch(persUrl, { headers: { Authorization: `Bearer ${token}` } });
+        const persRaw = await persResp.json();
+        persoonlijkData = persRaw.values.filter(rij => rij[0] && rij[1] !== undefined).map(rij => ({ label: rij[0], waarde: rij[1], rood: typeof rij[1] === 'string' && rij[1].startsWith('-') }));
         toonTotaalData();
         toonKPIData();
         updateNavigatie();
-
     } catch (e) {
         console.error('SharePoint laden mislukt:', e);
-        document.getElementById('dataInhoud').innerHTML =
-            '<div class="laden">Kon data niet laden. Probeer opnieuw.</div>';
+        document.getElementById('dataInhoud').innerHTML = '<div class="laden">Kon data niet laden. Probeer opnieuw.</div>';
     }
 }
 
@@ -629,10 +555,7 @@ function getMSALNaam() {
                 const val = JSON.parse(localStorage.getItem(key));
                 if (val && val.username && val.username.includes('@kpn.com')) {
                     const naam = val.name || '';
-                    if (naam) {
-                        const delen = naam.split(' ');
-                        return delen[0] + ' ' + (delen[1]?.[0] || '') + '.';
-                    }
+                    if (naam) { const delen = naam.split(' '); return delen[0] + ' ' + (delen[1]?.[0] || '') + '.'; }
                 }
             } catch(e) {}
         }
@@ -643,7 +566,7 @@ function getMSALNaam() {
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
-    let el   = document.getElementById("countdown");
+    let el = document.getElementById("countdown");
     if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
     let days = Math.floor(diff / 86400000);
     if (days > 1) { el.innerHTML = `Nog<br>${days}<br>dagen`; return; }
@@ -654,9 +577,7 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000);
 updateCountdown();
 
-window.addEventListener('load', () => {
-    laadSharePointData();
-});
+window.addEventListener('load', () => { laadSharePointData(); });
 </script>
 
 </body>
