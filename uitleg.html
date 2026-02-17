@@ -18,7 +18,7 @@
 html, body { height: 100%; overflow: hidden; }
 
 body {
-    background-color: #eae9ec;
+    background-color: #fbfdfa;
     display: flex;
     flex-direction: column;
 }
@@ -75,13 +75,13 @@ header {
     font-weight: bold;
 }
 
-/* CONTENT + GIF SECTIE */
+/* CONTENT + GIF SECTIE - geen padding rechts */
 .main-section {
     flex: 1;
     min-height: 0;
     display: flex;
     align-items: flex-start;
-    padding: 30px 20px 0 20px;
+    padding: 30px 0 0 20px;
 }
 
 /* TEKST LINKS */
@@ -104,7 +104,7 @@ header {
     color: #333;
 }
 
-/* ALBERTO RECHTS ONDERAAN */
+/* ALBERTO RECHTS ONDERAAN - tegen rechterkant scherm */
 .alberto-section {
     width: 52vw;
     flex-shrink: 0;
@@ -184,7 +184,6 @@ function typeWriter() {
             currentCharIndex++;
             setTimeout(typeWriter, 25);
         } else {
-            // Klaar met deze tekst, ga naar de volgende na een pauze
             currentTextIndex++;
             currentCharIndex = 0;
             setTimeout(typeWriter, 400);
@@ -192,7 +191,6 @@ function typeWriter() {
     }
 }
 
-// Start typewriter na korte delay
 setTimeout(typeWriter, 600);
 
 // COUNTDOWN
