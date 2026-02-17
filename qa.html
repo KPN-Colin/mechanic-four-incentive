@@ -149,22 +149,22 @@ header {
     to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* BOTTOM SECTIE */
+/* BOTTOM SECTIE — input gecentreerd t.o.v. gif hoogte */
 .bottom-section {
     flex-shrink: 0;
     display: flex;
-    align-items: flex-end;
+    align-items: stretch;
     padding: 0 0 0 15px;
 }
 
+/* Input area gecentreerd in de beschikbare hoogte naast de gif */
 .input-area {
     flex: 1;
     padding-right: 12px;
-    padding-bottom: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
 }
 
 .question-input {
@@ -191,6 +191,7 @@ header {
 }
 
 .send-button {
+    margin-top: 8px;
     padding: 9px 28px;
     font-size: 0.9rem;
     background-color: #00c300;
@@ -311,19 +312,13 @@ const HEADERS = {
 // ── EMAIL OPHALEN UIT MSAL CACHE ───────────────────────────
 function getUserEmail() {
     try {
-        // MSAL slaat accounts op in localStorage
-        // Loop door alle localStorage keys om het account te vinden
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.includes('login.windows.net') && key.includes('account')) {
                 const value = JSON.parse(localStorage.getItem(key));
-                if (value && value.username) {
-                    return value.username;
-                }
+                if (value && value.username) return value.username;
             }
         }
-
-        // Fallback: zoek op 'msal' keys
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('msal.')) {
@@ -336,7 +331,6 @@ function getUserEmail() {
             }
         }
     } catch(e) {}
-
     return '';
 }
 
@@ -356,7 +350,7 @@ function typePlaceholder() {
 }
 setTimeout(typePlaceholder, 600);
 
-// ── VRAGEN LADEN — alleen gepubliceerde vragen ─────────────
+// ── VRAGEN LADEN ───────────────────────────────────────────
 async function loadQuestions() {
     const section = document.getElementById('questionsSection');
     try {
@@ -431,7 +425,6 @@ async function submitQuestion() {
 
         questionInput.value = '';
 
-        // Bevestigingsbanner tonen
         const banner = document.getElementById('confirmationBanner');
         banner.style.display = 'block';
         setTimeout(() => { banner.style.display = 'none'; }, 5000);
@@ -448,7 +441,6 @@ async function submitQuestion() {
     }
 }
 
-// Enter om te versturen
 document.getElementById('questionInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
