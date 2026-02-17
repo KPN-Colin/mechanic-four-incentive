@@ -59,12 +59,8 @@ header {
     font-weight: bold;
 }
 
-/* Bovenste spacer kleiner */
-.spacer-top {
-    flex: 0.8;
-}
+.spacer-top { flex: 0.8; }
 
-/* Hoi Colin — veel groter, gecentreerd */
 .welcome {
     text-align: center;
     font-size: 2.6rem;
@@ -72,10 +68,7 @@ header {
     flex-shrink: 0;
 }
 
-/* Onderste spacer groter */
-.spacer-bottom {
-    flex: 1.2;
-}
+.spacer-bottom { flex: 1.2; }
 
 .button-area {
     flex-shrink: 0;
@@ -93,9 +86,28 @@ header {
     border-radius: 15px;
     cursor: pointer;
     font-weight: bold;
+    box-shadow: 0 6px 20px rgba(0, 195, 0, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    animation: pulse 2.5s ease-in-out infinite;
 }
 
-.start-button:active { background-color: #00a000; }
+/* Subtiele pulse animatie */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 6px 20px rgba(0, 195, 0, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 195, 0, 0.5);
+    }
+}
+
+/* Actieve state */
+.start-button:active {
+    transform: scale(0.95) !important;
+    background-color: #00a000;
+}
 
 .m4-all {
     flex: 0 0 38vh;
