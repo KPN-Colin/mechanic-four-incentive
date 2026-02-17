@@ -49,7 +49,7 @@ header {
     color: #fff;
 }
 
-/* MIDDEN SECTIE */
+/* MIDDEN SECTIE — overflow visible zodat staart zichtbaar is */
 .middle-section {
     flex: 1;
     display: flex;
@@ -57,7 +57,7 @@ header {
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     z-index: 0;
 }
 
@@ -68,12 +68,13 @@ header {
     margin-bottom: 40px;
 }
 
-/* KNOP WRAPPER */
+/* KNOP WRAPPER — extra padding-bottom voor ruimte staart */
 .knop-wrapper {
     position: relative;
     display: inline-flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 28px;
 }
 
 .start-button {
@@ -101,7 +102,7 @@ header {
     animation: none;
 }
 
-/* KAT — springend en zittend */
+/* KAT */
 .kat {
     position: fixed;
     font-size: 2rem;
@@ -111,18 +112,17 @@ header {
     filter: drop-shadow(0 3px 4px rgba(0,0,0,0.2));
 }
 
-/* VEER — ondersteboven onder de knop */
+/* VEER — ondersteboven, direct onder de knop */
 .staart {
     position: absolute;
-    bottom: -20px;
+    bottom: 4px;
     left: 50%;
     font-size: 1.2rem;
     display: none;
-    /* Ondersteboven + licht schuin voor gebogen effect */
     transform: translateX(-30%) rotate(160deg);
     transform-origin: top center;
     animation: veerWaggel 0.6s ease-in-out infinite alternate;
-    z-index: 1;
+    z-index: 3;
 }
 
 @keyframes veerWaggel {
@@ -191,11 +191,9 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-// ── KAT EMOJI'S ────────────────────────────────────────────
-const KAT_SPRINGEND = '🐈';  // springend
-const KAT_ZITTEND   = '🐱';  // zittend op de knop
+const KAT_SPRINGEND = '🐈';
+const KAT_ZITTEND   = '😸';
 
-// ── KAT ANIMATIE ───────────────────────────────────────────
 const katEl  = document.getElementById('kat');
 const staart = document.getElementById('staart');
 
@@ -218,7 +216,7 @@ function startKatAnimatie() {
     const doelX = knopRect.left + knopRect.width / 2 - 16;
     const doelY = knopRect.top - 36;
 
-    const vanLinks   = volgendeKantVanLinks;
+    const vanLinks       = volgendeKantVanLinks;
     volgendeKantVanLinks = !volgendeKantVanLinks;
 
     const startX     = vanLinks ? -60 : window.innerWidth + 20;
@@ -226,15 +224,10 @@ function startKatAnimatie() {
     const boogHoogte = 120 + Math.random() * 80;
     const springDuur = 700 + Math.random() * 200;
 
-    // Springende kat emoji
-    katEl.textContent = KAT_SPRINGEND;
+    katEl.textContent     = KAT_SPRINGEND;
     katEl.style.display   = 'block';
     katEl.style.left      = startX + 'px';
     katEl.style.top       = startY + 'px';
-
-    // 🐈 kijkt standaard naar links
-    // Van links naar rechts: spiegelen (scaleX(-1))
-    // Van rechts naar links: normaal (scaleX(1))
     katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
 
     animeerBoog(
@@ -257,10 +250,7 @@ function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
         const x = x0 + (x1 - x0) * eT;
         const y = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
 
-        // Lichte rotatie in boog richting
-        const rotatie  = vanLinks
-            ? -15 + 30 * eT
-            :  15 - 30 * eT;
+        const rotatie  = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
         const spiegelX = vanLinks ? -1 : 1;
 
         katEl.style.left      = x + 'px';
@@ -275,24 +265,28 @@ function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
 }
 
 function katLandt(doelX, doelY, vanLinks) {
-    // Wissel naar zittende kat
-    katEl.textContent     = KAT_ZITTEND;
-    katEl.style.transform = 'rotate(0deg) scaleX(1)';
-
-    // Kleine bounce
+    // Eerst kleine bounce als 🐈
     let bounceStart = performance.now();
     const bounceDuur = 200;
 
     function bounce(nu) {
-        const t      = Math.min((nu - bounceStart) / bounceDuur, 1);
+        const t       = Math.min((nu - bounceStart) / bounceDuur, 1);
         const bounceY = doelY + Math.sin(t * Math.PI) * 8;
-        katEl.style.top = bounceY + 'px';
-        if (t < 1) requestAnimationFrame(bounce);
-        else {
+        katEl.style.top       = bounceY + 'px';
+        katEl.style.transform = 'scaleX(1) rotate(0deg)';
+        if (t < 1) {
+            requestAnimationFrame(bounce);
+        } else {
             katEl.style.top = doelY + 'px';
-            toonVeer(vanLinks);
+
+            // 1 seconde wachten als 🐈 voordat ie wisselt naar 😸
+            setTimeout(() => {
+                katEl.textContent = KAT_ZITTEND;
+                toonVeer(vanLinks);
+            }, 1000);
         }
     }
+
     requestAnimationFrame(bounce);
 }
 
@@ -303,23 +297,17 @@ function toonVeer(vanLinks) {
     const zitTijd = 1000 + Math.random() * 4000;
 
     setTimeout(() => {
-        staart.style.display = 'none';
+        // Staart weg, wissel terug naar 🐈
+        staart.style.display  = 'none';
+        katEl.textContent     = KAT_SPRINGEND;
 
-        // Wissel terug naar springende kat
-        katEl.textContent = KAT_SPRINGEND;
-
-        const huidigeX  = parseFloat(katEl.style.left);
-        const huidigeY  = parseFloat(katEl.style.top);
-
-        // Springt altijd weg naar de andere kant
+        const huidigeX   = parseFloat(katEl.style.left);
+        const huidigeY   = parseFloat(katEl.style.top);
         const naarRechts = huidigeX < window.innerWidth / 2;
         const eindX      = naarRechts ? window.innerWidth + 60 : -80;
         const boogHoogte = 100 + Math.random() * 80;
         const springDuur = 600 + Math.random() * 200;
 
-        // 🐈 kijkt standaard naar links
-        // Naar rechts springen: spiegelen
-        // Naar links springen: normaal
         katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
 
         animeerBoog(
