@@ -4,43 +4,258 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Winnen</title>
+<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00c300">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
 
 <style>
-* {margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif;}
-body {background-color:#eae9ec; color:#000; display:flex; flex-direction:column; min-height:100vh;}
-header {background-color:#00c300; color:#fff; height:90px; display:flex; align-items:center; justify-content:space-between; padding:0 30px; font-size:1.5rem; font-weight:bold; position:relative;}
-header .logo-back {display:flex; align-items:center; gap:15px;}
-.kpn-logo {height:55px;}
-.back-button {background-color:#fff; color:#00c300; border:none; border-radius:25px; padding:8px 18px; cursor:pointer; font-weight:bold;}
-.header-title {position:absolute; left:50%; transform:translateX(-50%);}
-.countdown {font-size:1rem; position:absolute; right:30px;}
-.content {padding:40px; max-width:800px; margin:0 auto; text-align:left;}
-.content h2 {margin-bottom:20px; color:#00a000;}
-.content p {margin-bottom:15px; line-height:1.5;}
-footer {background-color:#00c300; color:#fff; text-align:center; padding:25px 20px; font-size:1rem;}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background-color: #fbfdfa;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #00c300;
+    color: #fff;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.kpn-logo { height: 38px; }
+
+.header-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.countdown {
+    font-size: 0.65rem;
+    color: #fff;
+    position: absolute;
+    right: 15px;
+    text-align: center;
+    line-height: 1.3;
+    font-weight: bold;
+}
+
+/* COLLAGE SECTIE — vult ruimte tussen header en gif */
+.collage-section {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Foto stijl — Polaroid look */
+.photo {
+    position: absolute;
+    background-color: #fff;
+    padding: 8px 8px 28px 8px;
+    box-shadow: 2px 4px 12px rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    z-index: 1;
+}
+
+.photo:active {
+    transform: scale(1.08) rotate(0deg) !important;
+    box-shadow: 4px 8px 20px rgba(0,0,0,0.35);
+    z-index: 99;
+}
+
+.photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* GIF onderaan — volledige breedte tegen footer */
+.m4-all {
+    flex: 0 0 38vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.m4-all img {
+    width: 100%;
+    display: block;
+}
+
+footer {
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
 </style>
 </head>
 
 <body>
+
 <header>
-  <div class="logo-back">
-    <img src="/images/logo/kpn-logo.png" class="kpn-logo">
-    <button class="back-button" onclick="window.location.href='index.html'">&larr; Terug</button>
-  </div>
-  <div class="header-title">WINNEN WINNEN WINNEN!</div>
-  <div class="countdown">Nog 3 dagen</div>
+    <button class="back-button" onclick="window.location.href='index.html'">&larr;</button>
+    <div class="header-center">
+        <img src="images/logo/kpn-logo.png" class="kpn-logo">
+        <span class="header-title">WINNEN WINNEN WINNEN!</span>
+    </div>
+    <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="content">
-  <h2>Prijzen</h2>
-  <p>Bekijk hier de prijzen die je kunt winnen tijdens de Mechanic 4 incentive.</p>
-  <ul>
-    <li>1e prijs: Weekend weg</li>
-    <li>2e prijs: Gadgets pakket</li>
-    <li>3e prijs: Cadeaubonnen</li>
-  </ul>
+<div class="collage-section" id="collageSection">
+    <!-- Foto's worden dynamisch geladen via JavaScript -->
+</div>
+
+<div class="m4-all">
+    <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
 </div>
 
 <footer>&copy; KPN 2026</footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+        console.log('SW fout:', err);
+    });
+}
+
+// ── FOTO CONFIGURATIE ──────────────────────────────────────
+// Voeg hier de bestandsnamen toe van je foto's in images/pics/
+const fotos = [
+    'foto1.jpg',
+    'foto2.jpg',
+    'foto3.jpg',
+    'foto4.jpg',
+    'foto5.jpg',
+    'foto6.jpg',
+    'foto7.jpg',
+    'foto8.jpg',
+];
+// ──────────────────────────────────────────────────────────
+
+function buildCollage() {
+    const container = document.getElementById('collageSection');
+    const W = container.offsetWidth;
+    const H = container.offsetHeight;
+
+    // Foto afmetingen
+    const fotoW = Math.round(W * 0.38);
+    const fotoH = Math.round(fotoW * 0.85);
+
+    // Vaste rotaties en posities zodat het er natuurlijk uitziet
+    // maar toch altijd goed valt binnen het scherm
+    const plaatsingData = [
+        { xPct: 0.05, yPct: 0.04, rot: -8,  z: 3 },
+        { xPct: 0.45, yPct: 0.02, rot:  5,  z: 5 },
+        { xPct: 0.55, yPct: 0.18, rot: -12, z: 2 },
+        { xPct: 0.08, yPct: 0.28, rot:  7,  z: 6 },
+        { xPct: 0.38, yPct: 0.35, rot: -4,  z: 4 },
+        { xPct: 0.60, yPct: 0.50, rot:  9,  z: 1 },
+        { xPct: 0.04, yPct: 0.55, rot: -6,  z: 7 },
+        { xPct: 0.42, yPct: 0.62, rot:  11, z: 3 },
+    ];
+
+    fotos.forEach((bestand, i) => {
+        if (i >= plaatsingData.length) return;
+
+        const data = plaatsingData[i];
+
+        // Bereken positie zodat foto binnen container blijft
+        const maxX = W - fotoW - 20;
+        const maxY = H - fotoH - 20;
+        const x = Math.min(Math.round(data.xPct * W), maxX);
+        const y = Math.min(Math.round(data.yPct * H), maxY);
+
+        const photo = document.createElement('div');
+        photo.className = 'photo';
+        photo.style.width    = fotoW + 'px';
+        photo.style.height   = fotoH + 'px';
+        photo.style.left     = x + 'px';
+        photo.style.top      = y + 'px';
+        photo.style.transform = `rotate(${data.rot}deg)`;
+        photo.style.zIndex   = data.z;
+
+        const img = document.createElement('img');
+        img.src = `images/pics/${bestand}`;
+        img.alt = `Foto ${i + 1}`;
+        photo.appendChild(img);
+
+        // Tik op foto brengt hem naar voren
+        photo.addEventListener('click', function() {
+            document.querySelectorAll('.photo').forEach(p => {
+                p.style.zIndex = p.dataset.originalZ;
+            });
+            this.style.zIndex = 99;
+        });
+
+        photo.dataset.originalZ = data.z;
+        container.appendChild(photo);
+    });
+}
+
+// Wacht tot layout klaar is
+window.addEventListener('load', buildCollage);
+
+// COUNTDOWN
+let incentiveEnd = new Date("2026-06-01T23:59:59");
+function updateCountdown() {
+    let diff = incentiveEnd - new Date();
+    let el   = document.getElementById("countdown");
+    if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
+    let days = Math.floor(diff / 86400000);
+    if (days > 1) { el.innerHTML = `Nog<br>${days}<br>dagen`; return; }
+    let hours = Math.floor(diff / 3600000);
+    if (hours >= 1) { el.innerHTML = `Nog<br>${hours}<br>uur`; return; }
+    el.innerHTML = `Nog<br>${Math.floor(diff / 60000)}<br>min`;
+}
+setInterval(updateCountdown, 60000);
+updateCountdown();
+</script>
+
 </body>
 </html>
