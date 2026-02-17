@@ -81,21 +81,24 @@ header {
     flex: 1;
     min-height: 0;
     display: flex;
-    align-items: flex-start;
-    padding: 25px 20px 0 20px;
+    align-items: flex-end;
+    padding: 20px 0 0 20px;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    width: 100%;
+    gap: 12px;
+    align-self: flex-start;
+    flex: 1;
+    padding-right: 10px;
+    margin-top: 5px;
 }
 
 .card {
     background-color: #fff;
     border-radius: 16px;
-    height: 110px;
+    height: 135px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -110,8 +113,8 @@ header {
 .card:active { transform: scale(0.97); }
 
 .card-icon {
-    font-size: 2.2rem;
-    margin-bottom: 6px;
+    font-size: 2.6rem;
+    margin-bottom: 8px;
 }
 
 .card span {
@@ -121,11 +124,46 @@ header {
     line-height: 1.2;
 }
 
-.jasper-gif {
+/* Rechter kolom: quote bubble + jasper gif */
+.right-section {
     width: 52vw;
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-left: 8px;
+}
+
+.quote-bubble {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 11px 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    font-size: 0.82rem;
+    color: #333;
+    font-style: italic;
+    line-height: 1.45;
+    max-width: 145px;
+    position: relative;
+    margin-bottom: 10px;
+    margin-left: 6px;
+}
+
+.quote-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -13px;
+    left: 22px;
+    border: 8px solid transparent;
+    border-top-color: #fff;
+    border-bottom: 0;
+    filter: drop-shadow(0 3px 2px rgba(0,0,0,0.06));
+}
+
+.jasper-gif {
+    width: 100%;
     line-height: 0;
-    align-self: flex-end;
 }
 
 .jasper-gif img {
@@ -163,7 +201,7 @@ footer {
     <div class="grid">
         <div class="card" onclick="window.location.href='game-quiz.html'">
             <div class="card-icon">🧠</div>
-            <span>M4 Quiz</span>
+            <span>KPN Quiz</span>
         </div>
         <div class="card" onclick="window.location.href='game-memory.html'">
             <div class="card-icon">🃏</div>
@@ -171,16 +209,21 @@ footer {
         </div>
         <div class="card" onclick="window.location.href='game-tiktak.html'">
             <div class="card-icon">👊</div>
-            <span>Tik de Mechanic</span>
+            <span>Tik 'm aan</span>
         </div>
         <div class="card" onclick="window.location.href='game-woordraad.html'">
             <div class="card-icon">🔤</div>
-            <span>Woordraad</span>
+            <span>Raad het Woord</span>
         </div>
     </div>
 
-    <div class="jasper-gif">
-        <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
+    <div class="right-section">
+        <div class="quote-bubble">
+            <span id="quoteText"></span>
+        </div>
+        <div class="jasper-gif">
+            <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
+        </div>
     </div>
 </div>
 
@@ -190,6 +233,19 @@ footer {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
+
+const quote = "Heb je zin om een spelletje te doen doen doen? 🎮";
+const quoteEl = document.getElementById("quoteText");
+let i = 0;
+
+function typeWriter() {
+    if (i < quote.length) {
+        quoteEl.textContent += quote.charAt(i);
+        i++;
+        setTimeout(typeWriter, 45);
+    }
+}
+setTimeout(typeWriter, 600);
 
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
