@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Woordraad</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background-color: #fbfdfa;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #00c300;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
+}
+
+.back-button {
+    background-color: #fff;
+    color: #00c300;
+    border: none;
+    border-radius: 25px;
+    padding: 7px 12px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.header-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.hint {
+    text-align: center;
+    padding: 10px;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    flex-shrink: 0;
+}
+
+/* RASTER */
+.raster {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 20px;
+}
+
+.rij {
+    display: flex;
+    gap: 5px;
+}
+
+.cel {
+    width: 52px;
+    height: 52px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #222;
+    background-color: #fff;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.cel.goed    { background-color: #00c300; border-color: #00c300; color: #fff; }
+.cel.bijna   { background-color: #ffaa00; border-color: #ffaa00; color: #fff; }
+.cel.fout    { background-color: #888;    border-color: #888;    color: #fff; }
+.cel.actief  { border-color: #00c300; }
+
+/* TOETSENBORD */
+.keyboard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+}
+
+.toets-rij {
+    display: flex;
+    gap: 5px;
+}
+
+.toets {
+    min-width: 32px;
+    height: 42px;
+    padding: 0 6px;
+    border: none;
+    border-radius: 6px;
+    background-color: #ddd;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #222;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.toets:active { transform: scale(0.95); }
+.toets.breed  { min-width: 50px; font-size: 0.7rem; }
+.toets.goed   { background-color: #00c300; color: #fff; }
+.toets.bijna  { background-color: #ffaa00; color: #fff; }
+.toets.fout   { background-color: #888;    color: #fff; }
+
+.feedback {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    min-height: 22px;
+    color: #333;
+    flex-shrink: 0;
+    padding: 0 10px;
+}
+
+.win-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    color: #fff;
+}
+
+.win-overlay.show { display: flex; }
+.win-emoji  { font-size: 3.5rem; }
+.win-title  { font-size: 1.5rem; font-weight: bold; }
+.win-sub    { font-size: 1rem; opacity: 0.9; }
+.win-woord  { font-size: 1.8rem; font-weight: bold; background: #00c300; padding: 8px 20px; border-radius: 10px; }
+
+.win-btn {
+    padding: 14px 35px;
+    background-color: #00c300;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 4px;
+}
+
+footer {
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <button class="back-button" onclick="window.location.href='games.html'">&larr;</button>
+    <div class="header-title">🔤 Woordraad</div>
+</header>
+
+<div class="hint" id="hintTekst"></div>
+<div class="raster" id="raster"></div>
+<div class="feedback" id="feedback"></div>
+<div class="keyboard" id="keyboard"></div>
+
+<div class="win-overlay" id="winOverlay">
+    <div class="win-emoji" id="winEmoji">🏆</div>
+    <div class="win-title" id="winTitle">Geweldig!</div>
+    <div class="win-woord" id="winWoord"></div>
+    <div class="win-sub" id="winSub"></div>
+    <div>
+        <button class="win-btn" onclick="startGame()">Nieuw woord</button>
+        <button class="win-btn" style="background:#555" onclick="window.location.href='games.html'">Terug</button>
+    </div>
+</div>
+
+<footer>&copy; KPN 2026</footer>
+
+<script>
+const woordenlijst = [
+    { woord: 'MOBIEL', hint: '📱 Je draagt het altijd bij je' },
+    { woord: 'NETWERK', hint: '📡 Verbindt alles met alles' },
+    { woord: 'GLASVEZEL', hint: '🌐 Snel internet thuis' },
+    { woord: 'ROUTER', hint: '📶 Verdeelt je wifi signaal' },
+    { woord: 'SIMKAART', hint: '📲 Zit in je telefoon' },
+    { woord: 'ABONNEMENT', hint: '📋 Maandelijks betaal je dit' },
+    { woord: 'DATABUNDEL', hint: '📊 Hoeveel MB heb jij nog?' },
+    { woord: 'BEREIK', hint: '📡 Heb je dit in de kelder?' },
+    { woord: 'HOTSPOT', hint: '🔥 Deel je internet via je telefoon' },
+    { woord: 'BELMINUTEN', hint: '☎️ Hoe lang mag je bellen?' },
+];
+
+const MAX_POGINGEN = 6;
+let huidigWoord, hint, huidigPoging, huidigLetter, cellen, toetsenStatus;
+let bezig = false;
+
+function startGame() {
+    document.getElementById('winOverlay').classList.remove('show');
+    const keuze = woordenlijst[Math.floor(Math.random() * woordenlijst.length)];
+    huidigWoord = keuze.woord;
+    hint = keuze.hint;
+    huidigPoging = 0;
+    huidigLetter = 0;
+    bezig = true;
+    toetsenStatus = {};
+
+    document.getElementById('hintTekst').textContent = `💡 Hint: ${hint}`;
+    document.getElementById('feedback').textContent = '';
+
+    bouwRaster();
+    bouwToetsenbord();
+}
+
+function bouwRaster() {
+    const raster = document.getElementById('raster');
+    raster.innerHTML = '';
+    cellen = [];
+
+    for (let r = 0; r < MAX_POGINGEN; r++) {
+        const rij = document.createElement('div');
+        rij.className = 'rij';
+        const rijCellen = [];
+
+        for (let k = 0; k < huidigWoord.length; k++) {
+            const cel = document.createElement('div');
+            cel.className = 'cel';
+            if (r === 0) cel.classList.add('actief');
+            rij.appendChild(cel);
+            rijCellen.push(cel);
+        }
+
+        cellen.push(rijCellen);
+        raster.appendChild(rij);
+    }
+}
+
+function bouwToetsenbord() {
+    const kb = document.getElementById('keyboard');
+    kb.innerHTML = '';
+
+    const rijen = [
+        ['Q','W','E','R','T','Y','U','I','O','P'],
+        ['A','S','D','F','G','H','J','K','L'],
+        ['ENTER','Z','X','C','V','B','N','M','⌫']
+    ];
+
+    rijen.forEach(rij => {
+        const rijEl = document.createElement('div');
+        rijEl.className = 'toets-rij';
+
+        rij.forEach(letter => {
+            const btn = document.createElement('button');
+            btn.className = 'toets' + (letter.length > 1 ? ' breed' : '');
+            btn.textContent = letter;
+            btn.id = 'toets-' + letter;
+            btn.onclick = () => invoer(letter);
+            rijEl.appendChild(btn);
+        });
+
+        kb.appendChild(rijEl);
+    });
+}
+
+function invoer(letter) {
+    if (!bezig) return;
+
+    if (letter === '⌫') {
+        if (huidigLetter > 0) {
+            huidigLetter--;
+            cellen[huidigPoging][huidigLetter].textContent = '';
+        }
+        return;
+    }
+
+    if (letter === 'ENTER') {
+        controleer();
+        return;
+    }
+
+    if (huidigLetter < huidigWoord.length) {
+        cellen[huidigPoging][huidigLetter].textContent = letter;
+        huidigLetter++;
+    }
+}
+
+function controleer() {
+    if (huidigLetter < huidigWoord.length) {
+        document.getElementById('feedback').textContent = `Vul alle ${huidigWoord.length} letters in!`;
+        return;
+    }
+
+    document.getElementById('feedback').textContent = '';
+    const ingevoerd = cellen[huidigPoging].map(c => c.textContent).join('');
+    const woordArr = huidigWoord.split('');
+    const resultaat = Array(huidigWoord.length).fill('fout');
+    const woordRest = [...woordArr];
+
+    // Eerst groene (exacte) matches
+    for (let i = 0; i < huidigWoord.length; i++) {
+        if (ingevoerd[i] === woordArr[i]) {
+            resultaat[i] = 'goed';
+            woordRest[i] = null;
+        }
+    }
+
+    // Dan gele (aanwezige) matches
+    for (let i = 0; i < huidigWoord.length; i++) {
+        if (resultaat[i] === 'goed') continue;
+        const idx = woordRest.indexOf(ingevoerd[i]);
+        if (idx !== -1) {
+            resultaat[i] = 'bijna';
+            woordRest[idx] = null;
+        }
+    }
+
+    // Kleuren tonen
+    resultaat.forEach((res, i) => {
+        setTimeout(() => {
+            const cel = cellen[huidigPoging][i];
+            cel.classList.remove('actief');
+            cel.classList.add(res);
+
+            // Toets status updaten
+            const letter = ingevoerd[i];
+            const prioriteit = { 'goed': 3, 'bijna': 2, 'fout': 1 };
+            const huidig = toetsenStatus[letter] || 'geen';
+            if ((prioriteit[res] || 0) > (prioriteit[huidig] || 0)) {
+                toetsenStatus[letter] = res;
+                const toets = document.getElementById('toets-' + letter);
+                if (toets) {
+                    toets.classList.remove('goed','bijna','fout');
+                    toets.classList.add(res);
+                }
+            }
+        }, i * 150);
+    });
+
+    const gewonnen = ingevoerd === huidigWoord;
+
+    setTimeout(() => {
+        if (gewonnen) {
+            bezig = false;
+            const pogingen = huidigPoging + 1;
+            document.getElementById('winEmoji').textContent = pogingen <= 2 ? '🏆' : pogingen <= 4 ? '🎉' : '😅';
+            document.getElementById('winTitle').textContent = pogingen <= 2 ? 'Ongelooflijk!' : pogingen <= 4 ? 'Goed gedaan!' : 'Net op tijd!';
+            document.getElementById('winWoord').textContent = huidigWoord;
+            document.getElementById('winSub').textContent = `Geraden in ${pogingen} ${pogingen === 1 ? 'poging' : 'pogingen'}`;
+            setTimeout(() => document.getElementById('winOverlay').classList.add('show'), 300);
+            return;
+        }
+
+        huidigPoging++;
+
+        if (huidigPoging >= MAX_POGINGEN) {
+            bezig = false;
+            document.getElementById('winEmoji').textContent = '😢';
+            document.getElementById('winTitle').textContent = 'Helaas!';
+            document.getElementById('winWoord').textContent = huidigWoord;
+            document.getElementById('winSub').textContent = 'Het woord was:';
+            setTimeout(() => document.getElementById('winOverlay').classList.add('show'), 300);
+            return;
+        }
+
+        huidigLetter = 0;
+        cellen[huidigPoging].forEach(c => c.classList.add('actief'));
+    }, huidigWoord.length * 150 + 200);
+}
+
+// Fysiek toetsenbord
+document.addEventListener('keydown', (e) => {
+    if (!bezig) return;
+    if (e.key === 'Backspace') invoer('⌫');
+    else if (e.key === 'Enter') invoer('ENTER');
+    else if (/^[A-Za-z]$/.test(e.key)) invoer(e.key.toUpperCase());
+});
+
+startGame();
+</script>
+</body>
+</html>
