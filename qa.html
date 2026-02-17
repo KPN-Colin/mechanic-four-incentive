@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Q&A</title>
-<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
-<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
-<link rel="manifest" href="manifest.json">
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,6 +17,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
 html, body { height: 100%; overflow: hidden; }
+
+html { background-color: #00c300; }
 
 body {
     background-color: #fbfdfa;
@@ -75,7 +78,6 @@ header {
     font-weight: bold;
 }
 
-/* VRAGEN SECTIE */
 .questions-section {
     flex: 1;
     min-height: 0;
@@ -124,7 +126,6 @@ header {
     font-size: 0.85rem;
 }
 
-/* BEVESTIGING POPUP */
 .confirmation-banner {
     display: none;
     position: fixed;
@@ -149,7 +150,6 @@ header {
     to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* BOTTOM SECTIE — input gecentreerd t.o.v. gif hoogte */
 .bottom-section {
     flex-shrink: 0;
     display: flex;
@@ -157,7 +157,6 @@ header {
     padding: 0 0 0 15px;
 }
 
-/* Input area gecentreerd in de beschikbare hoogte naast de gif */
 .input-area {
     flex: 1;
     padding-right: 12px;
@@ -200,19 +199,13 @@ header {
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 3px 10px rgba(0, 195, 0, 0.25);
+    box-shadow: 0 3px 10px rgba(0,195,0,0.25);
     animation: softPulse 3s ease-in-out infinite;
 }
 
 @keyframes softPulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 3px 10px rgba(0, 195, 0, 0.25);
-    }
-    50% {
-        transform: scale(1.03);
-        box-shadow: 0 5px 15px rgba(0, 195, 0, 0.38);
-    }
+    0%, 100% { transform: scale(1); box-shadow: 0 3px 10px rgba(0,195,0,0.25); }
+    50%       { transform: scale(1.03); box-shadow: 0 5px 15px rgba(0,195,0,0.38); }
 }
 
 .send-button:active {
@@ -226,7 +219,6 @@ header {
     opacity: 0.7;
 }
 
-/* ARIE GIF — tegen footer */
 .arie-section {
     width: 40vw;
     flex-shrink: 0;
@@ -243,12 +235,13 @@ footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
     flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
@@ -274,15 +267,9 @@ footer {
 
 <div class="bottom-section">
     <div class="input-area">
-        <textarea
-            class="question-input"
-            id="questionInput"
-            placeholder=""
-            maxlength="300"
-        ></textarea>
+        <textarea class="question-input" id="questionInput" placeholder="" maxlength="300"></textarea>
         <button class="send-button" id="sendButton" onclick="submitQuestion()">Verstuur</button>
     </div>
-
     <div class="arie-section">
         <img src="images/mechanics/m4-arie.gif" alt="Arie">
     </div>
@@ -292,16 +279,12 @@ footer {
 
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-        console.log('SW fout:', err);
-    });
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-// ── AIRTABLE CONFIGURATIE ──────────────────────────────────
 const AIRTABLE_API_KEY = 'JOUW_AIRTABLE_API_KEY';
 const AIRTABLE_BASE_ID = 'JOUW_BASE_ID';
 const AIRTABLE_TABLE   = 'Vragen';
-// ──────────────────────────────────────────────────────────
 
 const AIRTABLE_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE}`;
 const HEADERS = {
@@ -309,7 +292,6 @@ const HEADERS = {
     'Content-Type': 'application/json'
 };
 
-// ── EMAIL OPHALEN UIT MSAL CACHE ───────────────────────────
 function getUserEmail() {
     try {
         for (let i = 0; i < localStorage.length; i++) {
@@ -324,9 +306,7 @@ function getUserEmail() {
             if (key && key.startsWith('msal.')) {
                 try {
                     const value = JSON.parse(localStorage.getItem(key));
-                    if (value && value.username && value.username.includes('@')) {
-                        return value.username;
-                    }
+                    if (value && value.username && value.username.includes('@')) return value.username;
                 } catch(e) {}
             }
         }
@@ -336,7 +316,6 @@ function getUserEmail() {
 
 const userEmail = getUserEmail();
 
-// ── TYPEWRITER PLACEHOLDER ─────────────────────────────────
 const placeholderText = "Vul hier je vraag voor de Mechanic 4 in.";
 const inputEl = document.getElementById("questionInput");
 let placeholderIndex = 0;
@@ -350,7 +329,6 @@ function typePlaceholder() {
 }
 setTimeout(typePlaceholder, 600);
 
-// ── VRAGEN LADEN ───────────────────────────────────────────
 async function loadQuestions() {
     const section = document.getElementById('questionsSection');
     try {
@@ -359,7 +337,6 @@ async function loadQuestions() {
             'sort[0][field]': 'datum',
             'sort[0][direction]': 'desc'
         });
-
         const response = await fetch(`${AIRTABLE_URL}?${params}`, { headers: HEADERS });
         const data = await response.json();
 
@@ -385,21 +362,17 @@ async function loadQuestions() {
                 aDiv.textContent = fields.antwoord;
                 item.appendChild(aDiv);
             }
-
             section.appendChild(item);
         });
-
     } catch (err) {
         section.innerHTML = '<div class="no-questions">Kon vragen niet laden. Probeer later opnieuw.</div>';
     }
 }
 
-// ── VRAAG VERSTUREN ────────────────────────────────────────
 async function submitQuestion() {
     const questionInput = document.getElementById('questionInput');
     const btn           = document.getElementById('sendButton');
     const question      = questionInput.value.trim();
-
     if (!question) return;
 
     btn.disabled    = true;
@@ -424,17 +397,12 @@ async function submitQuestion() {
         });
 
         questionInput.value = '';
-
         const banner = document.getElementById('confirmationBanner');
         banner.style.display = 'block';
         setTimeout(() => { banner.style.display = 'none'; }, 5000);
 
         btn.textContent = 'Verstuurd ✓';
-        setTimeout(() => {
-            btn.textContent = 'Verstuur';
-            btn.disabled    = false;
-        }, 2500);
-
+        setTimeout(() => { btn.textContent = 'Verstuur'; btn.disabled = false; }, 2500);
     } catch (err) {
         btn.textContent = 'Fout, probeer opnieuw';
         btn.disabled    = false;
@@ -442,13 +410,9 @@ async function submitQuestion() {
 }
 
 document.getElementById('questionInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        submitQuestion();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitQuestion(); }
 });
 
-// COUNTDOWN
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
@@ -462,9 +426,7 @@ function updateCountdown() {
 }
 setInterval(updateCountdown, 60000);
 updateCountdown();
-
 loadQuestions();
 </script>
-
 </body>
 </html>
