@@ -4,9 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>M4 Quiz</title>
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00c300">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
+html { background-color: #00c300; }
 body { background-color: #fbfdfa; display: flex; flex-direction: column; }
 
 header {
@@ -65,7 +74,6 @@ header {
     box-shadow: 0 4px 12px rgba(0,195,0,0.3); margin: 4px;
 }
 
-/* LEADERBOARD OVERLAY */
 .lb-overlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
     z-index: 100; align-items: center; justify-content: center;
@@ -93,8 +101,10 @@ header {
 
 footer {
     background-color: #00c300; color: #fff; text-align: center;
-    height: 55px; display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 1rem; flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
@@ -126,7 +136,6 @@ footer {
     <button class="play-again-btn" style="background:#555" onclick="window.location.href='games.html'">Terug naar Games</button>
 </div>
 
-<!-- Leaderboard overlay -->
 <div class="lb-overlay" id="lbOverlay">
     <div class="lb-box">
         <div class="lb-title">🏆 Top 5 — M4 Quiz</div>
@@ -138,17 +147,17 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// ── AIRTABLE CONFIG ────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
+}
+
 const AT_KEY   = 'JOUW_AIRTABLE_API_KEY';
 const AT_BASE  = 'JOUW_BASE_ID';
 const AT_LB    = 'Leaderboard';
 const SPEL     = 'quiz';
-// ──────────────────────────────────────────────────────────
+const LB_URL   = `https://api.airtable.com/v0/${AT_BASE}/${AT_LB}`;
+const AT_HDR   = { 'Authorization': `Bearer ${AT_KEY}`, 'Content-Type': 'application/json' };
 
-const LB_URL = `https://api.airtable.com/v0/${AT_BASE}/${AT_LB}`;
-const AT_HDR = { 'Authorization': `Bearer ${AT_KEY}`, 'Content-Type': 'application/json' };
-
-// Haal gebruikersinfo op uit MSAL
 function getMSALUser() {
     try {
         for (let i = 0; i < localStorage.length; i++) {
@@ -157,8 +166,7 @@ function getMSALUser() {
             try {
                 const val = JSON.parse(localStorage.getItem(key));
                 if (val && val.username && val.username.includes('@kpn.com')) {
-                    const naam = val.name || val.username.split('@')[0];
-                    return { email: val.username, naam };
+                    return { email: val.username, naam: val.name || val.username.split('@')[0] };
                 }
             } catch(e) {}
         }
@@ -169,13 +177,9 @@ function getMSALUser() {
 async function slaScoreOp(score) {
     const user = getMSALUser();
     try {
-        // Check of record al bestaat
-        const params = new URLSearchParams({
-            filterByFormula: `AND({email}="${user.email}", {spel}="${SPEL}")`
-        });
+        const params = new URLSearchParams({ filterByFormula: `AND({email}="${user.email}", {spel}="${SPEL}")` });
         const res  = await fetch(`${LB_URL}?${params}`, { headers: AT_HDR });
         const data = await res.json();
-
         if (data.records && data.records.length > 0) {
             const record = data.records[0];
             if (score > (record.fields.score || 0)) {
@@ -199,36 +203,28 @@ async function toonLeaderboard() {
     try {
         const params = new URLSearchParams({
             filterByFormula: `{spel}="${SPEL}"`,
-            'sort[0][field]': 'score',
-            'sort[0][direction]': 'desc',
-            maxRecords: 5
+            'sort[0][field]': 'score', 'sort[0][direction]': 'desc', maxRecords: 5
         });
         const res  = await fetch(`${LB_URL}?${params}`, { headers: AT_HDR });
         const data = await res.json();
         const medailles = ['🥇','🥈','🥉','4️⃣','5️⃣'];
-
         if (!data.records || data.records.length === 0) {
             document.getElementById('lbContent').innerHTML = '<div class="lb-loading">Nog geen scores!</div>';
             return;
         }
-
         document.getElementById('lbContent').innerHTML = data.records.map((r, i) => `
             <div class="lb-item">
                 <div class="lb-rank">${medailles[i]}</div>
                 <div class="lb-name">${r.fields.naam || 'Onbekend'}</div>
                 <div class="lb-score">${r.fields.score} pts</div>
-            </div>
-        `).join('');
+            </div>`).join('');
     } catch(e) {
         document.getElementById('lbContent').innerHTML = '<div class="lb-loading">Fout bij laden.</div>';
     }
 }
 
-function sluitLeaderboard() {
-    document.getElementById('lbOverlay').classList.remove('show');
-}
+function sluitLeaderboard() { document.getElementById('lbOverlay').classList.remove('show'); }
 
-// ── QUIZ LOGICA ────────────────────────────────────────────
 const vragen = [
     { vraag: "Wat staat KPN voor?", antwoorden: ["Koninklijke PTT Nederland","Klanten Primair Netwerk","KPN Persoonlijk Netwerk","Koninklijk Post Netwerk"], goed: 0 },
     { vraag: "Welk product biedt KPN aan voor thuis internet?", antwoorden: ["4G Router","Glasvezel","Satelliet","Kabel"], goed: 1 },
@@ -240,7 +236,7 @@ const vragen = [
     { vraag: "Welke generatie netwerk gebruiken de meeste smartphones nu?", antwoorden: ["3G","4G","5G","2G"], goed: 2 }
 ];
 
-const VRAAG_TIJD = 12; // seconden per vraag
+const VRAAG_TIJD = 12;
 let huidigIndex = 0, score = 0, beantwoord = false;
 let snelheidInterval, snelheidStart;
 
@@ -265,17 +261,13 @@ function laadVraag() {
     document.getElementById('speedFill').style.width    = '100%';
     document.getElementById('speedFill').style.backgroundColor = '#00c300';
 
-    // Snelheidsbar aftellen
     snelheidInterval = setInterval(() => {
         const verstreken = (Date.now() - snelheidStart) / 1000;
         const pct = Math.max(0, 100 - (verstreken / VRAAG_TIJD) * 100);
         document.getElementById('speedFill').style.width = pct + '%';
         if (pct < 30) document.getElementById('speedFill').style.backgroundColor = '#ff4444';
         else if (pct < 60) document.getElementById('speedFill').style.backgroundColor = '#ffaa00';
-        if (pct <= 0) {
-            clearInterval(snelheidInterval);
-            if (!beantwoord) tijdOp();
-        }
+        if (pct <= 0) { clearInterval(snelheidInterval); if (!beantwoord) tijdOp(); }
     }, 100);
 
     const grid = document.getElementById('answersGrid');
@@ -312,7 +304,6 @@ function checkAntwoord(index, btn) {
 
     if (index === v.goed) {
         btn.classList.add('correct');
-        // Basispunten + snelheidsbonus
         let punten = 10;
         let bonusTekst = '';
         if (verstreken < 3)       { punten += 5; bonusTekst = ' +5 snel!'; }
@@ -348,7 +339,6 @@ function toonResultaat() {
     document.getElementById('resultEmoji').textContent = emoji;
     document.getElementById('resultTitle').textContent = titel;
     document.getElementById('resultScore').textContent = `Jouw score: ${score} punten (max ${max})`;
-
     slaScoreOp(score);
 }
 
