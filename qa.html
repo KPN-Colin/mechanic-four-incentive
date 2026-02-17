@@ -75,7 +75,7 @@ header {
     font-weight: bold;
 }
 
-/* VRAGEN SECTIE - scrollbaar */
+/* VRAGEN SECTIE */
 .questions-section {
     flex: 1;
     min-height: 0;
@@ -137,7 +137,7 @@ header {
     border-radius: 12px;
     font-size: 0.85rem;
     text-align: center;
-    line-height: 1.4;
+    line-height: 1.5;
     z-index: 100;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     max-width: 80vw;
@@ -149,7 +149,7 @@ header {
     to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* INPUT + GIF SECTIE */
+/* BOTTOM SECTIE */
 .bottom-section {
     flex-shrink: 0;
     display: flex;
@@ -157,7 +157,6 @@ header {
     padding: 0 0 0 15px;
 }
 
-/* INPUT GEBIED LINKS */
 .input-area {
     flex: 1;
     padding-right: 12px;
@@ -165,29 +164,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.email-input {
-    width: 100%;
-    padding: 9px 15px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    font-family: Arial, sans-serif;
-    margin-bottom: 8px;
-    transition: border-color 0.2s;
-    background-color: #fff;
-}
-
-.email-input:focus {
-    outline: none;
-    border-color: #00c300;
-}
-
-.email-input::placeholder {
-    color: #aaa;
-    font-style: italic;
-    font-size: 0.8rem;
+    gap: 8px;
 }
 
 .question-input {
@@ -213,9 +190,7 @@ header {
     font-style: italic;
 }
 
-/* Verstuur knop gecentreerd */
 .send-button {
-    margin-top: 8px;
     padding: 9px 28px;
     font-size: 0.9rem;
     background-color: #00c300;
@@ -225,7 +200,6 @@ header {
     cursor: pointer;
     font-weight: bold;
     box-shadow: 0 3px 10px rgba(0, 195, 0, 0.25);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
     animation: softPulse 3s ease-in-out infinite;
 }
 
@@ -293,19 +267,12 @@ footer {
     <div class="loading-text">Vragen laden...</div>
 </div>
 
-<!-- Bevestiging popup -->
 <div class="confirmation-banner" id="confirmationBanner">
-    ✅ Je vraag is verstuurd.<br>Je krijgt bericht zodra deze is beantwoord.
+    ✅ Je vraag is verstuurd!<br>Je krijgt bericht zodra deze is beantwoord.
 </div>
 
 <div class="bottom-section">
     <div class="input-area">
-        <input
-            type="email"
-            class="email-input"
-            id="emailInput"
-            placeholder="Jouw e-mailadres (voor berichtgeving)"
-        >
         <textarea
             class="question-input"
             id="questionInput"
@@ -330,9 +297,9 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── AIRTABLE CONFIGURATIE ──────────────────────────────────
-const AIRTABLE_API_KEY  = 'JOUW_AIRTABLE_API_KEY';
-const AIRTABLE_BASE_ID  = 'JOUW_BASE_ID';
-const AIRTABLE_TABLE    = 'Vragen';
+const AIRTABLE_API_KEY = 'JOUW_AIRTABLE_API_KEY';
+const AIRTABLE_BASE_ID = 'JOUW_BASE_ID';
+const AIRTABLE_TABLE   = 'Vragen';
 // ──────────────────────────────────────────────────────────
 
 const AIRTABLE_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE}`;
@@ -341,7 +308,41 @@ const HEADERS = {
     'Content-Type': 'application/json'
 };
 
-// TYPEWRITER PLACEHOLDER
+// ── EMAIL OPHALEN UIT MSAL CACHE ───────────────────────────
+function getUserEmail() {
+    try {
+        // MSAL slaat accounts op in localStorage
+        // Loop door alle localStorage keys om het account te vinden
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.includes('login.windows.net') && key.includes('account')) {
+                const value = JSON.parse(localStorage.getItem(key));
+                if (value && value.username) {
+                    return value.username;
+                }
+            }
+        }
+
+        // Fallback: zoek op 'msal' keys
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('msal.')) {
+                try {
+                    const value = JSON.parse(localStorage.getItem(key));
+                    if (value && value.username && value.username.includes('@')) {
+                        return value.username;
+                    }
+                } catch(e) {}
+            }
+        }
+    } catch(e) {}
+
+    return '';
+}
+
+const userEmail = getUserEmail();
+
+// ── TYPEWRITER PLACEHOLDER ─────────────────────────────────
 const placeholderText = "Vul hier je vraag voor de Mechanic 4 in.";
 const inputEl = document.getElementById("questionInput");
 let placeholderIndex = 0;
@@ -355,12 +356,12 @@ function typePlaceholder() {
 }
 setTimeout(typePlaceholder, 600);
 
-// VRAGEN LADEN — alleen goedgekeurde vragen
+// ── VRAGEN LADEN — alleen gepubliceerde vragen ─────────────
 async function loadQuestions() {
     const section = document.getElementById('questionsSection');
     try {
         const params = new URLSearchParams({
-            filterByFormula: '{goedgekeurd} = TRUE()',
+            filterByFormula: '{gepubliceerd} = TRUE()',
             'sort[0][field]': 'datum',
             'sort[0][direction]': 'desc'
         });
@@ -399,17 +400,15 @@ async function loadQuestions() {
     }
 }
 
-// VRAAG VERSTUREN
+// ── VRAAG VERSTUREN ────────────────────────────────────────
 async function submitQuestion() {
     const questionInput = document.getElementById('questionInput');
-    const emailInput    = document.getElementById('emailInput');
     const btn           = document.getElementById('sendButton');
     const question      = questionInput.value.trim();
-    const email         = emailInput.value.trim();
 
     if (!question) return;
 
-    btn.disabled = true;
+    btn.disabled    = true;
     btn.textContent = 'Versturen...';
 
     try {
@@ -419,22 +418,20 @@ async function submitQuestion() {
             body: JSON.stringify({
                 records: [{
                     fields: {
-                        vraag:         question,
-                        email:         email || '',
-                        antwoord:      '',
-                        goedgekeurd:   false,
-                        afgekeurd:     false,
-                        prive_antwoord:'',
-                        datum:         new Date().toISOString()
+                        vraag:        question,
+                        email:        userEmail,
+                        antwoord:     '',
+                        status:       'in behandeling',
+                        gepubliceerd: false,
+                        datum:        new Date().toISOString()
                     }
                 }]
             })
         });
 
         questionInput.value = '';
-        emailInput.value    = '';
 
-        // Toon bevestigingsbanner
+        // Bevestigingsbanner tonen
         const banner = document.getElementById('confirmationBanner');
         banner.style.display = 'block';
         setTimeout(() => { banner.style.display = 'none'; }, 5000);
