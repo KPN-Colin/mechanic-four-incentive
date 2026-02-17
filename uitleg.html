@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4 - Uitleg</title>
-<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
-<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
-<link rel="manifest" href="manifest.json">
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -16,6 +17,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
 html, body { height: 100%; overflow: hidden; }
+
+html { background-color: #00c300; }
 
 body {
     background-color: #fbfdfa;
@@ -75,7 +78,6 @@ header {
     font-weight: bold;
 }
 
-/* CONTENT + GIF SECTIE - geen padding rechts */
 .main-section {
     flex: 1;
     min-height: 0;
@@ -84,7 +86,6 @@ header {
     padding: 30px 0 0 20px;
 }
 
-/* TEKST LINKS */
 .content {
     flex: 1;
     padding-right: 15px;
@@ -104,7 +105,6 @@ header {
     color: #333;
 }
 
-/* ALBERTO RECHTS ONDERAAN - tegen rechterkant scherm */
 .alberto-section {
     width: 52vw;
     flex-shrink: 0;
@@ -121,12 +121,13 @@ footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
     flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
@@ -149,7 +150,7 @@ footer {
         <p id="text2"></p>
         <p id="text3"></p>
     </div>
-    
+
     <div class="alberto-section">
         <img src="images/mechanics/m4-alberto.gif" alt="Alberto">
     </div>
@@ -159,12 +160,9 @@ footer {
 
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(err) {
-        console.log('Service Worker registratie mislukt:', err);
-    });
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-// TYPEWRITER EFFECT VOOR TEKST
 const texts = [
     "Hier staat de uitleg over de incentive en hoe je punten kan verdienen.",
     "Bekijk de video's en lees de instructies zorgvuldig.",
@@ -178,7 +176,6 @@ function typeWriter() {
     if (currentTextIndex < texts.length) {
         const currentText = texts[currentTextIndex];
         const targetElement = document.getElementById(`text${currentTextIndex + 1}`);
-        
         if (currentCharIndex < currentText.length) {
             targetElement.textContent += currentText.charAt(currentCharIndex);
             currentCharIndex++;
@@ -190,10 +187,8 @@ function typeWriter() {
         }
     }
 }
-
 setTimeout(typeWriter, 600);
 
-// COUNTDOWN
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
@@ -208,6 +203,5 @@ function updateCountdown() {
 setInterval(updateCountdown, 60000);
 updateCountdown();
 </script>
-
 </body>
 </html>
