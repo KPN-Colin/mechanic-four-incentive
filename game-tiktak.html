@@ -4,9 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tik de Mechanic</title>
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00c300">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
+html { background-color: #00c300; }
 body { background-color: #fbfdfa; display: flex; flex-direction: column; }
 
 header {
@@ -74,7 +83,6 @@ header {
     box-shadow: 0 4px 12px rgba(0,195,0,0.3); margin: 4px;
 }
 
-/* LEADERBOARD */
 .lb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; align-items: center; justify-content: center; }
 .lb-overlay.show { display: flex; }
 .lb-box { background: #fff; border-radius: 20px; padding: 25px 20px; width: 85vw; max-width: 340px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
@@ -87,7 +95,13 @@ header {
 .lb-close { margin-top: 15px; padding: 10px 30px; background-color: #00c300; color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
 .lb-loading { color: #aaa; font-style: italic; padding: 20px; }
 
-footer { background-color: #00c300; color: #fff; text-align: center; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+footer {
+    background-color: #00c300; color: #fff; text-align: center;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
+}
 </style>
 </head>
 <body>
@@ -131,6 +145,10 @@ footer { background-color: #00c300; color: #fff; text-align: center; height: 55p
 <footer>&copy; KPN 2026</footer>
 
 <script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
+}
+
 const AT_KEY  = 'JOUW_AIRTABLE_API_KEY';
 const AT_BASE = 'JOUW_BASE_ID';
 const AT_LB   = 'Leaderboard';
@@ -186,7 +204,6 @@ async function toonLeaderboard() {
 
 function sluitLeaderboard() { document.getElementById('lbOverlay').classList.remove('show'); }
 
-// ── TIKTAK LOGICA ──────────────────────────────────────────
 const emojis = ['🔧','📱','📡','💻','☎️','🌐'];
 let score = 0, gemist = 0, actieveMechanics = 0, timerInterval, spawnTimeout;
 let spelBezig = false;
@@ -221,40 +238,27 @@ function startGame() {
 
 function planSpawn() {
     if (!spelBezig) return;
-
-    // Spawn 1 tot 3 mechanics tegelijk, random
-    const aantalTeSpawnen = Math.floor(Math.random() * 3) + 1; // 1, 2 of 3
+    const aantalTeSpawnen = Math.floor(Math.random() * 3) + 1;
     const beschikbaar = MAX_TEGELIJK - actieveMechanics;
     const spawn = Math.min(aantalTeSpawnen, beschikbaar);
-
-    for (let i = 0; i < spawn; i++) {
-        setTimeout(() => spawnMechanic(), i * 150);
-    }
-
-    // Volgende spawn over 400-800ms (sneller dan voorheen)
+    for (let i = 0; i < spawn; i++) { setTimeout(() => spawnMechanic(), i * 150); }
     const wachttijd = 400 + Math.random() * 400;
     spawnTimeout = setTimeout(planSpawn, wachttijd);
 }
 
 function spawnMechanic() {
     if (!spelBezig || actieveMechanics >= MAX_TEGELIJK) return;
-
     const veld = document.getElementById('speelveld');
     const W = veld.offsetWidth, H = veld.offsetHeight;
-
     const mech = document.createElement('div');
     mech.className = 'mechanic';
     mech.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-
     const x = 15 + Math.random() * (W - 85);
     const y = 15 + Math.random() * (H - 85);
     mech.style.left = x + 'px';
     mech.style.top  = y + 'px';
-
-    // Leefijd: 900-1400ms (korter = moeilijker)
     const leefTijd = 900 + Math.random() * 500;
     actieveMechanics++;
-
     mech.onclick = (e) => {
         e.stopPropagation();
         if (!spelBezig || mech.classList.contains('verdwijn')) return;
@@ -263,9 +267,7 @@ function spawnMechanic() {
         showHit(x + 30, y, '+1');
         verwijderMechanic(mech);
     };
-
     veld.appendChild(mech);
-
     setTimeout(() => {
         if (mech.parentElement && !mech.classList.contains('verdwijn')) {
             gemist++;
@@ -315,7 +317,6 @@ function eindSpel(reden) {
     document.getElementById('endTitle').textContent = titel;
     document.getElementById('endSub').textContent   = sub;
     document.getElementById('endOverlay').style.display = 'flex';
-
     slaScoreOp(score);
 }
 </script>
