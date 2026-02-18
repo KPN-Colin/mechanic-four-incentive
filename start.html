@@ -152,12 +152,11 @@ header {
     white-space: nowrap;
     display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
+    font-size: 48px;
 }
 
 .graffiti-letter {
     display: inline-block;
-    opacity: 0;
-    position: relative;
 }
 
 .spons {
@@ -205,10 +204,26 @@ footer {
     padding-bottom: env(safe-area-inset-bottom, 0px);
     min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
+
+.debug-box {
+    position: fixed;
+    top: 80px;
+    left: 10px;
+    background: yellow;
+    color: black;
+    padding: 10px;
+    z-index: 999;
+    font-size: 12px;
+    max-width: 300px;
+}
 </style>
 </head>
 
 <body>
+
+<div class="debug-box" id="debugBox">
+DEBUG: Laden...
+</div>
 
 <header>
     <div class="header-center">
@@ -226,7 +241,7 @@ footer {
     </div>
 
     <div class="graffiti-container" id="graffitiContainer">
-        <div class="graffiti-text" id="graffitiText"></div>
+        <div class="graffiti-text" id="graffitiText">TEST GRAFFITI</div>
     </div>
     <div class="wipe-overlay" id="wipeOverlay"></div>
     <div class="spons" id="spons">🧽</div>
@@ -241,15 +256,21 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// Service Worker UITSCHAKELEN voor test
+const debugBox = document.getElementById('debugBox');
+function log(msg) {
+    console.log(msg);
+    debugBox.innerHTML += '<br>' + msg;
+}
+
+log('✅ JavaScript draait!');
+
+// Service Worker uitschakelen
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
         regs.forEach(reg => reg.unregister());
-        console.log('🔄 Service Worker uitgeschakeld');
+        log('🔄 SW uitgeschakeld');
     });
 }
-
-console.log('✅ Script gestart');
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -272,6 +293,7 @@ function startKatAnimatie() {
     if (katBezig) return;
     katBezig = true;
     startBtn.classList.add('geen-pulse');
+    log('🐈 Kat animatie start');
 
     setTimeout(() => {
         const knopRect = startBtn.getBoundingClientRect();
@@ -368,173 +390,74 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI ANIMATIE ==========
-const GRAFFITI_ZINNEN = [
-    'WINNEN WINNEN WINNEN!',
-    'TB is het beste',
-    'DOEN DOEN DOEN!',
-    'TB #1',
-    'Mechanic 4'
-];
-
-const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
-
+// ========== GRAFFITI TEST - DIRECT ZICHTBAAR ==========
 const graffitiContainer = document.getElementById('graffitiContainer');
 const graffitiText = document.getElementById('graffitiText');
 const spons = document.getElementById('spons');
 const wipeOverlay = document.getElementById('wipeOverlay');
 
-let graffitiBezig = false;
-let vorigeZin = null;
-let graffitiY = 0;
-let graffitiHoogte = 0;
+log('🎨 Graffiti elementen gevonden');
 
-function wachtEnSprayGraffiti() {
-    const wachttijd = 2000 + Math.random() * 3000;
-    setTimeout(startGraffitiAnimatie, wachttijd);
-}
-
-function startGraffitiAnimatie() {
-    if (graffitiBezig) return;
-    graffitiBezig = true;
-    console.log('🎨 Graffiti start');
-
-    let zin;
-    do {
-        zin = GRAFFITI_ZINNEN[Math.floor(Math.random() * GRAFFITI_ZINNEN.length)];
-    } while (zin === vorigeZin && GRAFFITI_ZINNEN.length > 1);
-    vorigeZin = zin;
-
-    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
-    console.log('📝 Zin:', zin, 'Kleur:', kleur);
-
+// TEST: Toon graffiti METEEN
+function testGraffiti() {
+    log('📝 Test graffiti...');
+    
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
-    const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    const centerY = knopRect.bottom + (beschikbareRuimte / 2);
-
-    graffitiY = centerY;
-    graffitiText.style.color = kleur;
-    graffitiText.innerHTML = '';
-
-    const maxWidth = window.innerWidth - 60;
-    let fontSize = 48;
+    const centerY = knopRect.bottom + ((gifRect.top - knopRect.bottom) / 2);
     
-    const tempText = document.createElement('span');
-    tempText.style.fontFamily = "'Brush Script MT', cursive";
-    tempText.style.fontSize = fontSize + 'px';
-    tempText.style.visibility = 'hidden';
-    tempText.style.position = 'absolute';
-    tempText.textContent = zin;
-    document.body.appendChild(tempText);
-    
-    while (tempText.offsetWidth > maxWidth && fontSize > 24) {
-        fontSize -= 2;
-        tempText.style.fontSize = fontSize + 'px';
-    }
-    
-    const computedFont = window.getComputedStyle(tempText).fontFamily;
-    console.log('🔤 Font gebruikt:', computedFont);
-    
-    document.body.removeChild(tempText);
-
-    graffitiText.style.fontSize = fontSize + 'px';
-    graffitiHoogte = fontSize * 2;
-    graffitiContainer.style.top = (centerY - fontSize / 2) + 'px';
+    graffitiText.style.color = '#FF6B35';
+    graffitiText.textContent = 'WINNEN!';
+    graffitiContainer.style.top = (centerY - 24) + 'px';
     graffitiContainer.style.display = 'block';
-
-    const letters = zin.split('');
-    letters.forEach(letter => {
-        const span = document.createElement('span');
-        span.className = 'graffiti-letter';
-        span.textContent = letter === ' ' ? '\u00A0' : letter;
-        graffitiText.appendChild(span);
-    });
-
-    const spans = graffitiText.querySelectorAll('.graffiti-letter');
-    console.log('📊 Aantal letters:', spans.length);
     
-    spans.forEach((span, index) => {
-        setTimeout(() => {
-            animeerSchrijfLetter(span);
-        }, index * 60);
-    });
-
-    const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
+    log('✅ Graffiti zichtbaar op Y=' + centerY);
+    
+    setTimeout(() => {
+        log('🧽 Spons start (snelheid 7)');
+        testSpons(centerY);
+    }, 2000);
 }
 
-function animeerSchrijfLetter(span) {
-    const duur = 200;
-    const start = performance.now();
-    
-    function frame(nu) {
-        const t = Math.min((nu - start) / duur, 1);
-        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        
-        const x = -30 * (1 - ease);
-        const y = -10 * (1 - ease) + Math.sin(ease * Math.PI) * 5;
-        const rot = -12 * (1 - ease);
-        const scale = 0.6 + 0.4 * ease;
-        const blur = 5 * (1 - ease);
-        
-        span.style.opacity = ease;
-        span.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
-        span.style.filter = `blur(${blur}px)`;
-        
-        if (t < 1) {
-            requestAnimationFrame(frame);
-        } else {
-            span.style.transform = 'none';
-            span.style.filter = 'none';
-            span.style.opacity = '1';
-        }
-    }
-    requestAnimationFrame(frame);
-}
-
-function veegGraffitiWeg() {
-    console.log('🧽 Spons start');
+function testSpons(centerY) {
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
     const sponsSize = 96;
-    const startX = -sponsSize;
+    let x = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
-    const snelheid = 5;
+    const snelheid = 7;
 
-    let x = startX;
-
-    function animeerSpons() {
+    function animeer() {
         x += snelheid;
-
         spons.style.left = x + 'px';
-        spons.style.top = (graffitiY - 48) + 'px';
+        spons.style.top = (centerY - 48) + 'px';
 
-        const overlayCenterX = x + (sponsSize / 2);
         wipeOverlay.style.left = '0';
-        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
-        wipeOverlay.style.width = overlayCenterX + 'px';
-        wipeOverlay.style.height = graffitiHoogte + 'px';
+        wipeOverlay.style.top = (centerY - 48) + 'px';
+        wipeOverlay.style.width = (x + sponsSize/2) + 'px';
+        wipeOverlay.style.height = '96px';
 
         if (x < eindX) {
-            requestAnimationFrame(animeerSpons);
+            requestAnimationFrame(animeer);
         } else {
+            log('✅ Spons klaar');
             spons.style.display = 'none';
             wipeOverlay.style.display = 'none';
             graffitiContainer.style.display = 'none';
-            graffitiText.innerHTML = '';
-            graffitiBezig = false;
-            console.log('✅ Graffiti gewist');
-            wachtEnSprayGraffiti();
         }
     }
-    requestAnimationFrame(animeerSpons);
+    requestAnimationFrame(animeer);
 }
 
+// Start test na 1 seconde
+setTimeout(() => {
+    log('🚀 Start test...');
+    testGraffiti();
+}, 1000);
+
+// Start kat
 wachtEnSpringSoms();
-setTimeout(wachtEnSprayGraffiti, 1000);
-console.log('🚀 Animaties gestart');
 </script>
 
 </body>
