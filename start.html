@@ -13,6 +13,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <style>
+@font-face {
+    font-family: 'AerosolSpray';
+    src: url('fonts/grafitti_1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
 
@@ -144,7 +152,7 @@ header {
 }
 
 .graffiti-text {
-    font-family: 'Brush Script MT', cursive;
+    font-family: 'AerosolSpray', 'Brush Script MT', cursive;
     font-size: 48px;
     white-space: nowrap;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
@@ -237,6 +245,13 @@ if ('serviceWorker' in navigator) {
         regs.forEach(reg => reg.unregister());
     });
 }
+
+// Font check
+document.fonts.ready.then(() => {
+    document.fonts.forEach(font => {
+        console.log('Font:', font.family, font.status);
+    });
+});
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -355,7 +370,7 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI ANIMATIE - SIMPEL ELKE 8 SECONDEN ==========
+// ========== GRAFFITI ANIMATIE ==========
 const ZINNEN = ['WINNEN WINNEN WINNEN!', 'TB is het beste', 'DOEN DOEN DOEN!', 'TB #1', 'Mechanic 4'];
 const KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
@@ -382,6 +397,10 @@ function toonGraffiti() {
         graffitiText.style.color = kleur;
         graffitiContainer.style.top = (centerY - 24) + 'px';
         graffitiContainer.style.display = 'block';
+        
+        // Check welke font wordt gebruikt
+        const computedFont = window.getComputedStyle(graffitiText).fontFamily;
+        console.log('📝 Font gebruikt:', computedFont);
         
         setTimeout(() => veegWeg(centerY), 3000);
     } catch (e) {
@@ -417,13 +436,8 @@ function veegWeg(centerY) {
     requestAnimationFrame(animeer);
 }
 
-// GEGARANDEERDE HERHALING - elke 8 seconden
 setInterval(toonGraffiti, 8000);
-
-// Start eerste na 2 sec
 setTimeout(toonGraffiti, 2000);
-
-// Start kat
 wachtEnSpringSoms();
 
 console.log('🚀 Alles gestart');
