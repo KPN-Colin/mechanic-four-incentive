@@ -152,12 +152,11 @@ header {
 }
 
 .graffiti-text-path {
-    fill: none;
-    stroke-width: 3;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
 }
 
 .graffiti-text-path.spray-animate {
@@ -416,9 +415,9 @@ function startGraffitiAnimatie() {
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
-    graffitiHoogte = 60;
+    graffitiHoogte = 70;
 
-    graffitiContainer.style.top = (centerY - 30) + 'px';
+    graffitiContainer.style.top = (centerY - 35) + 'px';
     graffitiContainer.style.left = '50%';
     graffitiContainer.style.transform = 'translateX(-50%)';
     graffitiContainer.style.display = 'block';
@@ -429,6 +428,7 @@ function startGraffitiAnimatie() {
               text-anchor="middle" 
               font-family="${font}, cursive" 
               font-size="50" 
+              fill="${kleur}"
               stroke="${kleur}">${zin}</text>
     `;
 
@@ -450,8 +450,8 @@ function veegGraffitiWeg() {
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
-    const spons Size = 64;
-    const startX = -spons Size;
+    const sponsSize = 64;
+    const startX = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
     const snelheid = 2.5;
     const wiggleSnelheid = 8;
