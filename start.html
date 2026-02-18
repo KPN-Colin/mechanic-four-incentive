@@ -246,6 +246,9 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
+// VERSIE CHECK
+console.log('🔢 VERSIE: v2.0 - GEEN NUMMERS, LAGERE POSITIE');
+
 // Service Worker uit
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
@@ -370,13 +373,16 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI ANIMATIE MET SCHRIJF-EFFECT ==========
+// ========== GRAFFITI ANIMATIE - GEEN NUMMERS ==========
 const ZINNEN = [
     'WINNEN WINNEN WINNEN!',
     'TB is het beste',
     'DOEN DOEN DOEN!',
     'Mechanic Four'
 ];
+
+console.log('📝 Zinnen:', ZINNEN);
+
 const KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
@@ -405,13 +411,15 @@ function startGraffitiAnimatie() {
     vorigeZin = zin;
 
     const kleur = KLEUREN[Math.floor(Math.random() * KLEUREN.length)];
+    console.log('🎨 ZIN:', zin, '| KLEUR:', kleur);
 
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
     
-    // LAGER: 70% naar beneden ipv 50%
+    // LAGER: 70% naar beneden
     const beschikbareRuimte = gifRect.top - knopRect.bottom;
     const centerY = knopRect.bottom + (beschikbareRuimte * 0.7);
+    console.log('📍 Positie Y:', centerY);
 
     graffitiY = centerY;
     graffitiText.style.color = kleur;
@@ -432,6 +440,10 @@ function startGraffitiAnimatie() {
         fontSize -= 2;
         tempText.style.fontSize = fontSize + 'px';
     }
+    
+    const computedFont = window.getComputedStyle(tempText).fontFamily;
+    console.log('🔤 Font:', computedFont);
+    
     document.body.removeChild(tempText);
 
     graffitiText.style.fontSize = fontSize + 'px';
@@ -439,35 +451,29 @@ function startGraffitiAnimatie() {
     graffitiContainer.style.top = (centerY - fontSize / 2) + 'px';
     graffitiContainer.style.display = 'block';
 
-    // Splits in letters voor animatie
+    // Splits in letters
     const letters = zin.split('');
     letters.forEach(letter => {
         const span = document.createElement('span');
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
-        
-        // FORCE opacity 0 in JavaScript
         span.style.opacity = '0';
         span.style.display = 'inline-block';
-        
         graffitiText.appendChild(span);
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
-    console.log('📝 Animeer', spans.length, 'letters');
+    console.log('📊 Animeer', spans.length, 'letters');
     
     // Animeer elke letter
     spans.forEach((span, index) => {
         setTimeout(() => {
-            console.log('✍️ Letter', index);
             animeerSchrijfLetter(span);
         }, index * 60);
     });
 
     const totaalSchrijfTijd = letters.length * 60;
     const staanTijd = 3000 + Math.random() * 2000;
-    
-    console.log('⏱️ Schrijf:', totaalSchrijfTijd, 'ms, Staan:', staanTijd, 'ms');
     
     setTimeout(() => veegGraffitiWeg(), totaalSchrijfTijd + staanTijd);
 }
@@ -502,7 +508,7 @@ function animeerSchrijfLetter(span) {
 }
 
 function veegGraffitiWeg() {
-    console.log('🧽 Spons start bij Y=' + graffitiY);
+    console.log('🧽 Spons');
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
@@ -533,7 +539,7 @@ function veegGraffitiWeg() {
             graffitiContainer.style.display = 'none';
             graffitiText.innerHTML = '';
             graffitiBezig = false;
-            console.log('✅ Spons klaar');
+            console.log('✅ Klaar');
             wachtEnSprayGraffiti();
         }
     }
@@ -542,7 +548,7 @@ function veegGraffitiWeg() {
 
 wachtEnSpringSoms();
 setTimeout(wachtEnSprayGraffiti, 1000);
-console.log('🚀 Start');
+console.log('🚀 Alles gestart');
 </script>
 
 </body>
