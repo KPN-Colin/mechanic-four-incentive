@@ -17,7 +17,9 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
 
-html { background-color: #00c300; }
+html {
+    background-color: #00c300;
+}
 
 body {
     background-color: #eae9ec;
@@ -214,7 +216,6 @@ function wachtEnSpringSoms() {
 function startKatAnimatie() {
     if (katBezig) return;
     katBezig = true;
-
     startBtn.classList.add('geen-pulse');
 
     setTimeout(() => {
@@ -235,69 +236,85 @@ function startKatAnimatie() {
         katEl.style.top       = doelY + 'px';
         katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
 
-        animeerBoog(
-            katEl,
-            startX,
-            doelX,
-            doelY,
-            boogHoogte,
-            springDuur,
-            () => {
-                katEl.style.display = 'none';
-                katZitEl.style.display = 'inline';
-                startEmojiWisseling();
-
-                setTimeout(() => {
-                    katZitEl.style.display = 'none';
-                    stopEmojiWisseling();
-                    katBezig = false;
-                    startBtn.classList.remove('geen-pulse');
-                    wachtEnSpringSoms();
-                }, 2500);
-            }
-        );
-    }, 300);
+        animeerBoog(startX, doelY, doelX, doelY, boogHoogte, springDuur, vanLinks, () => katLandt(doelX, doelY));
+    }, 220);
 }
 
-function animeerBoog(element, x1, x2, yGrond, boogHoogte, duur, callback) {
-    const startTijd = performance.now();
-
-    function stap(huidigeTijd) {
-        const verstreken = huidigeTijd - startTijd;
-        const voortgang  = Math.min(verstreken / duur, 1);
-
-        const x = x1 + (x2 - x1) * voortgang;
-        const boogFactor = Math.sin(voortgang * Math.PI);
-        const y = yGrond - boogFactor * boogHoogte;
-
-        element.style.left = x + 'px';
-        element.style.top  = y + 'px';
-
-        if (voortgang < 1) {
-            requestAnimationFrame(stap);
-        } else {
-            if (callback) callback();
-        }
+function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
+    const start = performance.now();
+    function stap(nu) {
+        const t  = Math.min((nu - start) / duur, 1);
+        const eT = easeInOut(t);
+        const x  = x0 + (x1 - x0) * eT;
+        const y  = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
+        const rotatie  = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
+        const spiegelX = vanLinks ? -1 : 1;
+        katEl.style.left      = x + 'px';
+        katEl.style.top       = y + 'px';
+        katEl.style.transform = `scaleX(${spiegelX}) rotate(${rotatie}deg)`;
+        if (t < 1) requestAnimationFrame(stap);
+        else klaar();
     }
     requestAnimationFrame(stap);
 }
 
-function startEmojiWisseling() {
-    let index = 0;
-    emojiWisselInterval = setInterval(() => {
-        katZitEl.textContent = KAT_ZITTEND[index];
-        index = (index + 1) % KAT_ZITTEND.length;
-    }, 250);
+function katLandt(doelX, doelY) {
+    const bounceStart = performance.now();
+    function bounce(nu) {
+        const t       = Math.min((nu - bounceStart) / 220, 1);
+        const bounceY = doelY + Math.sin(t * Math.PI) * 10;
+        katEl.style.top       = bounceY + 'px';
+        katEl.style.transform = 'scaleX(1) rotate(0deg)';
+        if (t < 1) {
+            requestAnimationFrame(bounce);
+        } else {
+            katEl.style.top = doelY + 'px';
+            setTimeout(() => {
+                katEl.style.display    = 'none';
+                katZitEl.style.display = 'block';
+                katZitEl.textContent   = randomZitEmoji();
+                emojiWisselInterval = setInterval(() => {
+                    katZitEl.textContent = randomZitEmoji();
+                }, 2000);
+                const zitTijd = 4000 + Math.random() * 4000;
+                setTimeout(() => springWeg(doelX, doelY), zitTijd);
+            }, 1000);
+        }
+    }
+    requestAnimationFrame(bounce);
 }
 
-function stopEmojiWisseling() {
-    if (emojiWisselInterval) {
-        clearInterval(emojiWisselInterval);
-        emojiWisselInterval = null;
-    }
+function springWeg(doelX, doelY) {
+    clearInterval(emojiWisselInterval);
+    emojiWisselInterval  = null;
+    katZitEl.style.display = 'none';
+    katEl.textContent      = KAT_SPRINGEND;
+    katEl.style.display    = 'block';
+    katEl.style.left       = doelX + 'px';
+    katEl.style.top        = doelY + 'px';
+    const naarRechts = doelX < window.innerWidth / 2;
+    const eindX      = naarRechts ? window.innerWidth + 80 : -100;
+    const boogHoogte = 110 + Math.random() * 80;
+    const springDuur = 650 + Math.random() * 200;
+    katEl.style.transform  = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
+    animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
+        katEl.style.display = 'none';
+        startBtn.classList.remove('geen-pulse');
+        katBezig = false;
+        wachtEnSpringSoms();
+    });
+}
+
+function randomZitEmoji() {
+    return KAT_ZITTEND[Math.floor(Math.random() * KAT_ZITTEND.length)];
+}
+
+function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
 wachtEnSpringSoms();
 </script>
+
 </body>
 </html>
