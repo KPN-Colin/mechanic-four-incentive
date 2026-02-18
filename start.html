@@ -140,47 +140,47 @@ header {
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
 }
 
-/* GRAFFITI CONTAINER */
 .graffiti-container {
     position: absolute;
-    width: 90%;
-    text-align: center;
     pointer-events: none;
     z-index: 3;
     display: none;
 }
 
-.graffiti-text {
-    font-size: 2.5rem;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    white-space: nowrap;
-    display: inline-block;
-    opacity: 0;
+.graffiti-svg {
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
-.graffiti-text.spray-in {
-    animation: sprayIn 1.2s ease-out forwards;
+.graffiti-text-path {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
 }
 
-@keyframes sprayIn {
-    0%   { opacity: 0; transform: scale(0.8) translateX(-20px); }
-    100% { opacity: 1; transform: scale(1) translateX(0); }
+.graffiti-text-path.spray-animate {
+    animation: drawText 1.5s ease-out forwards;
 }
 
-/* SPONS */
+@keyframes drawText {
+    to { stroke-dashoffset: 0; }
+}
+
 .spons {
     position: absolute;
-    font-size: 3rem;
+    font-size: 4rem;
     z-index: 20;
     pointer-events: none;
     display: none;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
 }
 
-/* WIPE CANVAS */
-.wipe-canvas {
+.wipe-overlay {
     position: absolute;
+    background-color: #eae9ec;
     pointer-events: none;
     z-index: 15;
     display: none;
@@ -234,9 +234,9 @@ footer {
     </div>
 
     <div class="graffiti-container" id="graffitiContainer">
-        <div class="graffiti-text" id="graffitiText"></div>
+        <svg class="graffiti-svg" id="graffitiSvg"></svg>
     </div>
-    <canvas class="wipe-canvas" id="wipeCanvas"></canvas>
+    <div class="wipe-overlay" id="wipeOverlay"></div>
     <div class="spons" id="spons">🧽</div>
 </div>
 
@@ -381,22 +381,16 @@ const GRAFFITI_ZINNEN = [
 
 const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 const GRAFFITI_FONTS = ['Permanent Marker', 'Caveat', 'Shadows Into Light', 'Indie Flower', 'Patrick Hand'];
-const GRAFFITI_POSITIES = [
-    { transform: 'rotate(-3deg) translateY(-10px)' },   // diagonal omhoog
-    { transform: 'rotate(3deg) translateY(10px)' },     // diagonal omlaag
-    { transform: 'rotate(0deg) translateY(0)' },        // horizontaal
-    { transform: 'rotate(-2deg) translateY(-5px)' },    // licht omhoog
-    { transform: 'rotate(2deg) translateY(5px)' }       // licht omlaag
-];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
-const graffitiText = document.getElementById('graffitiText');
+const graffitiSvg = document.getElementById('graffitiSvg');
 const spons = document.getElementById('spons');
-const wipeCanvas = document.getElementById('wipeCanvas');
-const middleSection = document.getElementById('middleSection');
+const wipeOverlay = document.getElementById('wipeOverlay');
 
 let graffitiBezig = false;
 let vorigeZin = null;
+let graffitiY = 0;
+let graffitiHoogte = 0;
 
 function wachtEnSprayGraffiti() {
     const wachttijd = 2000 + Math.random() * 3000;
@@ -407,98 +401,118 @@ function startGraffitiAnimatie() {
     if (graffitiBezig) return;
     graffitiBezig = true;
 
-    // Kies random zin (niet dezelfde als vorige)
     let zin;
     do {
         zin = GRAFFITI_ZINNEN[Math.floor(Math.random() * GRAFFITI_ZINNEN.length)];
     } while (zin === vorigeZin && GRAFFITI_ZINNEN.length > 1);
     vorigeZin = zin;
 
-    // Kies random kleur, font, positie
     const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
     const font = GRAFFITI_FONTS[Math.floor(Math.random() * GRAFFITI_FONTS.length)];
-    const positie = GRAFFITI_POSITIES[Math.floor(Math.random() * GRAFFITI_POSITIES.length)];
 
-    // Positioneer container tussen button en GIF
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
     const beschikbareRuimte = gifRect.top - knopRect.bottom;
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
-    graffitiContainer.style.top = centerY + 'px';
+    graffitiY = centerY;
+    graffitiHoogte = 60;
+
+    graffitiContainer.style.top = (centerY - 30) + 'px';
     graffitiContainer.style.left = '50%';
-    graffitiContainer.style.transform = 'translate(-50%, -50%)';
-
-    // Style tekst
-    graffitiText.textContent = zin;
-    graffitiText.style.color = kleur;
-    graffitiText.style.fontFamily = `'${font}', cursive`;
-    graffitiText.style.transform = positie.transform;
-    graffitiText.style.opacity = '0';
-
-    // Toon en spray
+    graffitiContainer.style.transform = 'translateX(-50%)';
     graffitiContainer.style.display = 'block';
-    setTimeout(() => {
-        graffitiText.classList.add('spray-in');
-        graffitiText.style.opacity = '1';
-    }, 50);
 
-    // Laat graffiti staan 3-5 seconden
+    graffitiSvg.innerHTML = `
+        <text class="graffiti-text-path spray-animate" 
+              x="50%" y="50" 
+              text-anchor="middle" 
+              font-family="${font}, cursive" 
+              font-size="50" 
+              stroke="${kleur}">${zin}</text>
+    `;
+
+    graffitiSvg.setAttribute('width', window.innerWidth);
+    graffitiSvg.setAttribute('height', '100');
+
     const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), staanTijd + 1200);
+    setTimeout(() => veegGraffitiWeg(), staanTijd + 1500);
 }
 
 function veegGraffitiWeg() {
-    const containerRect = graffitiContainer.getBoundingClientRect();
-    const textRect = graffitiText.getBoundingClientRect();
-
-    // Setup canvas
-    const ctx = wipeCanvas.getContext('2d');
-    wipeCanvas.width = window.innerWidth;
-    wipeCanvas.height = window.innerHeight;
-    wipeCanvas.style.display = 'block';
-
-    // Random richting
-    const vanLinks = Math.random() < 0.5;
-    const startX = vanLinks ? -60 : window.innerWidth + 20;
-    const eindX = vanLinks ? window.innerWidth + 60 : -60;
+    const textEl = graffitiSvg.querySelector('text');
+    if (!textEl) return;
+    
+    const bbox = textEl.getBBox();
+    const tekstStart = bbox.x + (window.innerWidth / 2 - bbox.width / 2);
+    const tekstEind = tekstStart + bbox.width;
 
     spons.style.display = 'block';
-    spons.style.left = startX + 'px';
-    spons.style.top = containerRect.top + 'px';
+    wipeOverlay.style.display = 'block';
 
-    const duur = 1800;
-    const startTijd = performance.now();
+    const spons Size = 64;
+    const startX = -spons Size;
+    const eindX = window.innerWidth + sponsSize;
+    const snelheid = 2.5;
+    const wiggleSnelheid = 8;
+    const wiggleAfstand = 15;
 
-    function animeerSpons(nu) {
-        const verstreken = nu - startTijd;
-        const voortgang = Math.min(verstreken / duur, 1);
+    const aantalStops = 2 + Math.floor(Math.random() * 3);
+    const stopPunten = [];
+    for (let i = 0; i < aantalStops; i++) {
+        stopPunten.push(tekstStart + Math.random() * (tekstEind - tekstStart));
+    }
+    stopPunten.sort((a, b) => a - b);
 
-        // Spons positie met scrub wiggle
-        const x = startX + (eindX - startX) * voortgang;
-        const wiggle = Math.sin(voortgang * Math.PI * 8) * 8;
-        const y = containerRect.top + wiggle;
+    let x = startX;
+    let stopIndex = 0;
+    let inWiggle = false;
+    let wiggleCount = 0;
+    let maxWiggles = 0;
+    let wiggleRichting = 1;
 
-        spons.style.left = x + 'px';
-        spons.style.top = y + 'px';
-
-        // Teken wipe overlay
-        ctx.fillStyle = '#eae9ec';
-        if (vanLinks) {
-            ctx.fillRect(0, containerRect.top - 30, x + 50, 100);
+    function animeerSpons() {
+        if (!inWiggle) {
+            if (stopIndex < stopPunten.length && x >= stopPunten[stopIndex]) {
+                inWiggle = true;
+                wiggleCount = 0;
+                maxWiggles = 2 + Math.floor(Math.random() * 3);
+                wiggleRichting = -1;
+                stopIndex++;
+            } else {
+                x += snelheid;
+            }
         } else {
-            ctx.fillRect(x - 10, containerRect.top - 30, window.innerWidth, 100);
+            x += wiggleRichting * wiggleSnelheid;
+            wiggleCount += 0.5;
+            
+            if (Math.abs(x - stopPunten[stopIndex - 1]) >= wiggleAfstand) {
+                wiggleRichting *= -1;
+            }
+            
+            if (wiggleCount >= maxWiggles) {
+                inWiggle = false;
+                x = stopPunten[stopIndex - 1];
+            }
         }
 
-        if (voortgang < 1) {
+        spons.style.left = x + 'px';
+        spons.style.top = (graffitiY - 32) + 'px';
+
+        if (!inWiggle) {
+            wipeOverlay.style.left = '0';
+            wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
+            wipeOverlay.style.width = x + 'px';
+            wipeOverlay.style.height = graffitiHoogte + 'px';
+        }
+
+        if (x < eindX) {
             requestAnimationFrame(animeerSpons);
         } else {
-            // Cleanup
             spons.style.display = 'none';
-            wipeCanvas.style.display = 'none';
+            wipeOverlay.style.display = 'none';
             graffitiContainer.style.display = 'none';
-            graffitiText.classList.remove('spray-in');
-            ctx.clearRect(0, 0, wipeCanvas.width, wipeCanvas.height);
+            graffitiSvg.innerHTML = '';
             graffitiBezig = false;
             wachtEnSprayGraffiti();
         }
@@ -506,7 +520,6 @@ function veegGraffitiWeg() {
     requestAnimationFrame(animeerSpons);
 }
 
-// Start beide animaties
 wachtEnSpringSoms();
 wachtEnSprayGraffiti();
 </script>
