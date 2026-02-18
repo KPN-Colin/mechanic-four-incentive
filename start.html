@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4</title>
-<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
-<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
-<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,13 +13,6 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <style>
-@font-face {
-    font-family: GraffitiSpray;
-    src: url('fonts/grafitti_1.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
-
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
 
@@ -156,6 +148,7 @@ header {
 }
 
 .graffiti-text {
+    font-family: 'Brush Script MT', cursive;
     white-space: nowrap;
     display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
@@ -248,9 +241,15 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
+// Service Worker UITSCHAKELEN voor test
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+        console.log('🔄 Service Worker uitgeschakeld');
+    });
 }
+
+console.log('✅ Script gestart');
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -398,6 +397,7 @@ function wachtEnSprayGraffiti() {
 function startGraffitiAnimatie() {
     if (graffitiBezig) return;
     graffitiBezig = true;
+    console.log('🎨 Graffiti start');
 
     let zin;
     do {
@@ -406,6 +406,7 @@ function startGraffitiAnimatie() {
     vorigeZin = zin;
 
     const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
+    console.log('📝 Zin:', zin, 'Kleur:', kleur);
 
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
@@ -413,9 +414,6 @@ function startGraffitiAnimatie() {
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
-    
-    // FORCE font via inline style
-    graffitiText.style.fontFamily = "GraffitiSpray, 'Brush Script MT', cursive";
     graffitiText.style.color = kleur;
     graffitiText.innerHTML = '';
 
@@ -423,7 +421,7 @@ function startGraffitiAnimatie() {
     let fontSize = 48;
     
     const tempText = document.createElement('span');
-    tempText.style.fontFamily = "GraffitiSpray, 'Brush Script MT', cursive";
+    tempText.style.fontFamily = "'Brush Script MT', cursive";
     tempText.style.fontSize = fontSize + 'px';
     tempText.style.visibility = 'hidden';
     tempText.style.position = 'absolute';
@@ -434,6 +432,10 @@ function startGraffitiAnimatie() {
         fontSize -= 2;
         tempText.style.fontSize = fontSize + 'px';
     }
+    
+    const computedFont = window.getComputedStyle(tempText).fontFamily;
+    console.log('🔤 Font gebruikt:', computedFont);
+    
     document.body.removeChild(tempText);
 
     graffitiText.style.fontSize = fontSize + 'px';
@@ -450,15 +452,16 @@ function startGraffitiAnimatie() {
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
+    console.log('📊 Aantal letters:', spans.length);
     
     spans.forEach((span, index) => {
         setTimeout(() => {
             animeerSchrijfLetter(span);
-        }, index * 50);
+        }, index * 60);
     });
 
     const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), letters.length * 50 + staanTijd);
+    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
 }
 
 function animeerSchrijfLetter(span) {
@@ -491,13 +494,14 @@ function animeerSchrijfLetter(span) {
 }
 
 function veegGraffitiWeg() {
+    console.log('🧽 Spons start');
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
     const sponsSize = 96;
     const startX = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
-    const snelheid = 3;
+    const snelheid = 5;
 
     let x = startX;
 
@@ -521,6 +525,7 @@ function veegGraffitiWeg() {
             graffitiContainer.style.display = 'none';
             graffitiText.innerHTML = '';
             graffitiBezig = false;
+            console.log('✅ Graffiti gewist');
             wachtEnSprayGraffiti();
         }
     }
@@ -529,6 +534,7 @@ function veegGraffitiWeg() {
 
 wachtEnSpringSoms();
 setTimeout(wachtEnSprayGraffiti, 1000);
+console.log('🚀 Animaties gestart');
 </script>
 
 </body>
