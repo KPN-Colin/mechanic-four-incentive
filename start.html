@@ -15,10 +15,20 @@
 
 <style>
 @font-face {
-    font-family: 'Graffiti';
-    src: url('/fonts/grafitti_1.otf') format('opentype');
-    font-weight: normal;
+    font-family: 'Graffiti1';
+    src: url('fonts/grafitti_1.otf') format('opentype');
+    font-weight: 400;
     font-style: normal;
+}
+
+@font-face {
+    font-family: 'grafitti_1';
+    src: url('fonts/grafitti_1.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'GraffitiOne';
+    src: url('fonts/grafitti_1.otf') format('opentype');
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -156,8 +166,6 @@ header {
 }
 
 .graffiti-text {
-    font-family: 'Graffiti', 'Brush Script MT', cursive;
-    font-weight: normal;
     white-space: nowrap;
     display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
@@ -253,6 +261,14 @@ footer {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
+
+// Detect welke font daadwerkelijk geladen is
+document.fonts.ready.then(() => {
+    console.log('📚 Alle fonts geladen. Beschikbare fonts:');
+    document.fonts.forEach(font => {
+        console.log(`  - ${font.family} (${font.status})`);
+    });
+});
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -381,6 +397,7 @@ const GRAFFITI_ZINNEN = [
 ];
 
 const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
+const FONT_NAMEN = ['Graffiti1', 'grafitti_1', 'GraffitiOne', 'Brush Script MT', 'cursive'];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
 const graffitiText = document.getElementById('graffitiText');
@@ -415,6 +432,10 @@ function startGraffitiAnimatie() {
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
+    
+    // FORCE font toepassing - probeer alle namen
+    const fontStack = FONT_NAMEN.map(f => `"${f}"`).join(', ');
+    graffitiText.style.fontFamily = fontStack;
     graffitiText.style.color = kleur;
     graffitiText.innerHTML = '';
 
@@ -422,7 +443,7 @@ function startGraffitiAnimatie() {
     let fontSize = 48;
     
     const tempText = document.createElement('span');
-    tempText.style.fontFamily = "'Graffiti', 'Brush Script MT', cursive";
+    tempText.style.fontFamily = fontStack;
     tempText.style.fontSize = fontSize + 'px';
     tempText.style.visibility = 'hidden';
     tempText.style.position = 'absolute';
@@ -433,6 +454,11 @@ function startGraffitiAnimatie() {
         fontSize -= 2;
         tempText.style.fontSize = fontSize + 'px';
     }
+    
+    // Check welke font daadwerkelijk gebruikt wordt
+    const computedFont = window.getComputedStyle(tempText).fontFamily;
+    console.log('🎨 Gebruikte font:', computedFont);
+    
     document.body.removeChild(tempText);
 
     graffitiText.style.fontSize = fontSize + 'px';
