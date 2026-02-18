@@ -149,6 +149,8 @@ header {
     z-index: 100;
     display: none;
     text-align: center;
+    overflow: hidden;
+    max-width: calc(100vw - 60px);
 }
 
 .graffiti-text {
@@ -156,6 +158,12 @@ header {
     font-size: 48px;
     white-space: nowrap;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
+    display: inline-block;
+}
+
+.graffiti-letter {
+    display: inline-block;
+    opacity: 0;
 }
 
 .spons {
@@ -245,13 +253,6 @@ if ('serviceWorker' in navigator) {
         regs.forEach(reg => reg.unregister());
     });
 }
-
-// Font check
-document.fonts.ready.then(() => {
-    document.fonts.forEach(font => {
-        console.log('Font:', font.family, font.status);
-    });
-});
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -370,7 +371,7 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI ANIMATIE ==========
+// ========== GRAFFITI ANIMATIE MET SCHRIJF-EFFECT ==========
 const ZINNEN = ['WINNEN WINNEN WINNEN!', 'TB is het beste', 'DOEN DOEN DOEN!', 'TB #1', 'Mechanic 4'];
 const KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
@@ -379,68 +380,149 @@ const graffitiText = document.getElementById('graffitiText');
 const spons = document.getElementById('spons');
 const wipeOverlay = document.getElementById('wipeOverlay');
 
-let teller = 0;
+let graffitiBezig = false;
+let vorigeZin = null;
+let graffitiY = 0;
+let graffitiHoogte = 0;
 
-function toonGraffiti() {
-    try {
-        console.log('🎨 Graffiti #' + teller);
-        teller++;
-        
-        const zin = ZINNEN[Math.floor(Math.random() * ZINNEN.length)];
-        const kleur = KLEUREN[Math.floor(Math.random() * KLEUREN.length)];
-        
-        const knopRect = startBtn.getBoundingClientRect();
-        const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
-        const centerY = knopRect.bottom + ((gifRect.top - knopRect.bottom) / 2);
-        
-        graffitiText.textContent = zin;
-        graffitiText.style.color = kleur;
-        graffitiContainer.style.top = (centerY - 24) + 'px';
-        graffitiContainer.style.display = 'block';
-        
-        // Check welke font wordt gebruikt
-        const computedFont = window.getComputedStyle(graffitiText).fontFamily;
-        console.log('📝 Font gebruikt:', computedFont);
-        
-        setTimeout(() => veegWeg(centerY), 3000);
-    } catch (e) {
-        console.error('❌ Error:', e);
-    }
+function wachtEnSprayGraffiti() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    setTimeout(startGraffitiAnimatie, wachttijd);
 }
 
-function veegWeg(centerY) {
-    console.log('🧽 Spons');
+function startGraffitiAnimatie() {
+    if (graffitiBezig) return;
+    graffitiBezig = true;
+
+    let zin;
+    do {
+        zin = ZINNEN[Math.floor(Math.random() * ZINNEN.length)];
+    } while (zin === vorigeZin && ZINNEN.length > 1);
+    vorigeZin = zin;
+
+    const kleur = KLEUREN[Math.floor(Math.random() * KLEUREN.length)];
+
+    const knopRect = startBtn.getBoundingClientRect();
+    const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+    const beschikbareRuimte = gifRect.top - knopRect.bottom;
+    const centerY = knopRect.bottom + (beschikbareRuimte / 2);
+
+    graffitiY = centerY;
+    graffitiText.style.color = kleur;
+    graffitiText.innerHTML = '';
+
+    const maxWidth = window.innerWidth - 60;
+    let fontSize = 48;
+    
+    const tempText = document.createElement('span');
+    tempText.style.fontFamily = "'AerosolSpray', 'Brush Script MT', cursive";
+    tempText.style.fontSize = fontSize + 'px';
+    tempText.style.visibility = 'hidden';
+    tempText.style.position = 'absolute';
+    tempText.textContent = zin;
+    document.body.appendChild(tempText);
+    
+    while (tempText.offsetWidth > maxWidth && fontSize > 24) {
+        fontSize -= 2;
+        tempText.style.fontSize = fontSize + 'px';
+    }
+    document.body.removeChild(tempText);
+
+    graffitiText.style.fontSize = fontSize + 'px';
+    graffitiHoogte = fontSize * 2;
+    graffitiContainer.style.top = (centerY - fontSize / 2) + 'px';
+    graffitiContainer.style.display = 'block';
+
+    // Splits in letters voor animatie
+    const letters = zin.split('');
+    letters.forEach(letter => {
+        const span = document.createElement('span');
+        span.className = 'graffiti-letter';
+        span.textContent = letter === ' ' ? '\u00A0' : letter;
+        graffitiText.appendChild(span);
+    });
+
+    const spans = graffitiText.querySelectorAll('.graffiti-letter');
+    
+    // Animeer elke letter
+    spans.forEach((span, index) => {
+        setTimeout(() => {
+            animeerSchrijfLetter(span);
+        }, index * 60);
+    });
+
+    const staanTijd = 3000 + Math.random() * 2000;
+    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
+}
+
+function animeerSchrijfLetter(span) {
+    const duur = 200;
+    const start = performance.now();
+    
+    function frame(nu) {
+        const t = Math.min((nu - start) / duur, 1);
+        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        
+        const x = -30 * (1 - ease);
+        const y = -10 * (1 - ease) + Math.sin(ease * Math.PI) * 5;
+        const rot = -12 * (1 - ease);
+        const scale = 0.6 + 0.4 * ease;
+        const blur = 5 * (1 - ease);
+        
+        span.style.opacity = ease;
+        span.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
+        span.style.filter = `blur(${blur}px)`;
+        
+        if (t < 1) {
+            requestAnimationFrame(frame);
+        } else {
+            span.style.transform = 'none';
+            span.style.filter = 'none';
+            span.style.opacity = '1';
+        }
+    }
+    requestAnimationFrame(frame);
+}
+
+function veegGraffitiWeg() {
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
-    let x = -96;
-    function animeer() {
-        x += 7;
+    const sponsSize = 96;
+    const startX = -sponsSize;
+    const eindX = window.innerWidth + sponsSize;
+    const snelheid = 7;
+
+    let x = startX;
+
+    function animeerSpons() {
+        x += snelheid;
+
         spons.style.left = x + 'px';
-        spons.style.top = (centerY - 48) + 'px';
+        spons.style.top = (graffitiY - 48) + 'px';
 
+        const overlayCenterX = x + (sponsSize / 2);
         wipeOverlay.style.left = '0';
-        wipeOverlay.style.top = (centerY - 48) + 'px';
-        wipeOverlay.style.width = (x + 48) + 'px';
-        wipeOverlay.style.height = '96px';
+        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
+        wipeOverlay.style.width = overlayCenterX + 'px';
+        wipeOverlay.style.height = graffitiHoogte + 'px';
 
-        if (x < window.innerWidth + 96) {
-            requestAnimationFrame(animeer);
+        if (x < eindX) {
+            requestAnimationFrame(animeerSpons);
         } else {
             spons.style.display = 'none';
             wipeOverlay.style.display = 'none';
             graffitiContainer.style.display = 'none';
-            console.log('✅ Klaar');
+            graffitiText.innerHTML = '';
+            graffitiBezig = false;
+            wachtEnSprayGraffiti();
         }
     }
-    requestAnimationFrame(animeer);
+    requestAnimationFrame(animeerSpons);
 }
 
-setInterval(toonGraffiti, 8000);
-setTimeout(toonGraffiti, 2000);
 wachtEnSpringSoms();
-
-console.log('🚀 Alles gestart');
+setTimeout(wachtEnSprayGraffiti, 1000);
 </script>
 
 </body>
