@@ -136,15 +136,15 @@ header {
 }
 
 .graffiti-container {
-    position: absolute;
+    position: fixed;
     left: 50%;
+    top: 300px;
     transform: translateX(-50%);
     pointer-events: none;
-    z-index: 3;
-    display: none;
+    z-index: 999;
     text-align: center;
-    padding: 0 30px;
-    max-width: 100%;
+    border: 5px solid red;
+    background: rgba(255,255,255,0.5);
 }
 
 .graffiti-text {
@@ -153,6 +153,7 @@ header {
     display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
     font-size: 48px;
+    padding: 20px;
 }
 
 .graffiti-letter {
@@ -160,9 +161,9 @@ header {
 }
 
 .spons {
-    position: absolute;
+    position: fixed;
     font-size: 6rem;
-    z-index: 20;
+    z-index: 1000;
     pointer-events: none;
     display: none;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
@@ -170,10 +171,10 @@ header {
 }
 
 .wipe-overlay {
-    position: absolute;
+    position: fixed;
     background-color: #eae9ec;
     pointer-events: none;
-    z-index: 15;
+    z-index: 998;
     display: none;
 }
 
@@ -204,26 +205,10 @@ footer {
     padding-bottom: env(safe-area-inset-bottom, 0px);
     min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
-
-.debug-box {
-    position: fixed;
-    top: 80px;
-    left: 10px;
-    background: yellow;
-    color: black;
-    padding: 10px;
-    z-index: 999;
-    font-size: 12px;
-    max-width: 300px;
-}
 </style>
 </head>
 
 <body>
-
-<div class="debug-box" id="debugBox">
-DEBUG: Laden...
-</div>
 
 <header>
     <div class="header-center">
@@ -240,8 +225,8 @@ DEBUG: Laden...
         <button class="start-button" id="startBtn" onclick="window.location.href='index.html'">Start</button>
     </div>
 
-    <div class="graffiti-container" id="graffitiContainer">
-        <div class="graffiti-text" id="graffitiText">TEST GRAFFITI</div>
+    <div class="graffiti-container" id="graffitiContainer" style="display: block;">
+        <div class="graffiti-text" id="graffitiText">WINNEN WINNEN!</div>
     </div>
     <div class="wipe-overlay" id="wipeOverlay"></div>
     <div class="spons" id="spons">🧽</div>
@@ -256,19 +241,12 @@ DEBUG: Laden...
 <footer>&copy; KPN 2026</footer>
 
 <script>
-const debugBox = document.getElementById('debugBox');
-function log(msg) {
-    console.log(msg);
-    debugBox.innerHTML += '<br>' + msg;
-}
+console.log('✅ JavaScript start');
 
-log('✅ JavaScript draait!');
-
-// Service Worker uitschakelen
+// Service Worker uit
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
         regs.forEach(reg => reg.unregister());
-        log('🔄 SW uitgeschakeld');
     });
 }
 
@@ -293,7 +271,6 @@ function startKatAnimatie() {
     if (katBezig) return;
     katBezig = true;
     startBtn.classList.add('geen-pulse');
-    log('🐈 Kat animatie start');
 
     setTimeout(() => {
         const knopRect = startBtn.getBoundingClientRect();
@@ -390,73 +367,41 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI TEST - DIRECT ZICHTBAAR ==========
+// ========== GRAFFITI TEST ==========
 const graffitiContainer = document.getElementById('graffitiContainer');
-const graffitiText = document.getElementById('graffitiText');
 const spons = document.getElementById('spons');
 const wipeOverlay = document.getElementById('wipeOverlay');
 
-log('🎨 Graffiti elementen gevonden');
-
-// TEST: Toon graffiti METEEN
-function testGraffiti() {
-    log('📝 Test graffiti...');
+// Test spons na 3 sec
+setTimeout(() => {
+    console.log('🧽 Spons test (snelheid 7)');
     
-    const knopRect = startBtn.getBoundingClientRect();
-    const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
-    const centerY = knopRect.bottom + ((gifRect.top - knopRect.bottom) / 2);
-    
-    graffitiText.style.color = '#FF6B35';
-    graffitiText.textContent = 'WINNEN!';
-    graffitiContainer.style.top = (centerY - 24) + 'px';
-    graffitiContainer.style.display = 'block';
-    
-    log('✅ Graffiti zichtbaar op Y=' + centerY);
-    
-    setTimeout(() => {
-        log('🧽 Spons start (snelheid 7)');
-        testSpons(centerY);
-    }, 2000);
-}
-
-function testSpons(centerY) {
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
-    const sponsSize = 96;
-    let x = -sponsSize;
-    const eindX = window.innerWidth + sponsSize;
-    const snelheid = 7;
-
+    let x = -96;
     function animeer() {
-        x += snelheid;
+        x += 7;
         spons.style.left = x + 'px';
-        spons.style.top = (centerY - 48) + 'px';
+        spons.style.top = '250px';
 
         wipeOverlay.style.left = '0';
-        wipeOverlay.style.top = (centerY - 48) + 'px';
-        wipeOverlay.style.width = (x + sponsSize/2) + 'px';
-        wipeOverlay.style.height = '96px';
+        wipeOverlay.style.top = '250px';
+        wipeOverlay.style.width = (x + 48) + 'px';
+        wipeOverlay.style.height = '100px';
 
-        if (x < eindX) {
+        if (x < window.innerWidth + 96) {
             requestAnimationFrame(animeer);
         } else {
-            log('✅ Spons klaar');
+            console.log('✅ Spons klaar');
             spons.style.display = 'none';
             wipeOverlay.style.display = 'none';
             graffitiContainer.style.display = 'none';
         }
     }
     requestAnimationFrame(animeer);
-}
+}, 3000);
 
-// Start test na 1 seconde
-setTimeout(() => {
-    log('🚀 Start test...');
-    testGraffiti();
-}, 1000);
-
-// Start kat
 wachtEnSpringSoms();
 </script>
 
