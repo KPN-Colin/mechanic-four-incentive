@@ -13,11 +13,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="mobile-web-app-capable" content="yes">
 
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-
 <style>
+@font-face {
+    font-family: 'Graffiti';
+    src: url('/fonts/grafitti_1.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
 
@@ -153,7 +156,8 @@ header {
 }
 
 .graffiti-text {
-    font-weight: 700;
+    font-family: 'Graffiti', 'Brush Script MT', cursive;
+    font-weight: normal;
     white-space: nowrap;
     display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
@@ -162,12 +166,7 @@ header {
 .graffiti-letter {
     display: inline-block;
     opacity: 0;
-    transition: all 0.2s ease-out;
-}
-
-.graffiti-letter.show {
-    opacity: 1;
-    transform: translateX(0) translateY(0) rotate(0deg);
+    position: relative;
 }
 
 .spons {
@@ -254,20 +253,6 @@ footer {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
-
-// Force font loading
-let fontsGeladen = false;
-Promise.all([
-    document.fonts.load('700 1em Caveat'),
-    document.fonts.load('1em "Indie Flower"'),
-    document.fonts.load('1em "Permanent Marker"')
-]).then(() => {
-    console.log('✅ Fonts geladen!');
-    fontsGeladen = true;
-}).catch(err => {
-    console.error('❌ Font load error:', err);
-    fontsGeladen = true; // Continue anyway
-});
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -396,11 +381,6 @@ const GRAFFITI_ZINNEN = [
 ];
 
 const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
-const GRAFFITI_FONTS = [
-    'Caveat',
-    'Indie Flower',
-    'Permanent Marker'
-];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
 const graffitiText = document.getElementById('graffitiText');
@@ -419,7 +399,6 @@ function wachtEnSprayGraffiti() {
 
 function startGraffitiAnimatie() {
     if (graffitiBezig) return;
-    console.log('🎨 Start graffiti');
     graffitiBezig = true;
 
     let zin;
@@ -429,9 +408,6 @@ function startGraffitiAnimatie() {
     vorigeZin = zin;
 
     const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
-    const font = GRAFFITI_FONTS[Math.floor(Math.random() * GRAFFITI_FONTS.length)];
-
-    console.log('Font:', font, 'Kleur:', kleur, 'Zin:', zin);
 
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
@@ -439,8 +415,6 @@ function startGraffitiAnimatie() {
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
-
-    graffitiText.style.fontFamily = `"${font}", cursive`;
     graffitiText.style.color = kleur;
     graffitiText.innerHTML = '';
 
@@ -448,7 +422,7 @@ function startGraffitiAnimatie() {
     let fontSize = 48;
     
     const tempText = document.createElement('span');
-    tempText.style.fontFamily = `"${font}", cursive`;
+    tempText.style.fontFamily = "'Graffiti', 'Brush Script MT', cursive";
     tempText.style.fontSize = fontSize + 'px';
     tempText.style.visibility = 'hidden';
     tempText.style.position = 'absolute';
@@ -471,25 +445,51 @@ function startGraffitiAnimatie() {
         const span = document.createElement('span');
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
-        span.style.transform = 'translateX(-25px) translateY(-8px) rotate(-10deg)';
         graffitiText.appendChild(span);
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
-    console.log('Spans gemaakt:', spans.length);
     
     spans.forEach((span, index) => {
         setTimeout(() => {
-            span.classList.add('show');
-        }, index * 60);
+            animeerSchrijfLetter(span);
+        }, index * 50);
     });
 
     const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
+    setTimeout(() => veegGraffitiWeg(), letters.length * 50 + staanTijd);
+}
+
+function animeerSchrijfLetter(span) {
+    const duur = 200;
+    const start = performance.now();
+    
+    function frame(nu) {
+        const t = Math.min((nu - start) / duur, 1);
+        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        
+        const x = -30 * (1 - ease);
+        const y = -10 * (1 - ease) + Math.sin(ease * Math.PI) * 5;
+        const rot = -12 * (1 - ease);
+        const scale = 0.6 + 0.4 * ease;
+        const blur = 5 * (1 - ease);
+        
+        span.style.opacity = ease;
+        span.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
+        span.style.filter = `blur(${blur}px)`;
+        
+        if (t < 1) {
+            requestAnimationFrame(frame);
+        } else {
+            span.style.transform = 'none';
+            span.style.filter = 'none';
+            span.style.opacity = '1';
+        }
+    }
+    requestAnimationFrame(frame);
 }
 
 function veegGraffitiWeg() {
-    console.log('🧽 Spons start');
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
@@ -520,7 +520,6 @@ function veegGraffitiWeg() {
             graffitiContainer.style.display = 'none';
             graffitiText.innerHTML = '';
             graffitiBezig = false;
-            console.log('✅ Graffiti klaar');
             wachtEnSprayGraffiti();
         }
     }
@@ -528,11 +527,7 @@ function veegGraffitiWeg() {
 }
 
 wachtEnSpringSoms();
-
-setTimeout(() => {
-    console.log('Fonts status:', fontsGeladen ? '✅ Geladen' : '⏳ Wachten...');
-    wachtEnSprayGraffiti();
-}, 1000);
+setTimeout(wachtEnSprayGraffiti, 1000);
 </script>
 
 </body>
