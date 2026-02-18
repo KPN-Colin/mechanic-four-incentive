@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mechanic 4</title>
-<link rel="icon" type="image/png" href="images/logo/m4-icon.png">
-<link rel="apple-touch-icon" href="images/logo/m4-icon.png">
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,11 +15,8 @@
 
 <style>
 @font-face {
-    font-family: 'AerosolSpray';
+    font-family: GrafSpray;
     src: url('fonts/grafitti_1.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -110,8 +108,8 @@ header {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1);    box-shadow: 0 6px 20px rgba(0,195,0,0.3); }
-    50%       { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,195,0,0.5); }
+    0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(0,195,0,0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,195,0,0.5); }
 }
 
 .start-button:active {
@@ -142,33 +140,33 @@ header {
 }
 
 .graffiti-container {
-    position: fixed;
+    position: absolute;
     left: 50%;
     transform: translateX(-50%);
     pointer-events: none;
-    z-index: 100;
+    z-index: 3;
     display: none;
     text-align: center;
-    overflow: hidden;
-    max-width: calc(100vw - 60px);
+    padding: 0 30px;
+    max-width: 100%;
 }
 
 .graffiti-text {
-    font-family: 'AerosolSpray', 'Brush Script MT', cursive;
-    font-size: 48px;
     white-space: nowrap;
-    filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
     display: inline-block;
+    filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
 }
 
 .graffiti-letter {
     display: inline-block;
+    opacity: 0;
+    position: relative;
 }
 
 .spons {
-    position: fixed;
+    position: absolute;
     font-size: 6rem;
-    z-index: 110;
+    z-index: 20;
     pointer-events: none;
     display: none;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
@@ -176,10 +174,10 @@ header {
 }
 
 .wipe-overlay {
-    position: fixed;
+    position: absolute;
     background-color: #eae9ec;
     pointer-events: none;
-    z-index: 105;
+    z-index: 15;
     display: none;
 }
 
@@ -246,27 +244,21 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// VERSIE CHECK
-console.log('🔢 VERSIE: v2.0 - GEEN NUMMERS, LAGERE POSITIE');
-
-// Service Worker uit
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(regs => {
-        regs.forEach(reg => reg.unregister());
-    });
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
-const KAT_ZITTEND   = ['😺', '😼', '😸', '😹'];
+const KAT_ZITTEND = ['😺', '😼', '😸', '😹'];
 
-const katEl    = document.getElementById('kat');
+const katEl = document.getElementById('kat');
 const katZitEl = document.getElementById('katZit');
 const startBtn = document.getElementById('startBtn');
 
-let katBezig             = false;
+let katBezig = false;
 let volgendeKantVanLinks = Math.random() < 0.5;
-let emojiWisselInterval  = null;
+let emojiWisselInterval = null;
 
 function wachtEnSpringSoms() {
     const wachttijd = 2000 + Math.random() * 3000;
@@ -283,17 +275,17 @@ function startKatAnimatie() {
         const doelX = knopRect.left + knopRect.width / 2 - 24;
         const doelY = knopRect.top - 51;
 
-        const vanLinks       = volgendeKantVanLinks;
+        const vanLinks = volgendeKantVanLinks;
         volgendeKantVanLinks = !volgendeKantVanLinks;
 
-        const startX     = vanLinks ? -80 : window.innerWidth + 20;
+        const startX = vanLinks ? -80 : window.innerWidth + 20;
         const boogHoogte = 130 + Math.random() * 80;
         const springDuur = 750 + Math.random() * 200;
 
-        katEl.textContent     = KAT_SPRINGEND;
-        katEl.style.display   = 'block';
-        katEl.style.left      = startX + 'px';
-        katEl.style.top       = doelY + 'px';
+        katEl.textContent = KAT_SPRINGEND;
+        katEl.style.display = 'block';
+        katEl.style.left = startX + 'px';
+        katEl.style.top = doelY + 'px';
         katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
 
         animeerBoog(startX, doelY, doelX, doelY, boogHoogte, springDuur, vanLinks, () => katLandt(doelX, doelY));
@@ -303,14 +295,14 @@ function startKatAnimatie() {
 function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
     const start = performance.now();
     function stap(nu) {
-        const t  = Math.min((nu - start) / duur, 1);
+        const t = Math.min((nu - start) / duur, 1);
         const eT = easeInOut(t);
-        const x  = x0 + (x1 - x0) * eT;
-        const y  = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
-        const rotatie  = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
+        const x = x0 + (x1 - x0) * eT;
+        const y = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
+        const rotatie = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
         const spiegelX = vanLinks ? -1 : 1;
-        katEl.style.left      = x + 'px';
-        katEl.style.top       = y + 'px';
+        katEl.style.left = x + 'px';
+        katEl.style.top = y + 'px';
         katEl.style.transform = `scaleX(${spiegelX}) rotate(${rotatie}deg)`;
         if (t < 1) requestAnimationFrame(stap);
         else klaar();
@@ -321,18 +313,18 @@ function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
 function katLandt(doelX, doelY) {
     const bounceStart = performance.now();
     function bounce(nu) {
-        const t       = Math.min((nu - bounceStart) / 220, 1);
+        const t = Math.min((nu - bounceStart) / 220, 1);
         const bounceY = doelY + Math.sin(t * Math.PI) * 10;
-        katEl.style.top       = bounceY + 'px';
+        katEl.style.top = bounceY + 'px';
         katEl.style.transform = 'scaleX(1) rotate(0deg)';
         if (t < 1) {
             requestAnimationFrame(bounce);
         } else {
             katEl.style.top = doelY + 'px';
             setTimeout(() => {
-                katEl.style.display    = 'none';
+                katEl.style.display = 'none';
                 katZitEl.style.display = 'block';
-                katZitEl.textContent   = randomZitEmoji();
+                katZitEl.textContent = randomZitEmoji();
                 emojiWisselInterval = setInterval(() => {
                     katZitEl.textContent = randomZitEmoji();
                 }, 2000);
@@ -346,17 +338,17 @@ function katLandt(doelX, doelY) {
 
 function springWeg(doelX, doelY) {
     clearInterval(emojiWisselInterval);
-    emojiWisselInterval  = null;
+    emojiWisselInterval = null;
     katZitEl.style.display = 'none';
-    katEl.textContent      = KAT_SPRINGEND;
-    katEl.style.display    = 'block';
-    katEl.style.left       = doelX + 'px';
-    katEl.style.top        = doelY + 'px';
+    katEl.textContent = KAT_SPRINGEND;
+    katEl.style.display = 'block';
+    katEl.style.left = doelX + 'px';
+    katEl.style.top = doelY + 'px';
     const naarRechts = doelX < window.innerWidth / 2;
-    const eindX      = naarRechts ? window.innerWidth + 80 : -100;
+    const eindX = naarRechts ? window.innerWidth + 80 : -100;
     const boogHoogte = 110 + Math.random() * 80;
     const springDuur = 650 + Math.random() * 200;
-    katEl.style.transform  = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
+    katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
     animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
         katEl.style.display = 'none';
         startBtn.classList.remove('geen-pulse');
@@ -373,17 +365,16 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI ANIMATIE - GEEN NUMMERS ==========
-const ZINNEN = [
+// ========== GRAFFITI ANIMATIE ==========
+const GRAFFITI_ZINNEN = [
     'WINNEN WINNEN WINNEN!',
     'TB is het beste',
     'DOEN DOEN DOEN!',
-    'Mechanic Four'
+    'TB #1',
+    'Mechanic 4'
 ];
 
-console.log('📝 Zinnen:', ZINNEN);
-
-const KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
+const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
 const graffitiText = document.getElementById('graffitiText');
@@ -394,6 +385,13 @@ let graffitiBezig = false;
 let vorigeZin = null;
 let graffitiY = 0;
 let graffitiHoogte = 0;
+
+// Pre-load de font
+document.fonts.load('48px GrafSpray').then(() => {
+    console.log('✅ GrafSpray font geladen');
+}).catch(() => {
+    console.log('❌ GrafSpray font NIET geladen');
+});
 
 function wachtEnSprayGraffiti() {
     const wachttijd = 2000 + Math.random() * 3000;
@@ -406,20 +404,16 @@ function startGraffitiAnimatie() {
 
     let zin;
     do {
-        zin = ZINNEN[Math.floor(Math.random() * ZINNEN.length)];
-    } while (zin === vorigeZin && ZINNEN.length > 1);
+        zin = GRAFFITI_ZINNEN[Math.floor(Math.random() * GRAFFITI_ZINNEN.length)];
+    } while (zin === vorigeZin && GRAFFITI_ZINNEN.length > 1);
     vorigeZin = zin;
 
-    const kleur = KLEUREN[Math.floor(Math.random() * KLEUREN.length)];
-    console.log('🎨 ZIN:', zin, '| KLEUR:', kleur);
+    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
 
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
-    
-    // LAGER: 70% naar beneden
     const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    const centerY = knopRect.bottom + (beschikbareRuimte * 0.7);
-    console.log('📍 Positie Y:', centerY);
+    const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
     graffitiText.style.color = kleur;
@@ -427,22 +421,27 @@ function startGraffitiAnimatie() {
 
     const maxWidth = window.innerWidth - 60;
     let fontSize = 48;
+
+    // Probeer eerst de custom font, dan Comic Sans als test
+    graffitiText.style.fontFamily = 'GrafSpray, "Comic Sans MS", cursive';
+    graffitiText.style.fontWeight = 'bold';
     
     const tempText = document.createElement('span');
-    tempText.style.fontFamily = "'AerosolSpray', 'Brush Script MT', cursive";
+    tempText.style.fontFamily = graffitiText.style.fontFamily;
+    tempText.style.fontWeight = 'bold';
     tempText.style.fontSize = fontSize + 'px';
     tempText.style.visibility = 'hidden';
     tempText.style.position = 'absolute';
     tempText.textContent = zin;
     document.body.appendChild(tempText);
-    
+
     while (tempText.offsetWidth > maxWidth && fontSize > 24) {
         fontSize -= 2;
         tempText.style.fontSize = fontSize + 'px';
     }
     
     const computedFont = window.getComputedStyle(tempText).fontFamily;
-    console.log('🔤 Font:', computedFont);
+    console.log('📝 Werkelijke font gebruikt:', computedFont);
     
     document.body.removeChild(tempText);
 
@@ -451,51 +450,44 @@ function startGraffitiAnimatie() {
     graffitiContainer.style.top = (centerY - fontSize / 2) + 'px';
     graffitiContainer.style.display = 'block';
 
-    // Splits in letters
     const letters = zin.split('');
     letters.forEach(letter => {
         const span = document.createElement('span');
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
-        span.style.opacity = '0';
-        span.style.display = 'inline-block';
         graffitiText.appendChild(span);
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
-    console.log('📊 Animeer', spans.length, 'letters');
-    
-    // Animeer elke letter
+
     spans.forEach((span, index) => {
         setTimeout(() => {
             animeerSchrijfLetter(span);
-        }, index * 60);
+        }, index * 50);
     });
 
-    const totaalSchrijfTijd = letters.length * 60;
     const staanTijd = 3000 + Math.random() * 2000;
-    
-    setTimeout(() => veegGraffitiWeg(), totaalSchrijfTijd + staanTijd);
+    setTimeout(() => veegGraffitiWeg(), letters.length * 50 + staanTijd);
 }
 
 function animeerSchrijfLetter(span) {
     const duur = 200;
     const start = performance.now();
-    
+
     function frame(nu) {
         const t = Math.min((nu - start) / duur, 1);
         const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        
+
         const x = -30 * (1 - ease);
         const y = -10 * (1 - ease) + Math.sin(ease * Math.PI) * 5;
         const rot = -12 * (1 - ease);
         const scale = 0.6 + 0.4 * ease;
         const blur = 5 * (1 - ease);
-        
+
         span.style.opacity = ease;
         span.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
         span.style.filter = `blur(${blur}px)`;
-        
+
         if (t < 1) {
             requestAnimationFrame(frame);
         } else {
@@ -508,14 +500,13 @@ function animeerSchrijfLetter(span) {
 }
 
 function veegGraffitiWeg() {
-    console.log('🧽 Spons');
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
     const sponsSize = 96;
     const startX = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
-    const snelheid = 7;
+    const snelheid = 3;
 
     let x = startX;
 
@@ -539,7 +530,6 @@ function veegGraffitiWeg() {
             graffitiContainer.style.display = 'none';
             graffitiText.innerHTML = '';
             graffitiBezig = false;
-            console.log('✅ Klaar');
             wachtEnSprayGraffiti();
         }
     }
@@ -548,7 +538,6 @@ function veegGraffitiWeg() {
 
 wachtEnSpringSoms();
 setTimeout(wachtEnSprayGraffiti, 1000);
-console.log('🚀 Alles gestart');
 </script>
 
 </body>
