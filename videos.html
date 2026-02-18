@@ -85,15 +85,15 @@ header {
     flex: 1;
     min-height: 0;
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
 }
 
 .jasper-quote {
     flex: 1;
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     justify-content: center;
-    padding: 18px 8px 0 12px;
+    padding: 0 8px 0 12px;
 }
 
 .quote-bubble {
@@ -107,14 +107,14 @@ header {
     line-height: 1.45;
     max-width: 155px;
     position: relative;
+    margin-bottom: 0;
 }
 
 .quote-bubble::after {
     content: '';
     position: absolute;
     right: -13px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
     border: 8px solid transparent;
     border-left-color: #fff;
     border-right: 0;
@@ -126,7 +126,6 @@ header {
     flex-shrink: 0;
     line-height: 0;
     align-self: flex-end;
-    margin-top: auto;
 }
 .jasper-gif img { width: 100%; display: block; }
 
