@@ -15,126 +15,124 @@
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-
 html, body { height: 100%; overflow: hidden; }
-
 html { background-color: #00c300; }
-
-body {
-    background-color: #fbfdfa;
-    display: flex;
-    flex-direction: column;
-}
+body { background-color: #fbfdfa; display: flex; flex-direction: column; }
 
 header {
-    background-color: #00c300;
-    color: #fff;
-    height: 70px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    position: relative;
-    z-index: 10;
+    background-color: #00c300; color: #fff; height: 70px; flex-shrink: 0;
+    display: flex; align-items: center; padding: 0 20px; position: relative; z-index: 10;
 }
-
 .back-button {
-    background-color: #fff;
-    color: #00c300;
-    border: none;
-    border-radius: 25px;
-    padding: 7px 12px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.95rem;
-    flex-shrink: 0;
+    background-color: #fff; color: #00c300; border: none; border-radius: 25px;
+    padding: 7px 12px; cursor: pointer; font-weight: bold; font-size: 0.95rem; flex-shrink: 0;
 }
-
 .header-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 8px; white-space: nowrap;
 }
-
 .kpn-logo { height: 38px; }
-
-.header-title {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: #fff;
-}
-
+.header-title { font-size: 1.3rem; font-weight: bold; color: #fff; }
 .countdown {
-    font-size: 0.65rem;
-    color: #fff;
-    position: absolute;
-    right: 15px;
-    text-align: center;
-    line-height: 1.3;
-    font-weight: bold;
+    font-size: 0.65rem; color: #fff; position: absolute; right: 15px;
+    text-align: center; line-height: 1.3; font-weight: bold;
 }
 
-/* Twee kolommen: tekst links, gif rechts — tekst loopt door tot bovenaan gif */
+/* MAIN: tekst links in 2 kolommen, rechts ballon + Alberto */
 .main-section {
     flex: 1;
     min-height: 0;
     display: flex;
     align-items: stretch;
-    padding: 25px 0 0 20px;
+    padding: 20px 0 0 16px;
 }
 
-.content {
+/* TEKST SECTIE: 2 kolommen */
+.text-section {
     flex: 1;
-    padding-right: 15px;
-    overflow-y: auto;
-    padding-top: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-right: 8px;
+    padding-top: 4px;
 }
 
-.content h2 {
-    margin-bottom: 18px;
+.text-section h2 {
     color: #00a000;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
-.content p {
-    margin-bottom: 15px;
-    line-height: 1.6;
-    font-size: 0.95rem;
+.text-columns {
+    flex: 1;
+    column-count: 2;
+    column-gap: 12px;
+    overflow: hidden;
+    font-size: 0.8rem;
+    line-height: 1.55;
     color: #333;
 }
 
-/* Alberto staat rechts, onderaan — tekst loopt naast hem door tot bovenaan */
-.alberto-section {
-    width: 52vw;
+.text-columns p {
+    margin-bottom: 10px;
+    break-inside: avoid;
+}
+
+/* RECHTER SECTIE: tekstballon boven Alberto gif */
+.right-section {
+    width: 58vw;
     flex-shrink: 0;
-    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.quote-bubble {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 10px 13px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    font-size: 0.78rem;
+    color: #333;
+    font-style: italic;
+    line-height: 1.45;
+    max-width: 130px;
+    position: relative;
+    margin-left: 10px;
+    margin-bottom: 8px;
+    align-self: flex-start;
+}
+
+/* Pijl wijst naar rechts (naar Alberto) */
+.quote-bubble::after {
+    content: '';
+    position: absolute;
+    right: -13px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-left-color: #fff;
+    border-right: 0;
+    filter: drop-shadow(3px 1px 2px rgba(0,0,0,0.08));
+}
+
+.alberto-gif {
+    width: 100%;
     line-height: 0;
 }
-
-.alberto-section img {
-    width: 100%;
-    display: block;
-}
+.alberto-gif img { width: 100%; display: block; }
 
 footer {
-    background-color: #00c300;
-    color: #fff;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
+    background-color: #00c300; color: #fff; text-align: center;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
     padding-bottom: env(safe-area-inset-bottom, 0px);
     min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -147,16 +145,25 @@ footer {
 </header>
 
 <div class="main-section">
-    <div class="content">
+
+    <div class="text-section">
         <h2>Hoe werkt Mechanic 4?</h2>
-        <p id="text1"></p>
-        <p id="text2"></p>
-        <p id="text3"></p>
+        <div class="text-columns">
+            <p id="text1"></p>
+            <p id="text2"></p>
+            <p id="text3"></p>
+        </div>
     </div>
 
-    <div class="alberto-section">
-        <img src="images/mechanics/m4-alberto.gif" alt="Alberto">
+    <div class="right-section">
+        <div class="quote-bubble">
+            Hier komt jouw tekst later! ✏️
+        </div>
+        <div class="alberto-gif">
+            <img src="images/mechanics/m4-alberto.gif" alt="Alberto">
+        </div>
     </div>
+
 </div>
 
 <footer>&copy; KPN 2026</footer>
