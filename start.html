@@ -163,7 +163,6 @@ header {
 
 .graffiti-letter {
     display: inline-block;
-    opacity: 0;
 }
 
 .spons {
@@ -372,7 +371,12 @@ function easeInOut(t) {
 }
 
 // ========== GRAFFITI ANIMATIE MET SCHRIJF-EFFECT ==========
-const ZINNEN = ['WINNEN WINNEN WINNEN!', 'TB is het beste', 'DOEN DOEN DOEN!', 'TB #1', 'Mechanic 4'];
+const ZINNEN = [
+    'WINNEN WINNEN WINNEN!',
+    'TB is het beste',
+    'DOEN DOEN DOEN!',
+    'Mechanic Four'
+];
 const KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
@@ -404,8 +408,10 @@ function startGraffitiAnimatie() {
 
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+    
+    // LAGER: 70% naar beneden ipv 50%
     const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    const centerY = knopRect.bottom + (beschikbareRuimte / 2);
+    const centerY = knopRect.bottom + (beschikbareRuimte * 0.7);
 
     graffitiY = centerY;
     graffitiText.style.color = kleur;
@@ -439,20 +445,31 @@ function startGraffitiAnimatie() {
         const span = document.createElement('span');
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
+        
+        // FORCE opacity 0 in JavaScript
+        span.style.opacity = '0';
+        span.style.display = 'inline-block';
+        
         graffitiText.appendChild(span);
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
+    console.log('📝 Animeer', spans.length, 'letters');
     
     // Animeer elke letter
     spans.forEach((span, index) => {
         setTimeout(() => {
+            console.log('✍️ Letter', index);
             animeerSchrijfLetter(span);
         }, index * 60);
     });
 
+    const totaalSchrijfTijd = letters.length * 60;
     const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
+    
+    console.log('⏱️ Schrijf:', totaalSchrijfTijd, 'ms, Staan:', staanTijd, 'ms');
+    
+    setTimeout(() => veegGraffitiWeg(), totaalSchrijfTijd + staanTijd);
 }
 
 function animeerSchrijfLetter(span) {
@@ -485,6 +502,7 @@ function animeerSchrijfLetter(span) {
 }
 
 function veegGraffitiWeg() {
+    console.log('🧽 Spons start bij Y=' + graffitiY);
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
@@ -515,6 +533,7 @@ function veegGraffitiWeg() {
             graffitiContainer.style.display = 'none';
             graffitiText.innerHTML = '';
             graffitiBezig = false;
+            console.log('✅ Spons klaar');
             wachtEnSprayGraffiti();
         }
     }
@@ -523,6 +542,7 @@ function veegGraffitiWeg() {
 
 wachtEnSpringSoms();
 setTimeout(wachtEnSprayGraffiti, 1000);
+console.log('🚀 Start');
 </script>
 
 </body>
