@@ -15,16 +15,8 @@
 
 <style>
 @font-face {
-    font-family: 'GraffitiFont';
-    src: url('fonts/grafitti_1.otf?v=2') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: block;
-}
-
-@font-face {
-    font-family: 'Aerosoldier';
-    src: url('fonts/grafitti_1.otf?v=2') format('opentype');
+    font-family: GraffitiSpray;
+    src: url('fonts/grafitti_1.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -164,8 +156,6 @@ header {
 }
 
 .graffiti-text {
-    font-family: GraffitiFont, Aerosoldier, 'Brush Script MT', cursive !important;
-    font-weight: normal;
     white-space: nowrap;
     display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
@@ -258,11 +248,8 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// Service Worker uitschakelen voor nu (om cache te vermijden)
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(reg => reg.unregister());
-    });
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
 // ========== KAT ANIMATIE ==========
@@ -426,6 +413,9 @@ function startGraffitiAnimatie() {
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
+    
+    // FORCE font via inline style
+    graffitiText.style.fontFamily = "GraffitiSpray, 'Brush Script MT', cursive";
     graffitiText.style.color = kleur;
     graffitiText.innerHTML = '';
 
@@ -433,7 +423,7 @@ function startGraffitiAnimatie() {
     let fontSize = 48;
     
     const tempText = document.createElement('span');
-    tempText.style.fontFamily = "GraffitiFont, Aerosoldier, 'Brush Script MT', cursive";
+    tempText.style.fontFamily = "GraffitiSpray, 'Brush Script MT', cursive";
     tempText.style.fontSize = fontSize + 'px';
     tempText.style.visibility = 'hidden';
     tempText.style.position = 'absolute';
