@@ -16,9 +16,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
 
-html {
-    background-color: #00c300;
-}
+html { background-color: #00c300; }
 
 body {
     background-color: #eae9ec;
@@ -140,29 +138,22 @@ header {
     left: 50%;
     transform: translateX(-50%);
     pointer-events: none;
-    z-index: 50;
+    z-index: 100;
     display: none;
     text-align: center;
-    padding: 0 30px;
-    max-width: 100%;
 }
 
 .graffiti-text {
     font-family: 'Brush Script MT', cursive;
+    font-size: 48px;
     white-space: nowrap;
-    display: inline-block;
     filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4));
-}
-
-.graffiti-letter {
-    display: inline-block;
-    opacity: 0;
 }
 
 .spons {
     position: fixed;
     font-size: 6rem;
-    z-index: 60;
+    z-index: 110;
     pointer-events: none;
     display: none;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
@@ -173,7 +164,7 @@ header {
     position: fixed;
     background-color: #eae9ec;
     pointer-events: none;
-    z-index: 55;
+    z-index: 105;
     display: none;
 }
 
@@ -364,163 +355,78 @@ function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-// ========== GRAFFITI ANIMATIE ==========
-const GRAFFITI_ZINNEN = [
-    'WINNEN WINNEN WINNEN!',
-    'TB is het beste',
-    'DOEN DOEN DOEN!',
-    'TB #1',
-    'Mechanic 4'
-];
-
-const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
+// ========== GRAFFITI ANIMATIE - SIMPEL ELKE 8 SECONDEN ==========
+const ZINNEN = ['WINNEN WINNEN WINNEN!', 'TB is het beste', 'DOEN DOEN DOEN!', 'TB #1', 'Mechanic 4'];
+const KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
 const graffitiText = document.getElementById('graffitiText');
 const spons = document.getElementById('spons');
 const wipeOverlay = document.getElementById('wipeOverlay');
 
-let graffitiBezig = false;
-let vorigeZin = null;
-let graffitiY = 0;
-let graffitiHoogte = 0;
+let teller = 0;
 
-function wachtEnSprayGraffiti() {
-    const wachttijd = 2000 + Math.random() * 3000;
-    setTimeout(startGraffitiAnimatie, wachttijd);
-}
-
-function startGraffitiAnimatie() {
-    if (graffitiBezig) return;
-    graffitiBezig = true;
-
-    let zin;
-    do {
-        zin = GRAFFITI_ZINNEN[Math.floor(Math.random() * GRAFFITI_ZINNEN.length)];
-    } while (zin === vorigeZin && GRAFFITI_ZINNEN.length > 1);
-    vorigeZin = zin;
-
-    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
-
-    const knopRect = startBtn.getBoundingClientRect();
-    const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
-    const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    const centerY = knopRect.bottom + (beschikbareRuimte / 2);
-
-    graffitiY = centerY;
-    graffitiText.style.color = kleur;
-    graffitiText.innerHTML = '';
-
-    const maxWidth = window.innerWidth - 60;
-    let fontSize = 48;
-    
-    const tempText = document.createElement('span');
-    tempText.style.fontFamily = "'Brush Script MT', cursive";
-    tempText.style.fontSize = fontSize + 'px';
-    tempText.style.visibility = 'hidden';
-    tempText.style.position = 'absolute';
-    tempText.textContent = zin;
-    document.body.appendChild(tempText);
-    
-    while (tempText.offsetWidth > maxWidth && fontSize > 24) {
-        fontSize -= 2;
-        tempText.style.fontSize = fontSize + 'px';
+function toonGraffiti() {
+    try {
+        console.log('🎨 Graffiti #' + teller);
+        teller++;
+        
+        const zin = ZINNEN[Math.floor(Math.random() * ZINNEN.length)];
+        const kleur = KLEUREN[Math.floor(Math.random() * KLEUREN.length)];
+        
+        const knopRect = startBtn.getBoundingClientRect();
+        const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+        const centerY = knopRect.bottom + ((gifRect.top - knopRect.bottom) / 2);
+        
+        graffitiText.textContent = zin;
+        graffitiText.style.color = kleur;
+        graffitiContainer.style.top = (centerY - 24) + 'px';
+        graffitiContainer.style.display = 'block';
+        
+        setTimeout(() => veegWeg(centerY), 3000);
+    } catch (e) {
+        console.error('❌ Error:', e);
     }
-    document.body.removeChild(tempText);
-
-    graffitiText.style.fontSize = fontSize + 'px';
-    graffitiHoogte = fontSize * 2;
-    graffitiContainer.style.top = (centerY - fontSize / 2) + 'px';
-    graffitiContainer.style.display = 'block';
-
-    const letters = zin.split('');
-    letters.forEach(letter => {
-        const span = document.createElement('span');
-        span.className = 'graffiti-letter';
-        span.textContent = letter === ' ' ? '\u00A0' : letter;
-        graffitiText.appendChild(span);
-    });
-
-    const spans = graffitiText.querySelectorAll('.graffiti-letter');
-    
-    spans.forEach((span, index) => {
-        setTimeout(() => {
-            animeerSchrijfLetter(span);
-        }, index * 60);
-    });
-
-    const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
 }
 
-function animeerSchrijfLetter(span) {
-    const duur = 200;
-    const start = performance.now();
-    
-    function frame(nu) {
-        const t = Math.min((nu - start) / duur, 1);
-        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        
-        const x = -30 * (1 - ease);
-        const y = -10 * (1 - ease) + Math.sin(ease * Math.PI) * 5;
-        const rot = -12 * (1 - ease);
-        const scale = 0.6 + 0.4 * ease;
-        const blur = 5 * (1 - ease);
-        
-        span.style.opacity = ease;
-        span.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
-        span.style.filter = `blur(${blur}px)`;
-        
-        if (t < 1) {
-            requestAnimationFrame(frame);
-        } else {
-            span.style.transform = 'none';
-            span.style.filter = 'none';
-            span.style.opacity = '1';
-        }
-    }
-    requestAnimationFrame(frame);
-}
-
-function veegGraffitiWeg() {
+function veegWeg(centerY) {
+    console.log('🧽 Spons');
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
 
-    const sponsSize = 96;
-    const startX = -sponsSize;
-    const eindX = window.innerWidth + sponsSize;
-    const snelheid = 7;
-
-    let x = startX;
-
-    function animeerSpons() {
-        x += snelheid;
-
+    let x = -96;
+    function animeer() {
+        x += 7;
         spons.style.left = x + 'px';
-        spons.style.top = (graffitiY - 48) + 'px';
+        spons.style.top = (centerY - 48) + 'px';
 
-        const overlayCenterX = x + (sponsSize / 2);
         wipeOverlay.style.left = '0';
-        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
-        wipeOverlay.style.width = overlayCenterX + 'px';
-        wipeOverlay.style.height = graffitiHoogte + 'px';
+        wipeOverlay.style.top = (centerY - 48) + 'px';
+        wipeOverlay.style.width = (x + 48) + 'px';
+        wipeOverlay.style.height = '96px';
 
-        if (x < eindX) {
-            requestAnimationFrame(animeerSpons);
+        if (x < window.innerWidth + 96) {
+            requestAnimationFrame(animeer);
         } else {
             spons.style.display = 'none';
             wipeOverlay.style.display = 'none';
             graffitiContainer.style.display = 'none';
-            graffitiText.innerHTML = '';
-            graffitiBezig = false;
-            wachtEnSprayGraffiti();
+            console.log('✅ Klaar');
         }
     }
-    requestAnimationFrame(animeerSpons);
+    requestAnimationFrame(animeer);
 }
 
+// GEGARANDEERDE HERHALING - elke 8 seconden
+setInterval(toonGraffiti, 8000);
+
+// Start eerste na 2 sec
+setTimeout(toonGraffiti, 2000);
+
+// Start kat
 wachtEnSpringSoms();
-setTimeout(wachtEnSprayGraffiti, 1000);
+
+console.log('🚀 Alles gestart');
 </script>
 
 </body>
