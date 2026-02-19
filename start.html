@@ -405,8 +405,8 @@ function startGraffitiAnimatie() {
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
     const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    // HOGER: van 50% naar 35% van de ruimte
-    const centerY = knopRect.bottom + (beschikbareRuimte * 0.35);
+    // NOG HOGER: van 35% naar 30%
+    const centerY = knopRect.bottom + (beschikbareRuimte * 0.30);
 
     graffitiY = centerY;
     graffitiText.innerHTML = '';
@@ -443,7 +443,6 @@ function startGraffitiAnimatie() {
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
         
-        // Force font op elk span
         span.style.fontFamily = fontStack;
         span.style.fontWeight = 'bold';
         span.style.color = kleur;
@@ -455,32 +454,41 @@ function startGraffitiAnimatie() {
 
     spans.forEach((span, index) => {
         setTimeout(() => {
-            animeerSchrijfLetter(span);
-        }, index * 50);
+            animeerSprayLetter(span);
+        }, index * 60); // Iets langzamer voor meer zichtbaarheid
     });
 
     const staanTijd = 3000 + Math.random() * 2000;
-    setTimeout(() => veegGraffitiWeg(), letters.length * 50 + staanTijd);
+    setTimeout(() => veegGraffitiWeg(), letters.length * 60 + staanTijd);
 }
 
-function animeerSchrijfLetter(span) {
-    const duur = 200;
+function animeerSprayLetter(span) {
+    const duur = 300; // Langer voor meer zichtbare spray
     const start = performance.now();
-
+    
+    // UNIEKE random start voor elke letter - spray effect!
+    const randomAngle = (Math.random() - 0.5) * 60; // -30° tot +30°
+    const randomDist = 20 + Math.random() * 30; // 20-50px afstand
+    const startX = Math.cos(randomAngle * Math.PI / 180) * randomDist;
+    const startY = Math.sin(randomAngle * Math.PI / 180) * randomDist;
+    const startRot = (Math.random() - 0.5) * 40; // -20° tot +20°
+    const startScale = 0.3 + Math.random() * 0.2; // 0.3-0.5
+    
     function frame(nu) {
         const t = Math.min((nu - start) / duur, 1);
-        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-
-        const x = -30 * (1 - ease);
-        const y = -10 * (1 - ease) + Math.sin(ease * Math.PI) * 5;
-        const rot = -12 * (1 - ease);
-        const scale = 0.6 + 0.4 * ease;
-        const blur = 5 * (1 - ease);
-
+        // Snellere ease in - alsof de verf "spat"
+        const ease = t < 0.3 ? (t / 0.3) * 0.5 : 0.5 + (t - 0.3) / 0.7 * 0.5;
+        
+        const x = startX * (1 - ease);
+        const y = startY * (1 - ease);
+        const rot = startRot * (1 - ease);
+        const scale = startScale + (1 - startScale) * ease;
+        const blur = 8 * (1 - ease); // Meer blur voor spray effect
+        
         span.style.opacity = ease;
         span.style.transform = `translateX(${x}px) translateY(${y}px) rotate(${rot}deg) scale(${scale})`;
         span.style.filter = `blur(${blur}px)`;
-
+        
         if (t < 1) {
             requestAnimationFrame(frame);
         } else {
@@ -499,7 +507,7 @@ function veegGraffitiWeg() {
     const sponsSize = 96;
     const startX = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
-    const snelheid = 5; // Was 3, nu 5 (sneller!)
+    const snelheid = 6; // Was 5, nu 6!
 
     let x = startX;
 
