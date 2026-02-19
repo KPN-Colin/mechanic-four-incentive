@@ -3,47 +3,152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Mechanic 4 - Test</title>
+<title>Mechanic 4</title>
+<link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
+<link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#00c300">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
 
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
+
+html { 
+    background-color: #00c300;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+}
 
 body {
     background-color: #eae9ec;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    min-height: -webkit-fill-available;
 }
 
 header {
     background-color: #00c300;
     height: 70px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
+    padding: 0 20px;
+    position: relative;
 }
 
-header h1 {
-    color: white;
-    font-size: 1.5rem;
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kpn-logo { height: 38px; }
+
+.header-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #fff;
 }
 
 .middle-section {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: visible;
+    z-index: 0;
+}
+
+.welcome {
+    font-size: 2.6rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 0;
+}
+
+.knop-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-top: 60px;
+}
+
+.start-button {
+    display: block;
+    padding: 20px 60px;
+    font-size: 1.4rem;
+    background-color: #00c300;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 6px 20px rgba(0,195,0,0.3);
+    animation: pulse 2.5s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.start-button.geen-pulse {
+    animation: none !important;
+    transform: scale(1) !important;
+    box-shadow: 0 6px 20px rgba(0,195,0,0.3) !important;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(0,195,0,0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,195,0,0.5); }
+}
+
+.start-button:active {
+    transform: scale(0.95) !important;
+    animation: none;
+}
+
+.kat {
+    position: fixed;
+    font-size: 3.2rem;
+    z-index: 10;
+    pointer-events: none;
+    display: none;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
+}
+
+.kat-zit {
+    position: absolute;
+    font-size: 2.4rem;
+    top: -38px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    z-index: 5;
+    line-height: 1;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
 }
 
 .graffiti-container {
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
+    pointer-events: none;
     z-index: 3;
+    display: none;
+    text-align: center;
+    max-width: 95%;
+}
+
+.graffiti-container.actief {
+    display: block;
 }
 
 .graffiti-container svg * {
@@ -78,6 +183,7 @@ header h1 {
     pointer-events: none;
     display: none;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
 }
 
 .wipe-overlay {
@@ -88,11 +194,32 @@ header h1 {
     display: none;
 }
 
+.gif-section {
+    flex: 0 0 38vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.gif-section img {
+    width: 100%;
+    display: block;
+}
+
 footer {
     background-color: #00c300;
     color: #fff;
     text-align: center;
-    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    min-height: 55px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 </style>
 </head>
@@ -100,33 +227,184 @@ footer {
 <body>
 
 <header>
-    <h1>Graffiti Test</h1>
+    <div class="header-center">
+        <img src="images/logo/kpn-logo.png" class="kpn-logo">
+        <span class="header-title">Mechanic 4</span>
+    </div>
 </header>
 
-<div class="middle-section">
+<div class="middle-section" id="middleSection">
+    <div class="welcome">Hoi Colin,</div>
+
+    <div class="knop-wrapper" id="knopWrapper">
+        <span class="kat-zit" id="katZit">😸</span>
+        <button class="start-button" id="startBtn" onclick="window.location.href='index.html'">Start</button>
+    </div>
+
     <div class="graffiti-container" id="graffitiContainer"></div>
     <div class="wipe-overlay" id="wipeOverlay"></div>
     <div class="spons" id="spons">🧽</div>
 </div>
 
+<div class="kat" id="kat">🐈</div>
+
+<div class="gif-section">
+    <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
+</div>
+
 <footer>&copy; KPN 2026</footer>
 
 <script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
+}
+
+console.log('🚀 Start');
+
+// ========== KAT ANIMATIE ==========
+const KAT_SPRINGEND = '🐈';
+const KAT_ZITTEND = ['😺', '😼', '😸', '😹'];
+
+const katEl = document.getElementById('kat');
+const katZitEl = document.getElementById('katZit');
+const startBtn = document.getElementById('startBtn');
+
+let katBezig = false;
+let volgendeKantVanLinks = Math.random() < 0.5;
+let emojiWisselInterval = null;
+
+function wachtEnSpringSoms() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    setTimeout(startKatAnimatie, wachttijd);
+}
+
+function startKatAnimatie() {
+    if (katBezig) return;
+    katBezig = true;
+    startBtn.classList.add('geen-pulse');
+
+    setTimeout(() => {
+        const knopRect = startBtn.getBoundingClientRect();
+        const doelX = knopRect.left + knopRect.width / 2 - 24;
+        const doelY = knopRect.top - 51;
+
+        const vanLinks = volgendeKantVanLinks;
+        volgendeKantVanLinks = !volgendeKantVanLinks;
+
+        const startX = vanLinks ? -80 : window.innerWidth + 20;
+        const boogHoogte = 130 + Math.random() * 80;
+        const springDuur = 750 + Math.random() * 200;
+
+        katEl.textContent = KAT_SPRINGEND;
+        katEl.style.display = 'block';
+        katEl.style.left = startX + 'px';
+        katEl.style.top = doelY + 'px';
+        katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
+
+        animeerBoog(startX, doelY, doelX, doelY, boogHoogte, springDuur, vanLinks, () => katLandt(doelX, doelY));
+    }, 220);
+}
+
+function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
+    const start = performance.now();
+    function stap(nu) {
+        const t = Math.min((nu - start) / duur, 1);
+        const eT = easeInOut(t);
+        const x = x0 + (x1 - x0) * eT;
+        const y = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
+        const rotatie = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
+        const spiegelX = vanLinks ? -1 : 1;
+        katEl.style.left = x + 'px';
+        katEl.style.top = y + 'px';
+        katEl.style.transform = `scaleX(${spiegelX}) rotate(${rotatie}deg)`;
+        if (t < 1) requestAnimationFrame(stap);
+        else klaar();
+    }
+    requestAnimationFrame(stap);
+}
+
+function katLandt(doelX, doelY) {
+    const bounceStart = performance.now();
+    function bounce(nu) {
+        const t = Math.min((nu - bounceStart) / 220, 1);
+        const bounceY = doelY + Math.sin(t * Math.PI) * 10;
+        katEl.style.top = bounceY + 'px';
+        katEl.style.transform = 'scaleX(1) rotate(0deg)';
+        if (t < 1) {
+            requestAnimationFrame(bounce);
+        } else {
+            katEl.style.top = doelY + 'px';
+            setTimeout(() => {
+                katEl.style.display = 'none';
+                katZitEl.style.display = 'block';
+                katZitEl.textContent = randomZitEmoji();
+                emojiWisselInterval = setInterval(() => {
+                    katZitEl.textContent = randomZitEmoji();
+                }, 2000);
+                const zitTijd = 4000 + Math.random() * 4000;
+                setTimeout(() => springWeg(doelX, doelY), zitTijd);
+            }, 1000);
+        }
+    }
+    requestAnimationFrame(bounce);
+}
+
+function springWeg(doelX, doelY) {
+    clearInterval(emojiWisselInterval);
+    emojiWisselInterval = null;
+    katZitEl.style.display = 'none';
+    katEl.textContent = KAT_SPRINGEND;
+    katEl.style.display = 'block';
+    katEl.style.left = doelX + 'px';
+    katEl.style.top = doelY + 'px';
+    const naarRechts = doelX < window.innerWidth / 2;
+    const eindX = naarRechts ? window.innerWidth + 80 : -100;
+    const boogHoogte = 110 + Math.random() * 80;
+    const springDuur = 650 + Math.random() * 200;
+    katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
+    animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
+        katEl.style.display = 'none';
+        startBtn.classList.remove('geen-pulse');
+        katBezig = false;
+        wachtEnSpringSoms();
+    });
+}
+
+function randomZitEmoji() {
+    return KAT_ZITTEND[Math.floor(Math.random() * KAT_ZITTEND.length)];
+}
+
+function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+// ========== GRAFFITI SVG ANIMATIE (ALLEEN WINNEN) ==========
+const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
+
 const graffitiContainer = document.getElementById('graffitiContainer');
 const spons = document.getElementById('spons');
 const wipeOverlay = document.getElementById('wipeOverlay');
 
-let sprayParticles = [];
+let graffitiBezig = false;
 let graffitiY = 0;
 let graffitiHoogte = 0;
+let sprayParticles = [];
 
-async function testGraffiti() {
-    console.log('🎨 START TEST');
+function startGraffitiLoop() {
+    setTimeout(startGraffitiAnimatie, 1000);
+}
+
+async function startGraffitiAnimatie() {
+    console.log('🎨 START');
     
-    const kleur = '#FF6B35'; // Oranje
-    
+    if (graffitiBezig) return;
+    graffitiBezig = true;
+
+    const svgUrl = '/fonts/winnen-winnen-winnen.svg';
+    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
+
     try {
-        const response = await fetch('/fonts/winnen-winnen-winnen.svg');
+        const response = await fetch(svgUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         let svgText = await response.text();
@@ -140,8 +418,6 @@ async function testGraffiti() {
         
         const svg = graffitiContainer.querySelector('svg');
         if (!svg) throw new Error('Geen SVG');
-        
-        console.log('✅ SVG geladen');
         
         // Converteer MM naar PX
         const MM_TO_PX = 3.779527559;
@@ -199,13 +475,14 @@ async function testGraffiti() {
             }
         });
         
-        console.log('🛤️ Paths gevonden:', paths.length);
+        console.log('🛤️ Paths:', paths.length);
         
-        if (paths.length === 0) throw new Error('Geen paths!');
+        if (paths.length === 0) throw new Error('Geen paths');
         
-        // Schaal naar 60% van scherm breedte
-        const maxWidth = window.innerWidth * 0.60;
-        let schaal = maxWidth / widthPX;
+        // GROTER: delen door 4 ipv 6
+        const maxWidth = window.innerWidth * 0.85;
+        let schaal = Math.max(10, maxWidth / widthPX);
+        schaal = schaal / 4; // Groter!
         
         const nieuweWidth = widthPX * schaal;
         const nieuweHeight = heightPX * schaal;
@@ -214,19 +491,25 @@ async function testGraffiti() {
         svg.style.height = nieuweHeight + 'px';
         svg.style.display = 'block';
         
-        console.log('📏 Grootte:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight), 'px');
+        console.log('📏 Size:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight), 'px');
         
-        // Positioneer gecentreerd
-        graffitiY = window.innerHeight / 2;
+        // Positioneer: MIDDEN tussen button en gif
+        const knopRect = startBtn.getBoundingClientRect();
+        const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+        const beschikbareRuimte = gifRect.top - knopRect.bottom;
+        const centerY = knopRect.bottom + (beschikbareRuimte * 0.50);
+        
+        graffitiY = centerY;
         graffitiHoogte = nieuweHeight * 1.5;
         
-        // Animeer na 1 seconde
-        await new Promise(r => setTimeout(r, 1000));
+        graffitiContainer.style.top = (centerY - nieuweHeight / 2) + 'px';
+        graffitiContainer.classList.add('actief');
         
-        console.log('🎬 Start schrijven');
+        console.log('📍 Y:', Math.round(centerY));
         
+        // Animeer
         let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
-        const schrijfDuur = 2500;
+        const schrijfDuur = 2000;
         let cumulativeLength = 0;
         let vorigePoint = null;
         
@@ -253,11 +536,15 @@ async function testGraffiti() {
                     
                     path.style.strokeDashoffset = length * (1 - t);
                     
-                    // Spray effect
+                    // Spray - GEBRUIK ABSOLUTE POSITIE
                     if (Math.random() < 0.5 && t < 0.95) {
                         try {
                             const point = path.getPointAtLength(length * t);
-                            const containerRect = graffitiContainer.getBoundingClientRect();
+                            
+                            // Bereken absolute positie
+                            const svgRect = svg.getBoundingClientRect();
+                            const absoluteX = svgRect.left + point.x;
+                            const absoluteY = svgRect.top + point.y;
                             
                             let angle = 0;
                             if (vorigePoint) {
@@ -267,12 +554,7 @@ async function testGraffiti() {
                             }
                             
                             for (let i = 0; i < 2; i++) {
-                                maakSprayStreak(
-                                    point.x + containerRect.left,
-                                    point.y + containerRect.top,
-                                    kleur,
-                                    angle
-                                );
+                                maakSprayStreak(absoluteX, absoluteY, kleur, angle);
                             }
                             
                             vorigePoint = point;
@@ -283,7 +565,7 @@ async function testGraffiti() {
                         requestAnimationFrame(animate);
                     } else if (idx === paths.length - 1) {
                         console.log('✅ Schrijven klaar');
-                        setTimeout(veegWeg, 2000); // Wacht 2 sec
+                        setTimeout(veegGraffitiWeg, 2000);
                     }
                 }
                 requestAnimationFrame(animate);
@@ -291,7 +573,9 @@ async function testGraffiti() {
         });
         
     } catch (error) {
-        console.error('❌ FOUT:', error);
+        console.error('❌', error);
+        graffitiBezig = false;
+        setTimeout(startGraffitiAnimatie, 2000);
     }
 }
 
@@ -319,8 +603,8 @@ function maakSprayStreak(x, y, kleur, richting) {
     }, 300);
 }
 
-function veegWeg() {
-    console.log('🧽 Start vegen');
+function veegGraffitiWeg() {
+    console.log('🧽 Spons');
     
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
@@ -336,7 +620,7 @@ function veegWeg() {
         spons.style.left = x + 'px';
         spons.style.top = (graffitiY - 48) + 'px';
         
-        // Overlay groeit van links
+        // Overlay groeit
         const overlayCenterX = x + (sponsSize / 2);
         wipeOverlay.style.left = '0';
         wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
@@ -346,23 +630,27 @@ function veegWeg() {
         if (x < eindX) {
             requestAnimationFrame(animeerSpons);
         } else {
-            console.log('✅ Vegen klaar');
+            console.log('✅ Gewist');
             
             spons.style.display = 'none';
             wipeOverlay.style.display = 'none';
+            graffitiContainer.classList.remove('actief');
             graffitiContainer.innerHTML = '';
             
             sprayParticles.forEach(p => p.remove());
             sprayParticles = [];
             
-            console.log('🔄 Klaar! Refresh de pagina om opnieuw te testen.');
+            graffitiBezig = false;
+            
+            // Herhaal na 2 seconden
+            setTimeout(startGraffitiAnimatie, 2000);
         }
     }
     animeerSpons();
 }
 
-// Start test na 1 seconde
-setTimeout(testGraffiti, 1000);
+wachtEnSpringSoms();
+startGraffitiLoop();
 </script>
 
 </body>
