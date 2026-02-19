@@ -19,6 +19,7 @@ html, body { height: 100%; overflow: hidden; }
 
 html { 
     background-color: #00c300;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
 }
 
 body {
@@ -26,6 +27,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    min-height: -webkit-fill-available;
 }
 
 header {
@@ -63,6 +65,7 @@ header {
     justify-content: center;
     position: relative;
     overflow: visible;
+    z-index: 0;
 }
 
 .welcome {
@@ -92,6 +95,13 @@ header {
     animation: pulse 2.5s ease-in-out infinite;
     position: relative;
     z-index: 2;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.start-button.geen-pulse {
+    animation: none !important;
+    transform: scale(1) !important;
+    box-shadow: 0 6px 20px rgba(0,195,0,0.3) !important;
 }
 
 @keyframes pulse {
@@ -99,15 +109,85 @@ header {
     50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,195,0,0.5); }
 }
 
+.start-button:active {
+    transform: scale(0.95) !important;
+    animation: none;
+}
+
+.kat {
+    position: fixed;
+    font-size: 3.2rem;
+    z-index: 10;
+    pointer-events: none;
+    display: none;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
+}
+
+.kat-zit {
+    position: absolute;
+    font-size: 2.4rem;
+    top: -38px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    z-index: 5;
+    line-height: 1;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+}
+
 .graffiti-container {
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
-    border: 5px solid red;
-    background-color: yellow;
-    padding: 20px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 3;
+    display: none;
+    text-align: center;
+    max-width: 95%;
+}
+
+.graffiti-container.actief {
+    display: block;
+}
+
+.spray-particle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    z-index: 26;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes spray {
+    0% { 
+        opacity: 0.9; 
+        transform: translate(0, 0) scale(1.5); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: translate(var(--tx), var(--ty)) scale(0.2); 
+    }
+}
+
+.spons {
+    position: absolute;
+    font-size: 6rem;
+    z-index: 25;
+    pointer-events: none;
+    display: none;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
+}
+
+.wipe-overlay {
+    position: absolute;
+    background-color: #eae9ec;
+    pointer-events: none;
+    z-index: 24;
+    display: none;
 }
 
 .gif-section {
@@ -135,6 +215,7 @@ footer {
     font-size: 1rem;
     flex-shrink: 0;
     min-height: 55px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 </style>
 </head>
@@ -152,13 +233,16 @@ footer {
     <div class="welcome">Hoi Colin,</div>
 
     <div class="knop-wrapper" id="knopWrapper">
+        <span class="kat-zit" id="katZit">😸</span>
         <button class="start-button" id="startBtn" onclick="window.location.href='index.html'">Start</button>
     </div>
 
-    <div class="graffiti-container" id="graffitiContainer">
-        CONTAINER HIER
-    </div>
+    <div class="graffiti-container" id="graffitiContainer"></div>
+    <div class="wipe-overlay" id="wipeOverlay"></div>
+    <div class="spons" id="spons">🧽</div>
 </div>
+
+<div class="kat" id="kat">🐈</div>
 
 <div class="gif-section">
     <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
@@ -167,109 +251,406 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-console.log('🚀 ULTRA SIMPELE TEST START');
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
+}
+
+console.log('🚀 Start');
+
+// ========== KAT ANIMATIE ==========
+const KAT_SPRINGEND = '🐈';
+const KAT_ZITTEND = ['😺', '😼', '😸', '😹'];
+
+const katEl = document.getElementById('kat');
+const katZitEl = document.getElementById('katZit');
+const startBtn = document.getElementById('startBtn');
+
+let katBezig = false;
+let volgendeKantVanLinks = Math.random() < 0.5;
+let emojiWisselInterval = null;
+
+function wachtEnSpringSoms() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    setTimeout(startKatAnimatie, wachttijd);
+}
+
+function startKatAnimatie() {
+    if (katBezig) return;
+    katBezig = true;
+    startBtn.classList.add('geen-pulse');
+
+    setTimeout(() => {
+        const knopRect = startBtn.getBoundingClientRect();
+        const doelX = knopRect.left + knopRect.width / 2 - 24;
+        const doelY = knopRect.top - 51;
+
+        const vanLinks = volgendeKantVanLinks;
+        volgendeKantVanLinks = !volgendeKantVanLinks;
+
+        const startX = vanLinks ? -80 : window.innerWidth + 20;
+        const boogHoogte = 130 + Math.random() * 80;
+        const springDuur = 750 + Math.random() * 200;
+
+        katEl.textContent = KAT_SPRINGEND;
+        katEl.style.display = 'block';
+        katEl.style.left = startX + 'px';
+        katEl.style.top = doelY + 'px';
+        katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
+
+        animeerBoog(startX, doelY, doelX, doelY, boogHoogte, springDuur, vanLinks, () => katLandt(doelX, doelY));
+    }, 220);
+}
+
+function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
+    const start = performance.now();
+    function stap(nu) {
+        const t = Math.min((nu - start) / duur, 1);
+        const eT = easeInOut(t);
+        const x = x0 + (x1 - x0) * eT;
+        const y = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
+        const rotatie = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
+        const spiegelX = vanLinks ? -1 : 1;
+        katEl.style.left = x + 'px';
+        katEl.style.top = y + 'px';
+        katEl.style.transform = `scaleX(${spiegelX}) rotate(${rotatie}deg)`;
+        if (t < 1) requestAnimationFrame(stap);
+        else klaar();
+    }
+    requestAnimationFrame(stap);
+}
+
+function katLandt(doelX, doelY) {
+    const bounceStart = performance.now();
+    function bounce(nu) {
+        const t = Math.min((nu - bounceStart) / 220, 1);
+        const bounceY = doelY + Math.sin(t * Math.PI) * 10;
+        katEl.style.top = bounceY + 'px';
+        katEl.style.transform = 'scaleX(1) rotate(0deg)';
+        if (t < 1) {
+            requestAnimationFrame(bounce);
+        } else {
+            katEl.style.top = doelY + 'px';
+            setTimeout(() => {
+                katEl.style.display = 'none';
+                katZitEl.style.display = 'block';
+                katZitEl.textContent = randomZitEmoji();
+                emojiWisselInterval = setInterval(() => {
+                    katZitEl.textContent = randomZitEmoji();
+                }, 2000);
+                const zitTijd = 4000 + Math.random() * 4000;
+                setTimeout(() => springWeg(doelX, doelY), zitTijd);
+            }, 1000);
+        }
+    }
+    requestAnimationFrame(bounce);
+}
+
+function springWeg(doelX, doelY) {
+    clearInterval(emojiWisselInterval);
+    emojiWisselInterval = null;
+    katZitEl.style.display = 'none';
+    katEl.textContent = KAT_SPRINGEND;
+    katEl.style.display = 'block';
+    katEl.style.left = doelX + 'px';
+    katEl.style.top = doelY + 'px';
+    const naarRechts = doelX < window.innerWidth / 2;
+    const eindX = naarRechts ? window.innerWidth + 80 : -100;
+    const boogHoogte = 110 + Math.random() * 80;
+    const springDuur = 650 + Math.random() * 200;
+    katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
+    animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
+        katEl.style.display = 'none';
+        startBtn.classList.remove('geen-pulse');
+        katBezig = false;
+        wachtEnSpringSoms();
+    });
+}
+
+function randomZitEmoji() {
+    return KAT_ZITTEND[Math.floor(Math.random() * KAT_ZITTEND.length)];
+}
+
+function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+// ========== GRAFFITI SVG ANIMATIE ==========
+const GRAFFITI_SVGS = [
+    '/fonts/winnen-winnen-winnen.svg',
+    '/fonts/doen-doen-doen.svg',
+    '/fonts/tb-is-het-beste.svg',
+    '/fonts/tilburg-gaat-winnen.svg',
+    '/fonts/mechanic-four.svg'
+];
+
+const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
 
 const graffitiContainer = document.getElementById('graffitiContainer');
+const spons = document.getElementById('spons');
+const wipeOverlay = document.getElementById('wipeOverlay');
 
-async function testLaadSVG() {
-    console.log('═══════════════════════════════');
-    console.log('📥 START SVG LADEN');
+let graffitiBezig = false;
+let vorigeSvgIndex = -1;
+let graffitiY = 0;
+let graffitiHoogte = 0;
+let sprayParticles = [];
+
+function wachtEnSprayGraffiti() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    setTimeout(startGraffitiAnimatie, wachttijd);
+}
+
+async function startGraffitiAnimatie() {
+    console.log('🎨 START');
     
-    const svgUrl = '/fonts/winnen-winnen-winnen.svg';
-    console.log('📁 URL:', svgUrl);
-    
+    if (graffitiBezig) return;
+    graffitiBezig = true;
+
+    let index;
+    do {
+        index = Math.floor(Math.random() * GRAFFITI_SVGS.length);
+    } while (index === vorigeSvgIndex && GRAFFITI_SVGS.length > 1);
+    vorigeSvgIndex = index;
+
+    const svgUrl = GRAFFITI_SVGS[index];
+    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
+
     try {
-        console.log('⏳ Fetching...');
         const response = await fetch(svgUrl);
-        
-        console.log('📡 Response status:', response.status);
-        console.log('📡 Response ok:', response.ok);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const svgText = await response.text();
-        console.log('✅ SVG TEXT ONTVANGEN');
-        console.log('📄 Lengte:', svgText.length, 'bytes');
-        console.log('📄 Eerste 500 chars:');
-        console.log(svgText.substring(0, 500));
-        
-        console.log('📝 Inject in DOM...');
         graffitiContainer.innerHTML = svgText;
+        await new Promise(r => requestAnimationFrame(r));
         
-        console.log('⏱️ Wacht op DOM update...');
-        await new Promise(r => setTimeout(r, 100));
-        
-        console.log('🔍 Zoek SVG element...');
         const svg = graffitiContainer.querySelector('svg');
+        if (!svg) throw new Error('Geen SVG');
         
-        if (!svg) {
-            console.error('❌ GEEN SVG ELEMENT GEVONDEN!');
-            console.log('Container innerHTML:', graffitiContainer.innerHTML);
-            return;
+        // CONVERTEER MM NAAR PX
+        const MM_TO_PX = 3.779527559;
+        
+        let widthMM, heightMM;
+        
+        const widthAttr = svg.getAttribute('width');
+        const heightAttr = svg.getAttribute('height');
+        
+        if (widthAttr && widthAttr.includes('mm')) {
+            widthMM = parseFloat(widthAttr);
+            heightMM = parseFloat(heightAttr);
+        } else {
+            const viewBox = svg.getAttribute('viewBox');
+            if (viewBox) {
+                const parts = viewBox.split(/\s+|,/);
+                widthMM = parseFloat(parts[2]);
+                heightMM = parseFloat(parts[3]);
+            } else {
+                widthMM = 100;
+                heightMM = 20;
+            }
         }
         
-        console.log('✅ SVG ELEMENT GEVONDEN!');
-        console.log('📐 width attr:', svg.getAttribute('width'));
-        console.log('📐 height attr:', svg.getAttribute('height'));
-        console.log('📐 viewBox:', svg.getAttribute('viewBox'));
+        const widthPX = widthMM * MM_TO_PX;
+        const heightPX = heightMM * MM_TO_PX;
         
-        // Haal ALLE child elementen op
-        const children = svg.querySelectorAll('*');
-        console.log('👶 Aantal child elements:', children.length);
+        svg.setAttribute('viewBox', `0 0 ${widthPX} ${heightPX}`);
+        svg.setAttribute('width', widthPX);
+        svg.setAttribute('height', heightPX);
+        svg.removeAttribute('xmlns:inkscape');
+        svg.removeAttribute('xmlns:sodipodi');
         
-        children.forEach((elem, idx) => {
-            console.log(`  [${idx}] ${elem.tagName}`);
-            console.log(`      fill: ${elem.getAttribute('fill')}`);
-            console.log(`      stroke: ${elem.getAttribute('stroke')}`);
-            console.log(`      style: ${elem.getAttribute('style')}`);
-        });
+        await new Promise(r => requestAnimationFrame(r));
         
-        // Maak ALLES ZICHTBAAR
-        console.log('🎨 Maak alles zichtbaar...');
-        children.forEach((elem, idx) => {
+        // VERWIJDER ALLE RECHTHOEKEN/ACHTERGRONDEN
+        const alleElementen = svg.querySelectorAll('*');
+        const paths = [];
+        
+        alleElementen.forEach(elem => {
+            const tagName = elem.tagName.toLowerCase();
+            
+            // VERWIJDER rect, image, en andere achtergrond elementen
+            if (['rect', 'image', 'sodipodi:namedview', 'defs'].includes(tagName)) {
+                console.log('🗑️ Verwijder:', tagName);
+                elem.remove();
+                return;
+            }
+            
+            // Verwijder fill OVERAL
+            elem.removeAttribute('fill');
             elem.setAttribute('fill', 'none');
-            elem.setAttribute('stroke', '#FF0000'); // ROOD
-            elem.setAttribute('stroke-width', '8');
-            console.log(`  [${idx}] Stroke gezet op rood`);
+            elem.style.fill = 'none';
+            
+            // Als het een path is, prep voor animatie
+            if (['path', 'line', 'polyline', 'polygon'].includes(tagName)) {
+                // GEEN stroke zetten nog - komt later
+                elem.removeAttribute('stroke');
+                elem.style.stroke = 'none';
+                
+                try {
+                    const length = elem.getTotalLength();
+                    if (length > 0) {
+                        paths.push({ path: elem, length });
+                    }
+                } catch (e) {}
+            }
         });
         
-        // Forceer grootte
-        svg.style.width = '600px';
-        svg.style.height = 'auto';
+        console.log('🛤️ Paths:', paths.length);
+        
+        if (paths.length === 0) throw new Error('Geen paths');
+        
+        // Schaal
+        const maxWidth = window.innerWidth * 0.75;
+        const schaal = Math.min(2, maxWidth / widthPX);
+        
+        const nieuweWidth = widthPX * schaal;
+        const nieuweHeight = heightPX * schaal;
+        
+        svg.style.width = nieuweWidth + 'px';
+        svg.style.height = nieuweHeight + 'px';
         svg.style.display = 'block';
         
-        console.log('📏 SVG style.width:', svg.style.width);
-        console.log('📏 SVG clientWidth:', svg.clientWidth);
-        console.log('📏 SVG clientHeight:', svg.clientHeight);
+        // Positioneer
+        const knopRect = startBtn.getBoundingClientRect();
+        const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+        const beschikbareRuimte = gifRect.top - knopRect.bottom;
+        const centerY = knopRect.bottom + (beschikbareRuimte * 0.25);
         
-        // Probeer getBBox
-        try {
-            const bbox = svg.getBBox();
-            console.log('📦 BBox - x:', bbox.x, 'y:', bbox.y, 'w:', bbox.width, 'h:', bbox.height);
-        } catch (e) {
-            console.error('❌ getBBox() failed:', e.message);
-        }
+        graffitiY = centerY;
+        graffitiHoogte = nieuweHeight * 1.5;
         
-        console.log('═══════════════════════════════');
-        console.log('✅ TEST COMPLEET');
-        console.log('ZIE JE DE RODE TEKST?');
-        console.log('(In gele box met rode border)');
+        graffitiContainer.style.top = (centerY - nieuweHeight / 2) + 'px';
+        graffitiContainer.classList.add('actief');
+        
+        console.log('📍 Pos:', Math.round(centerY), '| Size:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight));
+        
+        // NU animatie starten
+        let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
+        const schrijfDuur = 2000;
+        let cumulativeLength = 0;
+        
+        paths.forEach(({ path, length }, idx) => {
+            const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
+            const pathDuur = (length / totalLength) * schrijfDuur;
+            cumulativeLength += length;
+            
+            setTimeout(() => {
+                // NU PAS stroke + dasharray zetten
+                path.setAttribute('stroke', kleur);
+                path.style.stroke = kleur;
+                path.setAttribute('stroke-width', '6');
+                path.style.strokeWidth = '6';
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+                
+                const start = performance.now();
+                
+                function animate(now) {
+                    const elapsed = now - start;
+                    const t = Math.min(elapsed / pathDuur, 1);
+                    
+                    path.style.strokeDashoffset = length * (1 - t);
+                    
+                    // Spray
+                    if (Math.random() < 0.35 && t < 0.95) {
+                        try {
+                            const point = path.getPointAtLength(length * t);
+                            const containerRect = graffitiContainer.getBoundingClientRect();
+                            maakSprayParticle(
+                                point.x + containerRect.left,
+                                point.y + containerRect.top,
+                                kleur
+                            );
+                        } catch (e) {}
+                    }
+                    
+                    if (t < 1) {
+                        requestAnimationFrame(animate);
+                    } else if (idx === paths.length - 1) {
+                        console.log('✅ Animatie klaar');
+                        const staanTijd = 3000 + Math.random() * 2000;
+                        setTimeout(veegGraffitiWeg, staanTijd);
+                    }
+                }
+                requestAnimationFrame(animate);
+            }, startDelay);
+        });
         
     } catch (error) {
-        console.error('❌❌❌ FOUT ❌❌❌');
-        console.error('Type:', error.name);
-        console.error('Message:', error.message);
-        console.error('Stack:', error.stack);
+        console.error('❌', error.message);
+        graffitiBezig = false;
+        wachtEnSprayGraffiti();
     }
 }
 
-// Start test na 2 seconden
-setTimeout(() => {
-    console.log('🚀 START TEST over 2 seconden...');
-    testLaadSVG();
-}, 2000);
+function maakSprayParticle(x, y, kleur) {
+    const particle = document.createElement('div');
+    particle.className = 'spray-particle';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.backgroundColor = kleur;
+    
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 15 + Math.random() * 30;
+    particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+    particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+    particle.style.animation = 'spray 0.5s ease-out forwards';
+    
+    document.body.appendChild(particle);
+    sprayParticles.push(particle);
+    
+    setTimeout(() => {
+        particle.remove();
+        sprayParticles = sprayParticles.filter(p => p !== particle);
+    }, 500);
+}
+
+function veegGraffitiWeg() {
+    console.log('🧽 Spons');
+    
+    spons.style.display = 'block';
+    wipeOverlay.style.display = 'block';
+
+    const sponsSize = 96;
+    let x = -sponsSize;
+    const eindX = window.innerWidth + sponsSize;
+    const snelheid = 7;
+
+    function animeerSpons() {
+        x += snelheid;
+        
+        spons.style.left = x + 'px';
+        spons.style.top = (graffitiY - 48) + 'px';
+        
+        const overlayCenterX = x + (sponsSize / 2);
+        wipeOverlay.style.left = '0';
+        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
+        wipeOverlay.style.width = overlayCenterX + 'px';
+        wipeOverlay.style.height = graffitiHoogte + 'px';
+        
+        if (x < eindX) {
+            requestAnimationFrame(animeerSpons);
+        } else {
+            console.log('✅ Spons klaar');
+            
+            spons.style.display = 'none';
+            wipeOverlay.style.display = 'none';
+            graffitiContainer.classList.remove('actief');
+            graffitiContainer.innerHTML = '';
+            
+            sprayParticles.forEach(p => p.remove());
+            sprayParticles = [];
+            
+            graffitiBezig = false;
+            wachtEnSprayGraffiti();
+        }
+    }
+    animeerSpons();
+}
+
+wachtEnSpringSoms();
+setTimeout(startGraffitiAnimatie, 1000);
 </script>
 
 </body>
