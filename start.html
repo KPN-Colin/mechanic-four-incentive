@@ -370,8 +370,7 @@ const GRAFFITI_ZINNEN = [
     'WINNEN WINNEN WINNEN!',
     'TB is het beste',
     'DOEN DOEN DOEN!',
-    'TB #1',
-    'Mechanic 4'
+    'Mechanic Four'
 ];
 
 const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
@@ -406,7 +405,8 @@ function startGraffitiAnimatie() {
     const knopRect = startBtn.getBoundingClientRect();
     const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
     const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    const centerY = knopRect.bottom + (beschikbareRuimte / 2);
+    // HOGER: van 50% naar 35% van de ruimte
+    const centerY = knopRect.bottom + (beschikbareRuimte * 0.35);
 
     graffitiY = centerY;
     graffitiText.innerHTML = '';
@@ -414,7 +414,6 @@ function startGraffitiAnimatie() {
     const maxWidth = window.innerWidth - 60;
     let fontSize = 48;
     
-    // Font stack
     const fontStack = 'GrafSpray, "Comic Sans MS", cursive';
     
     const tempText = document.createElement('span');
@@ -444,7 +443,7 @@ function startGraffitiAnimatie() {
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
         
-        // FORCE FONT OP ELK SPAN INDIVIDUEEL
+        // Force font op elk span
         span.style.fontFamily = fontStack;
         span.style.fontWeight = 'bold';
         span.style.color = kleur;
@@ -453,8 +452,6 @@ function startGraffitiAnimatie() {
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
-    
-    console.log('🔤 Test eerste span font:', window.getComputedStyle(spans[0]).fontFamily);
 
     spans.forEach((span, index) => {
         setTimeout(() => {
@@ -502,7 +499,7 @@ function veegGraffitiWeg() {
     const sponsSize = 96;
     const startX = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
-    const snelheid = 3;
+    const snelheid = 5; // Was 3, nu 5 (sneller!)
 
     let x = startX;
 
