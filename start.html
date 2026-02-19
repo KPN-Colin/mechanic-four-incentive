@@ -151,24 +151,24 @@ header {
     display: block;
 }
 
-.spray-particle {
+.spray-streak {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    width: 3px;
+    height: 8px;
+    border-radius: 2px;
     z-index: 26;
     pointer-events: none;
     opacity: 0;
 }
 
-@keyframes spray {
+@keyframes spray-streak {
     0% { 
-        opacity: 0.9; 
-        transform: translate(0, 0) scale(1.5); 
+        opacity: 0.8; 
+        transform: translate(0, 0) scale(1); 
     }
     100% { 
         opacity: 0; 
-        transform: translate(var(--tx), var(--ty)) scale(0.2); 
+        transform: translate(var(--tx), var(--ty)) scale(0.5); 
     }
 }
 
@@ -460,28 +460,23 @@ async function startGraffitiAnimatie() {
         
         await new Promise(r => requestAnimationFrame(r));
         
-        // VERWIJDER ALLE RECHTHOEKEN/ACHTERGRONDEN
+        // VERWIJDER ACHTERGRONDEN
         const alleElementen = svg.querySelectorAll('*');
         const paths = [];
         
         alleElementen.forEach(elem => {
             const tagName = elem.tagName.toLowerCase();
             
-            // VERWIJDER rect, image, en andere achtergrond elementen
             if (['rect', 'image', 'sodipodi:namedview', 'defs'].includes(tagName)) {
-                console.log('🗑️ Verwijder:', tagName);
                 elem.remove();
                 return;
             }
             
-            // Verwijder fill OVERAL
             elem.removeAttribute('fill');
             elem.setAttribute('fill', 'none');
             elem.style.fill = 'none';
             
-            // Als het een path is, prep voor animatie
             if (['path', 'line', 'polyline', 'polygon'].includes(tagName)) {
-                // GEEN stroke zetten nog - komt later
                 elem.removeAttribute('stroke');
                 elem.style.stroke = 'none';
                 
@@ -498,9 +493,9 @@ async function startGraffitiAnimatie() {
         
         if (paths.length === 0) throw new Error('Geen paths');
         
-        // Schaal
-        const maxWidth = window.innerWidth * 0.75;
-        const schaal = Math.min(2, maxWidth / widthPX);
+        // VEEL GROTERE SCHAAL - 10x minimum!
+        const maxWidth = window.innerWidth * 0.85;
+        const schaal = Math.max(10, maxWidth / widthPX); // MIN 10x!
         
         const nieuweWidth = widthPX * schaal;
         const nieuweHeight = heightPX * schaal;
@@ -509,11 +504,13 @@ async function startGraffitiAnimatie() {
         svg.style.height = nieuweHeight + 'px';
         svg.style.display = 'block';
         
+        console.log('📏 Schaal:', schaal.toFixed(1), 'x | Size:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight));
+        
         // Positioneer
         const knopRect = startBtn.getBoundingClientRect();
         const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
         const beschikbareRuimte = gifRect.top - knopRect.bottom;
-        const centerY = knopRect.bottom + (beschikbareRuimte * 0.25);
+        const centerY = knopRect.bottom + (beschikbareRuimte * 0.30);
         
         graffitiY = centerY;
         graffitiHoogte = nieuweHeight * 1.5;
@@ -521,12 +518,11 @@ async function startGraffitiAnimatie() {
         graffitiContainer.style.top = (centerY - nieuweHeight / 2) + 'px';
         graffitiContainer.classList.add('actief');
         
-        console.log('📍 Pos:', Math.round(centerY), '| Size:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight));
-        
-        // NU animatie starten
+        // Animeer
         let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
         const schrijfDuur = 2000;
         let cumulativeLength = 0;
+        let vorigePoint = null;
         
         paths.forEach(({ path, length }, idx) => {
             const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
@@ -534,11 +530,11 @@ async function startGraffitiAnimatie() {
             cumulativeLength += length;
             
             setTimeout(() => {
-                // NU PAS stroke + dasharray zetten
+                // Zet stroke properties
                 path.setAttribute('stroke', kleur);
                 path.style.stroke = kleur;
-                path.setAttribute('stroke-width', '6');
-                path.style.strokeWidth = '6';
+                path.setAttribute('stroke-width', '8'); // Dikker voor grotere tekst
+                path.style.strokeWidth = '8';
                 path.setAttribute('stroke-linecap', 'round');
                 path.setAttribute('stroke-linejoin', 'round');
                 path.style.strokeDasharray = length;
@@ -552,16 +548,31 @@ async function startGraffitiAnimatie() {
                     
                     path.style.strokeDashoffset = length * (1 - t);
                     
-                    // Spray
-                    if (Math.random() < 0.35 && t < 0.95) {
+                    // SPRAY STREAKS (zoals spuitbus!)
+                    if (Math.random() < 0.6 && t < 0.95) { // Meer spray
                         try {
                             const point = path.getPointAtLength(length * t);
                             const containerRect = graffitiContainer.getBoundingClientRect();
-                            maakSprayParticle(
-                                point.x + containerRect.left,
-                                point.y + containerRect.top,
-                                kleur
-                            );
+                            
+                            // Bereken richting van beweging
+                            let angle = 0;
+                            if (vorigePoint) {
+                                const dx = point.x - vorigePoint.x;
+                                const dy = point.y - vorigePoint.y;
+                                angle = Math.atan2(dy, dx);
+                            }
+                            
+                            // Maak meerdere spray streaks per frame
+                            for (let i = 0; i < 3; i++) {
+                                maakSprayStreak(
+                                    point.x + containerRect.left,
+                                    point.y + containerRect.top,
+                                    kleur,
+                                    angle
+                                );
+                            }
+                            
+                            vorigePoint = point;
                         } catch (e) {}
                     }
                     
@@ -584,26 +595,32 @@ async function startGraffitiAnimatie() {
     }
 }
 
-function maakSprayParticle(x, y, kleur) {
-    const particle = document.createElement('div');
-    particle.className = 'spray-particle';
-    particle.style.left = x + 'px';
-    particle.style.top = y + 'px';
-    particle.style.backgroundColor = kleur;
+function maakSprayStreak(x, y, kleur, schrijfRichting) {
+    const streak = document.createElement('div');
+    streak.className = 'spray-streak';
+    streak.style.left = x + 'px';
+    streak.style.top = y + 'px';
+    streak.style.backgroundColor = kleur;
     
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 15 + Math.random() * 30;
-    particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
-    particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
-    particle.style.animation = 'spray 0.5s ease-out forwards';
+    // Spray gaat in schrijfrichting + random spreiding
+    const spreadAngle = schrijfRichting + (Math.random() - 0.5) * Math.PI / 3; // 60° spread
+    const distance = 20 + Math.random() * 40;
     
-    document.body.appendChild(particle);
-    sprayParticles.push(particle);
+    streak.style.setProperty('--tx', Math.cos(spreadAngle) * distance + 'px');
+    streak.style.setProperty('--ty', Math.sin(spreadAngle) * distance + 'px');
+    
+    // Roteer streepje in spray richting
+    streak.style.transform = `rotate(${spreadAngle}rad)`;
+    
+    streak.style.animation = 'spray-streak 0.3s ease-out forwards';
+    
+    document.body.appendChild(streak);
+    sprayParticles.push(streak);
     
     setTimeout(() => {
-        particle.remove();
-        sprayParticles = sprayParticles.filter(p => p !== particle);
-    }, 500);
+        streak.remove();
+        sprayParticles = sprayParticles.filter(p => p !== streak);
+    }, 300);
 }
 
 function veegGraffitiWeg() {
