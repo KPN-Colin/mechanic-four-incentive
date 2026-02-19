@@ -151,6 +151,27 @@ header {
     display: block;
 }
 
+.spray-can {
+    position: absolute;
+    font-size: 2rem;
+    z-index: 25;
+    pointer-events: none;
+    display: none;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.spray-cloud {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 24;
+    pointer-events: none;
+    display: none;
+    opacity: 0.4;
+    filter: blur(8px);
+}
+
 .spons {
     position: absolute;
     font-size: 6rem;
@@ -217,6 +238,8 @@ footer {
     </div>
 
     <div class="graffiti-container" id="graffitiContainer"></div>
+    <div class="spray-can" id="sprayCan">💨</div>
+    <div class="spray-cloud" id="sprayCloud"></div>
     <div class="wipe-overlay" id="wipeOverlay"></div>
     <div class="spons" id="spons">🧽</div>
 </div>
@@ -230,17 +253,11 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// 🎨 GRAFFITI ANIMATIE AAN/UIT SCHAKELAAR
-// ═══════════════════════════════════════════════════════════════
-const GRAFFITI_ANIMATIE_ACTIEF = false; // ← Zet op true om aan te zetten
-// ═══════════════════════════════════════════════════════════════
-
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-console.log('🚀 Start | Graffiti:', GRAFFITI_ANIMATIE_ACTIEF ? 'AAN' : 'UIT');
+console.log('🚀 Start - Graffiti ACTIEF');
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -338,4 +355,274 @@ function springWeg(doelX, doelY) {
     katEl.style.display = 'block';
     katEl.style.left = doelX + 'px';
     katEl.style.top = doelY + 'px';
-    const naarRech​​​​​​​​​​​​​​​​
+    const naarRechts = doelX < window.innerWidth / 2;
+    const eindX = naarRechts ? window.innerWidth + 80 : -100;
+    const boogHoogte = 110 + Math.random() * 80;
+    const springDuur = 650 + Math.random() * 200;
+    katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
+    animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
+        katEl.style.display = 'none';
+        startBtn.classList.remove('geen-pulse');
+        katBezig = false;
+        wachtEnSpringSoms();
+    });
+}
+
+function randomZitEmoji() {
+    return KAT_ZITTEND[Math.floor(Math.random() * KAT_ZITTEND.length)];
+}
+
+function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+// ========== GRAFFITI SVG ANIMATIE ==========
+const GRAFFITI_SVGS = [
+    '/fonts/winnen-winnen-winnen.svg',
+    '/fonts/doen-doen-doen.svg',
+    '/fonts/tb-is-het-beste.svg',
+    '/fonts/tilburg-gaat-winnen.svg',
+    '/fonts/mechanic-four.svg'
+];
+
+const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
+
+const graffitiContainer = document.getElementById('graffitiContainer');
+const sprayCan = document.getElementById('sprayCan');
+const sprayCloud = document.getElementById('sprayCloud');
+const spons = document.getElementById('spons');
+const wipeOverlay = document.getElementById('wipeOverlay');
+
+let graffitiBezig = false;
+let vorigeSvgIndex = -1;
+let graffitiY = 0;
+let graffitiHoogte = 0;
+
+function wachtEnSprayGraffiti() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    console.log('⏱️ Wacht', Math.round(wachttijd), 'ms');
+    setTimeout(startGraffitiAnimatie, wachttijd);
+}
+
+async function startGraffitiAnimatie() {
+    console.log('🎨 Start graffiti');
+    
+    if (graffitiBezig) return;
+    graffitiBezig = true;
+
+    // Random SVG
+    let index;
+    do {
+        index = Math.floor(Math.random() * GRAFFITI_SVGS.length);
+    } while (index === vorigeSvgIndex && GRAFFITI_SVGS.length > 1);
+    vorigeSvgIndex = index;
+
+    const svgUrl = GRAFFITI_SVGS[index];
+    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
+
+    console.log('📁 Laad:', svgUrl);
+    console.log('🎨 Kleur:', kleur);
+
+    try {
+        // Fetch SVG
+        const response = await fetch(svgUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const svgText = await response.text();
+        
+        // Inject in DOM
+        graffitiContainer.innerHTML = svgText;
+        
+        // Wacht voor DOM
+        await new Promise(r => requestAnimationFrame(r));
+        
+        // Vind SVG
+        const svg = graffitiContainer.querySelector('svg');
+        if (!svg) throw new Error('Geen SVG gevonden');
+        
+        console.log('✅ SVG geladen');
+        
+        // Positioneer
+        const knopRect = startBtn.getBoundingClientRect();
+        const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+        const beschikbareRuimte = gifRect.top - knopRect.bottom;
+        const centerY = knopRect.bottom + (beschikbareRuimte * 0.35);
+        
+        graffitiY = centerY;
+        
+        // Schaal SVG
+        const viewBox = svg.getAttribute('viewBox');
+        let svgWidth = 400;
+        if (viewBox) {
+            const parts = viewBox.split(/\s+|,/);
+            svgWidth = parseFloat(parts[2]) || 400;
+        }
+        
+        const maxWidth = window.innerWidth * 0.85;
+        const schaal = Math.min(1, maxWidth / svgWidth);
+        
+        svg.style.width = (svgWidth * schaal) + 'px';
+        svg.style.height = 'auto';
+        
+        await new Promise(r => requestAnimationFrame(r));
+        
+        const svgRect = svg.getBoundingClientRect();
+        graffitiHoogte = svgRect.height * 1.2;
+        
+        graffitiContainer.style.top = (centerY - svgRect.height / 2) + 'px';
+        graffitiContainer.classList.add('actief');
+        
+        console.log('📍 Y:', Math.round(centerY), 'H:', Math.round(graffitiHoogte));
+        
+        // Vind paths
+        const paths = svg.querySelectorAll('path, line, polyline, polygon');
+        console.log('🛤️ Paths:', paths.length);
+        
+        if (paths.length === 0) throw new Error('Geen paths');
+        
+        // Prep animatie
+        let totalLength = 0;
+        const pathData = [];
+        
+        paths.forEach(path => {
+            path.setAttribute('stroke', kleur);
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-width', '3');
+            path.setAttribute('stroke-linecap', 'round');
+            
+            const length = path.getTotalLength ? path.getTotalLength() : 0;
+            if (length > 0) {
+                pathData.push({ path, length });
+                totalLength += length;
+                
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+            }
+        });
+        
+        console.log('✏️ Totaal:', Math.round(totalLength), 'px');
+        
+        // Zet spray cloud kleur
+        sprayCloud.style.backgroundColor = kleur;
+        
+        // Animeer met spray effect
+        const schrijfDuur = 2000;
+        let cumulativeLength = 0;
+        
+        pathData.forEach(({ path, length }, pathIndex) => {
+            const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
+            const pathDuur = (length / totalLength) * schrijfDuur;
+            cumulativeLength += length;
+            
+            setTimeout(() => {
+                const start = performance.now();
+                
+                // Toon spray effect voor deze path
+                sprayCan.style.display = 'block';
+                sprayCloud.style.display = 'block';
+                
+                function animate(now) {
+                    const elapsed = now - start;
+                    const t = Math.min(elapsed / pathDuur, 1);
+                    
+                    // Update stroke
+                    const offset = length * (1 - t);
+                    path.style.strokeDashoffset = offset;
+                    
+                    // Volg de schrijvende lijn met spray effect
+                    try {
+                        const point = path.getPointAtLength(length * t);
+                        const containerRect = graffitiContainer.getBoundingClientRect();
+                        
+                        // Spray can positie
+                        sprayCan.style.left = (point.x + containerRect.left - 10) + 'px';
+                        sprayCan.style.top = (point.y + containerRect.top - 30) + 'px';
+                        
+                        // Spray cloud positie (iets voor de can)
+                        sprayCloud.style.left = (point.x + containerRect.left - 15) + 'px';
+                        sprayCloud.style.top = (point.y + containerRect.top - 15) + 'px';
+                    } catch (e) {
+                        // Als getPointAtLength faalt, gewoon doorgaan
+                    }
+                    
+                    if (t < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        // Path klaar
+                        if (pathIndex === pathData.length - 1) {
+                            // Laatste path - verberg spray
+                            sprayCan.style.display = 'none';
+                            sprayCloud.style.display = 'none';
+                            
+                            // Wacht en veeg weg
+                            const staanTijd = 3000 + Math.random() * 2000;
+                            console.log('⏱️ Blijft', Math.round(staanTijd), 'ms');
+                            setTimeout(() => {
+                                console.log('🧽 Start spons');
+                                veegGraffitiWeg();
+                            }, staanTijd);
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }, startDelay);
+        });
+        
+    } catch (error) {
+        console.error('❌ Fout:', error.message);
+        graffitiBezig = false;
+        wachtEnSprayGraffiti();
+    }
+}
+
+function veegGraffitiWeg() {
+    spons.style.display = 'block';
+    wipeOverlay.style.display = 'block';
+
+    const sponsSize = 96;
+    let x = -sponsSize;
+    const eindX = window.innerWidth + sponsSize;
+    const snelheid = 7;
+
+    function animeerSpons() {
+        x += snelheid;
+        
+        spons.style.left = x + 'px';
+        spons.style.top = (graffitiY - 48) + 'px';
+        
+        const overlayCenterX = x + (sponsSize / 2);
+        wipeOverlay.style.left = '0';
+        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
+        wipeOverlay.style.width = overlayCenterX + 'px';
+        wipeOverlay.style.height = graffitiHoogte + 'px';
+        
+        if (x < eindX) {
+            requestAnimationFrame(animeerSpons);
+        } else {
+            console.log('✅ Spons klaar');
+            
+            // Cleanup
+            spons.style.display = 'none';
+            wipeOverlay.style.display = 'none';
+            graffitiContainer.classList.remove('actief');
+            graffitiContainer.innerHTML = '';
+            
+            graffitiBezig = false;
+            
+            // Nieuwe loop
+            wachtEnSprayGraffiti();
+        }
+    }
+    animeerSpons();
+}
+
+// START
+wachtEnSpringSoms();
+setTimeout(() => {
+    console.log('🚀 Start graffiti loop');
+    startGraffitiAnimatie();
+}, 1000);
+</script>
+
+</body>
+</html>
