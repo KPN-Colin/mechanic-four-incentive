@@ -197,28 +197,6 @@ footer {
     min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
-
-<!-- INLINE SVG TEMPLATES (VERBORGEN) -->
-<svg id="svg-template-1" style="display:none" width="400" height="120" viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg">
-    <path d="M20 60 Q 60 20, 110 60 T 200 60 T 290 60 L 370 60" stroke-width="4" fill="none" stroke-linecap="round"/>
-</svg>
-
-<svg id="svg-template-2" style="display:none" width="350" height="100" viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 50 L 50 20 L 90 50 L 130 20 L 170 50 L 210 20 L 250 50 L 290 20 L 330 50" stroke-width="4" fill="none" stroke-linecap="round"/>
-</svg>
-
-<svg id="svg-template-3" style="display:none" width="450" height="140" viewBox="0 0 450 140" xmlns="http://www.w3.org/2000/svg">
-    <path d="M30 70 Q 80 30, 130 70 Q 180 110, 230 70 Q 280 30, 330 70 Q 380 110, 420 70" stroke-width="4" fill="none" stroke-linecap="round"/>
-</svg>
-
-<svg id="svg-template-4" style="display:none" width="380" height="110" viewBox="0 0 380 110" xmlns="http://www.w3.org/2000/svg">
-    <path d="M15 55 C 65 10, 115 100, 165 55 C 215 10, 265 100, 315 55 L 365 55" stroke-width="4" fill="none" stroke-linecap="round"/>
-</svg>
-
-<svg id="svg-template-5" style="display:none" width="420" height="130" viewBox="0 0 420 130" xmlns="http://www.w3.org/2000/svg">
-    <path d="M25 65 L 75 30 Q 125 65, 175 30 L 225 65 Q 275 30, 325 65 L 375 30 L 395 65" stroke-width="4" fill="none" stroke-linecap="round"/>
-</svg>
-
 </head>
 
 <body>
@@ -252,11 +230,17 @@ footer {
 <footer>&copy; KPN 2026</footer>
 
 <script>
+// ═══════════════════════════════════════════════════════════════
+// 🎨 GRAFFITI ANIMATIE AAN/UIT SCHAKELAAR
+// ═══════════════════════════════════════════════════════════════
+const GRAFFITI_ANIMATIE_ACTIEF = false; // ← Zet op true om aan te zetten
+// ═══════════════════════════════════════════════════════════════
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-console.log('🚀 Start');
+console.log('🚀 Start | Graffiti:', GRAFFITI_ANIMATIE_ACTIEF ? 'AAN' : 'UIT');
 
 // ========== KAT ANIMATIE ==========
 const KAT_SPRINGEND = '🐈';
@@ -354,218 +338,4 @@ function springWeg(doelX, doelY) {
     katEl.style.display = 'block';
     katEl.style.left = doelX + 'px';
     katEl.style.top = doelY + 'px';
-    const naarRechts = doelX < window.innerWidth / 2;
-    const eindX = naarRechts ? window.innerWidth + 80 : -100;
-    const boogHoogte = 110 + Math.random() * 80;
-    const springDuur = 650 + Math.random() * 200;
-    katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
-    animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
-        katEl.style.display = 'none';
-        startBtn.classList.remove('geen-pulse');
-        katBezig = false;
-        wachtEnSpringSoms();
-    });
-}
-
-function randomZitEmoji() {
-    return KAT_ZITTEND[Math.floor(Math.random() * KAT_ZITTEND.length)];
-}
-
-function easeInOut(t) {
-    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-}
-
-// ========== GRAFFITI SVG ANIMATIE (INLINE TEMPLATES) ==========
-const SVG_TEMPLATE_IDS = [
-    'svg-template-1',
-    'svg-template-2',
-    'svg-template-3',
-    'svg-template-4',
-    'svg-template-5'
-];
-
-const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
-
-const graffitiContainer = document.getElementById('graffitiContainer');
-const spons = document.getElementById('spons');
-const wipeOverlay = document.getElementById('wipeOverlay');
-
-let graffitiBezig = false;
-let vorigeTemplateIndex = -1;
-let graffitiY = 0;
-let graffitiHoogte = 0;
-
-function wachtEnSprayGraffiti() {
-    const wachttijd = 2000 + Math.random() * 3000;
-    console.log('⏱️ Wacht', Math.round(wachttijd), 'ms');
-    setTimeout(startGraffitiAnimatie, wachttijd);
-}
-
-function startGraffitiAnimatie() {
-    console.log('🎨 Start graffiti');
-    
-    if (graffitiBezig) return;
-    graffitiBezig = true;
-
-    // Random template
-    let index;
-    do {
-        index = Math.floor(Math.random() * SVG_TEMPLATE_IDS.length);
-    } while (index === vorigeTemplateIndex && SVG_TEMPLATE_IDS.length > 1);
-    vorigeTemplateIndex = index;
-
-    const templateId = SVG_TEMPLATE_IDS[index];
-    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
-
-    console.log('📝 Template:', templateId, '| Kleur:', kleur);
-
-    // Clone SVG template
-    const templateSvg = document.getElementById(templateId);
-    const clonedSvg = templateSvg.cloneNode(true);
-    clonedSvg.removeAttribute('id');
-    clonedSvg.style.display = 'block';
-    
-    graffitiContainer.innerHTML = '';
-    graffitiContainer.appendChild(clonedSvg);
-    
-    // Positioneer
-    const knopRect = startBtn.getBoundingClientRect();
-    const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
-    const beschikbareRuimte = gifRect.top - knopRect.bottom;
-    const centerY = knopRect.bottom + (beschikbareRuimte * 0.35);
-    
-    graffitiY = centerY;
-    
-    // Schaal
-    const viewBox = clonedSvg.getAttribute('viewBox');
-    let svgWidth = 400;
-    if (viewBox) {
-        const parts = viewBox.split(/\s+|,/);
-        svgWidth = parseFloat(parts[2]) || 400;
-    }
-    
-    const maxWidth = window.innerWidth * 0.85;
-    const schaal = Math.min(1, maxWidth / svgWidth);
-    
-    clonedSvg.style.width = (svgWidth * schaal) + 'px';
-    clonedSvg.style.height = 'auto';
-    
-    // Wacht voor DOM update
-    requestAnimationFrame(() => {
-        const svgRect = clonedSvg.getBoundingClientRect();
-        graffitiHoogte = svgRect.height * 1.2;
-        
-        graffitiContainer.style.top = (centerY - svgRect.height / 2) + 'px';
-        graffitiContainer.classList.add('actief');
-        
-        console.log('📍 Y:', Math.round(centerY), 'H:', Math.round(graffitiHoogte));
-        
-        // Vind paths
-        const paths = clonedSvg.querySelectorAll('path, line, polyline');
-        console.log('🛤️ Paths:', paths.length);
-        
-        // Prep animatie
-        let totalLength = 0;
-        const pathData = [];
-        
-        paths.forEach(path => {
-            path.setAttribute('stroke', kleur);
-            path.setAttribute('fill', 'none');
-            path.setAttribute('stroke-width', '4');
-            path.setAttribute('stroke-linecap', 'round');
-            
-            const length = path.getTotalLength();
-            pathData.push({ path, length });
-            totalLength += length;
-            
-            path.style.strokeDasharray = length;
-            path.style.strokeDashoffset = length;
-        });
-        
-        console.log('✏️ Totaal:', Math.round(totalLength), 'px');
-        
-        // Animeer paths
-        const schrijfDuur = 2000;
-        let cumulativeLength = 0;
-        
-        pathData.forEach(({ path, length }, i) => {
-            const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
-            const pathDuur = (length / totalLength) * schrijfDuur;
-            cumulativeLength += length;
-            
-            setTimeout(() => {
-                const start = performance.now();
-                
-                function animate(now) {
-                    const t = Math.min((now - start) / pathDuur, 1);
-                    path.style.strokeDashoffset = length * (1 - t);
-                    
-                    if (t < 1) {
-                        requestAnimationFrame(animate);
-                    } else if (i === pathData.length - 1) {
-                        // Laatste path klaar
-                        const staanTijd = 3000 + Math.random() * 2000;
-                        console.log('⏱️ Blijft', Math.round(staanTijd), 'ms');
-                        setTimeout(() => {
-                            console.log('🧽 Start spons');
-                            veegGraffitiWeg();
-                        }, staanTijd);
-                    }
-                }
-                requestAnimationFrame(animate);
-            }, startDelay);
-        });
-    });
-}
-
-function veegGraffitiWeg() {
-    spons.style.display = 'block';
-    wipeOverlay.style.display = 'block';
-
-    const sponsSize = 96;
-    let x = -sponsSize;
-    const eindX = window.innerWidth + sponsSize;
-    const snelheid = 7;
-
-    function animeerSpons() {
-        x += snelheid;
-        
-        spons.style.left = x + 'px';
-        spons.style.top = (graffitiY - 48) + 'px';
-        
-        const overlayCenterX = x + (sponsSize / 2);
-        wipeOverlay.style.left = '0';
-        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
-        wipeOverlay.style.width = overlayCenterX + 'px';
-        wipeOverlay.style.height = graffitiHoogte + 'px';
-        
-        if (x < eindX) {
-            requestAnimationFrame(animeerSpons);
-        } else {
-            console.log('✅ Spons klaar');
-            
-            // Cleanup
-            spons.style.display = 'none';
-            wipeOverlay.style.display = 'none';
-            graffitiContainer.classList.remove('actief');
-            graffitiContainer.innerHTML = '';
-            
-            graffitiBezig = false;
-            
-            // Nieuwe loop
-            wachtEnSprayGraffiti();
-        }
-    }
-    animeerSpons();
-}
-
-// START
-wachtEnSpringSoms();
-setTimeout(() => {
-    console.log('🚀 Start graffiti loop');
-    startGraffitiAnimatie();
-}, 1000);
-</script>
-
-</body>
-</html>
+    const naarRech​​​​​​​​​​​​​​​​
