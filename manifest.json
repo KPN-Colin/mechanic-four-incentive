@@ -1,23 +1,24 @@
 {
   "name": "Mechanic 4",
-  "short_name": "M4",
-  "start_url": "/start.html",
-  "scope": "/",
+  "short_name": "Mechanic 4",
+  "description": "Mechanic 4 KPN App",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#00c300",
   "theme_color": "#00c300",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/images/logo/m4-icon.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "/images/logo/m4-icon.png",
+      "src": "/images/logo/m4-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
