@@ -2,8 +2,8 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mechanic 4 - Games</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mechanic 4</title>
 <link rel="icon" href="/images/logo/m4-favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="/images/logo/m4-icon.png">
 <link rel="apple-touch-icon" href="/images/logo/m4-icon.png">
@@ -16,151 +16,236 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 html, body { height: 100%; overflow: hidden; }
-html { background-color: #00c300; }
-body { background-color: #fbfdfa; display: flex; flex-direction: column; }
+
+html { 
+    background-color: #00c300;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+}
+
+body {
+    background-color: #eae9ec;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+}
 
 header {
-    background-color: #00c300; color: #fff; height: 70px; flex-shrink: 0;
-    display: flex; align-items: center; padding: 0 20px; position: relative; z-index: 10;
-}
-.back-button {
-    background-color: #fff; color: #00c300; border: none; border-radius: 25px;
-    padding: 7px 12px; cursor: pointer; font-weight: bold; font-size: 0.95rem; flex-shrink: 0;
-}
-.header-center {
-    position: absolute; left: 50%; transform: translateX(-50%);
-    display: flex; align-items: center; gap: 8px; white-space: nowrap;
-}
-.kpn-logo { height: 38px; }
-.header-title { font-size: 1.3rem; font-weight: bold; color: #fff; }
-.countdown {
-    font-size: 0.65rem; color: #fff; position: absolute; right: 15px;
-    text-align: center; line-height: 1.3; font-weight: bold;
-}
-
-.grid-section {
+    background-color: #00c300;
+    height: 70px;
     flex-shrink: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 14px 16px 10px 16px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    position: relative;
 }
 
-.card {
-    background-color: #fff;
-    border-radius: 16px;
-    aspect-ratio: 1;
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kpn-logo { height: 38px; }
+
+.header-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.middle-section {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.09);
-    cursor: pointer;
-    transition: 0.15s;
-    padding: 10px;
-}
-.card:active { transform: scale(0.97); }
-.card-icon { font-size: 2.8rem; margin-bottom: 8px; }
-.card span { color: #00a000; font-size: 0.78rem; font-weight: bold; line-height: 1.2; }
-
-.bottom-section {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    align-items: flex-start;
-}
-
-.jasper-quote {
-    flex: 1;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 30px 8px 0 16px;
-}
-
-.quote-bubble {
-    background-color: #fff;
-    border-radius: 16px;
-    padding: 11px 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-    font-size: 0.82rem;
-    color: #333;
-    font-style: italic;
-    line-height: 1.45;
-    max-width: 145px;
     position: relative;
+    overflow: visible;
+    z-index: 0;
 }
 
-.quote-bubble::after {
-    content: '';
+.welcome {
+    font-size: 2.6rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 0;
+}
+
+.knop-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-top: 60px;
+}
+
+.start-button {
+    display: block;
+    padding: 20px 60px;
+    font-size: 1.4rem;
+    background-color: #00c300;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 6px 20px rgba(0,195,0,0.3);
+    animation: pulse 2.5s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.start-button.geen-pulse {
+    animation: none !important;
+    transform: scale(1) !important;
+    box-shadow: 0 6px 20px rgba(0,195,0,0.3) !important;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(0,195,0,0.3); }
+    50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,195,0,0.5); }
+}
+
+.start-button:active {
+    transform: scale(0.95) !important;
+    animation: none;
+}
+
+.kat {
+    position: fixed;
+    font-size: 3.2rem;
+    z-index: 10;
+    pointer-events: none;
+    display: none;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
+}
+
+.kat-zit {
     position: absolute;
-    right: -13px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 8px solid transparent;
-    border-left-color: #fff;
-    border-right: 0;
-    filter: drop-shadow(3px 1px 2px rgba(0,0,0,0.08));
+    font-size: 2.4rem;
+    top: -38px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    z-index: 5;
+    line-height: 1;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
 }
 
-.jasper-gif {
-    width: 55vw;
-    flex-shrink: 0;
-    line-height: 0;
-    align-self: flex-end;
-    margin-top: auto;
+.graffiti-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 3;
+    display: none;
+    text-align: center;
+    max-width: 95%;
 }
-.jasper-gif img { width: 100%; display: block; }
+
+.graffiti-container.actief {
+    display: block;
+}
+
+.spray-particle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    z-index: 26;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes spray {
+    0% { 
+        opacity: 0.9; 
+        transform: translate(0, 0) scale(1.5); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: translate(var(--tx), var(--ty)) scale(0.2); 
+    }
+}
+
+.spons {
+    position: absolute;
+    font-size: 6rem;
+    z-index: 25;
+    pointer-events: none;
+    display: none;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
+    line-height: 1;
+}
+
+.wipe-overlay {
+    position: absolute;
+    background-color: #eae9ec;
+    pointer-events: none;
+    z-index: 24;
+    display: none;
+}
+
+.gif-section {
+    flex: 0 0 38vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.gif-section img {
+    width: 100%;
+    display: block;
+}
 
 footer {
-    background-color: #00c300; color: #fff; text-align: center;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; flex-shrink: 0;
+    background-color: #00c300;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    min-height: 55px;
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    min-height: calc(55px + env(safe-area-inset-bottom, 0px));
 }
 </style>
 </head>
+
 <body>
 
 <header>
-    <button class="back-button" onclick="window.location.href='index.html'">&larr;</button>
     <div class="header-center">
         <img src="images/logo/kpn-logo.png" class="kpn-logo">
-        <span class="header-title">Games</span>
+        <span class="header-title">Mechanic 4</span>
     </div>
-    <div class="countdown" id="countdown">Laden...</div>
 </header>
 
-<div class="grid-section">
-    <div class="card" onclick="window.location.href='game-quiz.html'">
-        <div class="card-icon">🧠</div>
-        <span>KPN Quiz</span>
+<div class="middle-section" id="middleSection">
+    <div class="welcome">Hoi Colin,</div>
+
+    <div class="knop-wrapper" id="knopWrapper">
+        <span class="kat-zit" id="katZit">😸</span>
+        <button class="start-button" id="startBtn" onclick="window.location.href='index.html'">Start</button>
     </div>
-    <div class="card" onclick="window.location.href='game-memory.html'">
-        <div class="card-icon">🃏</div>
-        <span>Memory</span>
-    </div>
-    <div class="card" onclick="window.location.href='game-tiktak.html'">
-        <div class="card-icon">👊</div>
-        <span>Tik 'm aan</span>
-    </div>
-    <div class="card" onclick="window.location.href='game-woordraad.html'">
-        <div class="card-icon">🔤</div>
-        <span>Raad het Woord</span>
-    </div>
+
+    <div class="graffiti-container" id="graffitiContainer"></div>
+    <div class="wipe-overlay" id="wipeOverlay"></div>
+    <div class="spons" id="spons">🧽</div>
 </div>
 
-<div class="bottom-section">
-    <div class="jasper-quote">
-        <div class="quote-bubble">
-            <span id="quoteText"></span>
-        </div>
-    </div>
-    <div class="jasper-gif">
-        <img src="images/mechanics/m4-jasper.gif" alt="Jasper">
-    </div>
+<div class="kat" id="kat">🐈</div>
+
+<div class="gif-section">
+    <img src="images/mechanics/m4-all.gif" alt="Mechanic4">
 </div>
 
 <footer>&copy; KPN 2026</footer>
@@ -170,27 +255,391 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-const quote = "Heb je zin om een spelletje te doen doen doen? 🎮";
-const quoteEl = document.getElementById("quoteText");
-let i = 0;
-function typeWriter() {
-    if (i < quote.length) { quoteEl.textContent += quote.charAt(i); i++; setTimeout(typeWriter, 45); }
-}
-setTimeout(typeWriter, 600);
+console.log('🚀 Start');
 
-let incentiveEnd = new Date("2026-06-01T23:59:59");
-function updateCountdown() {
-    let diff = incentiveEnd - new Date();
-    let el = document.getElementById("countdown");
-    if (diff <= 0) { el.innerHTML = "Incentive<br>afgelopen"; return; }
-    let days = Math.floor(diff / 86400000);
-    if (days > 1) { el.innerHTML = `Nog<br>${days}<br>dagen`; return; }
-    let hours = Math.floor(diff / 3600000);
-    if (hours >= 1) { el.innerHTML = `Nog<br>${hours}<br>uur`; return; }
-    el.innerHTML = `Nog<br>${Math.floor(diff / 60000)}<br>min`;
+// ========== KAT ANIMATIE ==========
+const KAT_SPRINGEND = '🐈';
+const KAT_ZITTEND = ['😺', '😼', '😸', '😹'];
+
+const katEl = document.getElementById('kat');
+const katZitEl = document.getElementById('katZit');
+const startBtn = document.getElementById('startBtn');
+
+let katBezig = false;
+let volgendeKantVanLinks = Math.random() < 0.5;
+let emojiWisselInterval = null;
+
+function wachtEnSpringSoms() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    setTimeout(startKatAnimatie, wachttijd);
 }
-setInterval(updateCountdown, 60000);
-updateCountdown();
+
+function startKatAnimatie() {
+    if (katBezig) return;
+    katBezig = true;
+    startBtn.classList.add('geen-pulse');
+
+    setTimeout(() => {
+        const knopRect = startBtn.getBoundingClientRect();
+        const doelX = knopRect.left + knopRect.width / 2 - 24;
+        const doelY = knopRect.top - 51;
+
+        const vanLinks = volgendeKantVanLinks;
+        volgendeKantVanLinks = !volgendeKantVanLinks;
+
+        const startX = vanLinks ? -80 : window.innerWidth + 20;
+        const boogHoogte = 130 + Math.random() * 80;
+        const springDuur = 750 + Math.random() * 200;
+
+        katEl.textContent = KAT_SPRINGEND;
+        katEl.style.display = 'block';
+        katEl.style.left = startX + 'px';
+        katEl.style.top = doelY + 'px';
+        katEl.style.transform = vanLinks ? 'scaleX(-1)' : 'scaleX(1)';
+
+        animeerBoog(startX, doelY, doelX, doelY, boogHoogte, springDuur, vanLinks, () => katLandt(doelX, doelY));
+    }, 220);
+}
+
+function animeerBoog(x0, y0, x1, y1, boogH, duur, vanLinks, klaar) {
+    const start = performance.now();
+    function stap(nu) {
+        const t = Math.min((nu - start) / duur, 1);
+        const eT = easeInOut(t);
+        const x = x0 + (x1 - x0) * eT;
+        const y = y0 + (y1 - y0) * eT - boogH * 4 * eT * (1 - eT);
+        const rotatie = vanLinks ? -15 + 30 * eT : 15 - 30 * eT;
+        const spiegelX = vanLinks ? -1 : 1;
+        katEl.style.left = x + 'px';
+        katEl.style.top = y + 'px';
+        katEl.style.transform = `scaleX(${spiegelX}) rotate(${rotatie}deg)`;
+        if (t < 1) requestAnimationFrame(stap);
+        else klaar();
+    }
+    requestAnimationFrame(stap);
+}
+
+function katLandt(doelX, doelY) {
+    const bounceStart = performance.now();
+    function bounce(nu) {
+        const t = Math.min((nu - bounceStart) / 220, 1);
+        const bounceY = doelY + Math.sin(t * Math.PI) * 10;
+        katEl.style.top = bounceY + 'px';
+        katEl.style.transform = 'scaleX(1) rotate(0deg)';
+        if (t < 1) {
+            requestAnimationFrame(bounce);
+        } else {
+            katEl.style.top = doelY + 'px';
+            setTimeout(() => {
+                katEl.style.display = 'none';
+                katZitEl.style.display = 'block';
+                katZitEl.textContent = randomZitEmoji();
+                emojiWisselInterval = setInterval(() => {
+                    katZitEl.textContent = randomZitEmoji();
+                }, 2000);
+                const zitTijd = 4000 + Math.random() * 4000;
+                setTimeout(() => springWeg(doelX, doelY), zitTijd);
+            }, 1000);
+        }
+    }
+    requestAnimationFrame(bounce);
+}
+
+function springWeg(doelX, doelY) {
+    clearInterval(emojiWisselInterval);
+    emojiWisselInterval = null;
+    katZitEl.style.display = 'none';
+    katEl.textContent = KAT_SPRINGEND;
+    katEl.style.display = 'block';
+    katEl.style.left = doelX + 'px';
+    katEl.style.top = doelY + 'px';
+    const naarRechts = doelX < window.innerWidth / 2;
+    const eindX = naarRechts ? window.innerWidth + 80 : -100;
+    const boogHoogte = 110 + Math.random() * 80;
+    const springDuur = 650 + Math.random() * 200;
+    katEl.style.transform = naarRechts ? 'scaleX(-1)' : 'scaleX(1)';
+    animeerBoog(doelX, doelY, eindX, doelY - 20, boogHoogte, springDuur, naarRechts, () => {
+        katEl.style.display = 'none';
+        startBtn.classList.remove('geen-pulse');
+        katBezig = false;
+        wachtEnSpringSoms();
+    });
+}
+
+function randomZitEmoji() {
+    return KAT_ZITTEND[Math.floor(Math.random() * KAT_ZITTEND.length)];
+}
+
+function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+// ========== GRAFFITI SVG ANIMATIE ==========
+const GRAFFITI_SVGS = [
+    '/fonts/winnen-winnen-winnen.svg',
+    '/fonts/doen-doen-doen.svg',
+    '/fonts/tb-is-het-beste.svg',
+    '/fonts/tilburg-gaat-winnen.svg',
+    '/fonts/mechanic-four.svg'
+];
+
+const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00', '#FFD700'];
+
+const graffitiContainer = document.getElementById('graffitiContainer');
+const spons = document.getElementById('spons');
+const wipeOverlay = document.getElementById('wipeOverlay');
+
+let graffitiBezig = false;
+let vorigeSvgIndex = -1;
+let graffitiY = 0;
+let graffitiHoogte = 0;
+let sprayParticles = [];
+
+function wachtEnSprayGraffiti() {
+    const wachttijd = 2000 + Math.random() * 3000;
+    setTimeout(startGraffitiAnimatie, wachttijd);
+}
+
+async function startGraffitiAnimatie() {
+    console.log('🎨 START');
+    
+    if (graffitiBezig) return;
+    graffitiBezig = true;
+
+    let index;
+    do {
+        index = Math.floor(Math.random() * GRAFFITI_SVGS.length);
+    } while (index === vorigeSvgIndex && GRAFFITI_SVGS.length > 1);
+    vorigeSvgIndex = index;
+
+    const svgUrl = GRAFFITI_SVGS[index];
+    const kleur = GRAFFITI_KLEUREN[Math.floor(Math.random() * GRAFFITI_KLEUREN.length)];
+
+    try {
+        const response = await fetch(svgUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const svgText = await response.text();
+        graffitiContainer.innerHTML = svgText;
+        await new Promise(r => requestAnimationFrame(r));
+        
+        const svg = graffitiContainer.querySelector('svg');
+        if (!svg) throw new Error('Geen SVG');
+        
+        // CONVERTEER MM NAAR PX
+        const MM_TO_PX = 3.779527559; // 1mm = 3.78px (96 DPI)
+        
+        let widthMM, heightMM;
+        
+        // Lees width/height in mm
+        const widthAttr = svg.getAttribute('width');
+        const heightAttr = svg.getAttribute('height');
+        
+        if (widthAttr && widthAttr.includes('mm')) {
+            widthMM = parseFloat(widthAttr);
+            heightMM = parseFloat(heightAttr);
+            console.log('📐 Origineel:', widthMM, 'mm x', heightMM, 'mm');
+        } else {
+            // Fallback: lees van viewBox
+            const viewBox = svg.getAttribute('viewBox');
+            if (viewBox) {
+                const parts = viewBox.split(/\s+|,/);
+                widthMM = parseFloat(parts[2]);
+                heightMM = parseFloat(parts[3]);
+                console.log('📐 ViewBox:', widthMM, 'x', heightMM);
+            } else {
+                widthMM = 100;
+                heightMM = 20;
+            }
+        }
+        
+        // Converteer naar pixels
+        const widthPX = widthMM * MM_TO_PX;
+        const heightPX = heightMM * MM_TO_PX;
+        
+        console.log('🔄 Geconverteerd naar:', Math.round(widthPX), 'px x', Math.round(heightPX), 'px');
+        
+        // Zet NIEUWE viewBox in pixels
+        svg.setAttribute('viewBox', `0 0 ${widthPX} ${heightPX}`);
+        svg.setAttribute('width', widthPX);
+        svg.setAttribute('height', heightPX);
+        svg.removeAttribute('xmlns:inkscape');
+        svg.removeAttribute('xmlns:sodipodi');
+        
+        await new Promise(r => requestAnimationFrame(r));
+        
+        // Vind paths
+        const alleElementen = svg.querySelectorAll('*');
+        const paths = [];
+        
+        alleElementen.forEach(elem => {
+            elem.setAttribute('fill', 'none');
+            elem.style.fill = 'none';
+            
+            if (['path', 'line', 'polyline', 'polygon'].includes(elem.tagName.toLowerCase())) {
+                elem.setAttribute('stroke', kleur);
+                elem.style.stroke = kleur;
+                elem.setAttribute('stroke-width', '6');
+                elem.style.strokeWidth = '6';
+                elem.setAttribute('stroke-linecap', 'round');
+                elem.setAttribute('stroke-linejoin', 'round');
+                
+                try {
+                    const length = elem.getTotalLength();
+                    if (length > 0) {
+                        paths.push({ path: elem, length });
+                        elem.style.strokeDasharray = length;
+                        elem.style.strokeDashoffset = length;
+                    }
+                } catch (e) {}
+            }
+        });
+        
+        console.log('🛤️ Paths:', paths.length);
+        
+        if (paths.length === 0) throw new Error('Geen paths');
+        
+        // Schaal
+        const maxWidth = window.innerWidth * 0.75;
+        const schaal = Math.min(2, maxWidth / widthPX); // Max 2x
+        
+        const nieuweWidth = widthPX * schaal;
+        const nieuweHeight = heightPX * schaal;
+        
+        svg.style.width = nieuweWidth + 'px';
+        svg.style.height = nieuweHeight + 'px';
+        svg.style.display = 'block';
+        
+        console.log('📏 Finale:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight), 'px');
+        
+        // Positioneer
+        const knopRect = startBtn.getBoundingClientRect();
+        const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
+        const beschikbareRuimte = gifRect.top - knopRect.bottom;
+        const centerY = knopRect.bottom + (beschikbareRuimte * 0.25);
+        
+        graffitiY = centerY;
+        graffitiHoogte = nieuweHeight * 1.5;
+        
+        graffitiContainer.style.top = (centerY - nieuweHeight / 2) + 'px';
+        graffitiContainer.classList.add('actief');
+        
+        console.log('📍 Y:', Math.round(centerY));
+        
+        // Animeer
+        let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
+        const schrijfDuur = 2000;
+        let cumulativeLength = 0;
+        
+        paths.forEach(({ path, length }, idx) => {
+            const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
+            const pathDuur = (length / totalLength) * schrijfDuur;
+            cumulativeLength += length;
+            
+            setTimeout(() => {
+                const start = performance.now();
+                
+                function animate(now) {
+                    const elapsed = now - start;
+                    const t = Math.min(elapsed / pathDuur, 1);
+                    
+                    path.style.strokeDashoffset = length * (1 - t);
+                    
+                    // Spray
+                    if (Math.random() < 0.35 && t < 0.95) {
+                        try {
+                            const point = path.getPointAtLength(length * t);
+                            const containerRect = graffitiContainer.getBoundingClientRect();
+                            maakSprayParticle(
+                                point.x + containerRect.left,
+                                point.y + containerRect.top,
+                                kleur
+                            );
+                        } catch (e) {}
+                    }
+                    
+                    if (t < 1) {
+                        requestAnimationFrame(animate);
+                    } else if (idx === paths.length - 1) {
+                        const staanTijd = 3000 + Math.random() * 2000;
+                        setTimeout(veegGraffitiWeg, staanTijd);
+                    }
+                }
+                requestAnimationFrame(animate);
+            }, startDelay);
+        });
+        
+    } catch (error) {
+        console.error('❌', error.message);
+        graffitiBezig = false;
+        wachtEnSprayGraffiti();
+    }
+}
+
+function maakSprayParticle(x, y, kleur) {
+    const particle = document.createElement('div');
+    particle.className = 'spray-particle';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.backgroundColor = kleur;
+    
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 15 + Math.random() * 30;
+    particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+    particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+    particle.style.animation = 'spray 0.5s ease-out forwards';
+    
+    document.body.appendChild(particle);
+    sprayParticles.push(particle);
+    
+    setTimeout(() => {
+        particle.remove();
+        sprayParticles = sprayParticles.filter(p => p !== particle);
+    }, 500);
+}
+
+function veegGraffitiWeg() {
+    spons.style.display = 'block';
+    wipeOverlay.style.display = 'block';
+
+    const sponsSize = 96;
+    let x = -sponsSize;
+    const eindX = window.innerWidth + sponsSize;
+    const snelheid = 7;
+
+    function animeerSpons() {
+        x += snelheid;
+        
+        spons.style.left = x + 'px';
+        spons.style.top = (graffitiY - 48) + 'px';
+        
+        const overlayCenterX = x + (sponsSize / 2);
+        wipeOverlay.style.left = '0';
+        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
+        wipeOverlay.style.width = overlayCenterX + 'px';
+        wipeOverlay.style.height = graffitiHoogte + 'px';
+        
+        if (x < eindX) {
+            requestAnimationFrame(animeerSpons);
+        } else {
+            spons.style.display = 'none';
+            wipeOverlay.style.display = 'none';
+            graffitiContainer.classList.remove('actief');
+            graffitiContainer.innerHTML = '';
+            
+            sprayParticles.forEach(p => p.remove());
+            sprayParticles = [];
+            
+            graffitiBezig = false;
+            wachtEnSprayGraffiti();
+        }
+    }
+    animeerSpons();
+}
+
+wachtEnSpringSoms();
+setTimeout(startGraffitiAnimatie, 1000);
 </script>
+
 </body>
 </html>
