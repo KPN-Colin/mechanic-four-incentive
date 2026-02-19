@@ -151,6 +151,10 @@ header {
     display: block;
 }
 
+.graffiti-container svg * {
+    fill: none !important;
+}
+
 .spray-streak {
     position: absolute;
     width: 3px;
@@ -180,14 +184,6 @@ header {
     display: none;
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));
     line-height: 1;
-}
-
-.wipe-overlay {
-    position: absolute;
-    background-color: #eae9ec;
-    pointer-events: none;
-    z-index: 24;
-    display: none;
 }
 
 .gif-section {
@@ -238,7 +234,6 @@ footer {
     </div>
 
     <div class="graffiti-container" id="graffitiContainer"></div>
-    <div class="wipe-overlay" id="wipeOverlay"></div>
     <div class="spons" id="spons">🧽</div>
 </div>
 
@@ -387,7 +382,6 @@ const GRAFFITI_KLEUREN = ['#FF6B35', '#F7931E', '#00D9FF', '#FF00FF', '#7FFF00',
 
 const graffitiContainer = document.getElementById('graffitiContainer');
 const spons = document.getElementById('spons');
-const wipeOverlay = document.getElementById('wipeOverlay');
 
 let graffitiBezig = false;
 let vorigeSvgIndex = -1;
@@ -419,12 +413,21 @@ async function startGraffitiAnimatie() {
         const response = await fetch(svgUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
-        const svgText = await response.text();
+        let svgText = await response.text();
+        
+        // VERWIJDER ALLE FILLS UIT SVG TEXT VOOR WE HET INJECTEREN
+        svgText = svgText.replace(/fill="[^"]*"/g, 'fill="none"');
+        svgText = svgText.replace(/fill:[^;"]*/g, 'fill:none');
+        
         graffitiContainer.innerHTML = svgText;
         await new Promise(r => requestAnimationFrame(r));
         
         const svg = graffitiContainer.querySelector('svg');
         if (!svg) throw new Error('Geen SVG');
+        
+        // FORCE fill removal op SVG zelf
+        svg.setAttribute('fill', 'none');
+        svg.style.fill = 'none';
         
         // CONVERTEER MM NAAR PX
         const MM_TO_PX = 3.779527559;
@@ -460,21 +463,24 @@ async function startGraffitiAnimatie() {
         
         await new Promise(r => requestAnimationFrame(r));
         
-        // VERWIJDER ACHTERGRONDEN
+        // VERWIJDER ALLE NON-PATH ELEMENTEN
         const alleElementen = svg.querySelectorAll('*');
         const paths = [];
         
         alleElementen.forEach(elem => {
             const tagName = elem.tagName.toLowerCase();
             
-            if (['rect', 'image', 'sodipodi:namedview', 'defs'].includes(tagName)) {
+            // Verwijder ALLES wat niet path/line/polyline is
+            if (!['path', 'line', 'polyline', 'polygon', 'g', 'svg'].includes(tagName)) {
                 elem.remove();
                 return;
             }
             
+            // ULTRA FORCE fill removal
             elem.removeAttribute('fill');
             elem.setAttribute('fill', 'none');
             elem.style.fill = 'none';
+            elem.style.setProperty('fill', 'none', 'important');
             
             if (['path', 'line', 'polyline', 'polygon'].includes(tagName)) {
                 elem.removeAttribute('stroke');
@@ -493,10 +499,10 @@ async function startGraffitiAnimatie() {
         
         if (paths.length === 0) throw new Error('Geen paths');
         
-        // SCHAAL: 33% van de vorige (was min 10x, nu ~3.3x)
+        // SCHAAL: 50% van vorige (delen door 2 ipv delen door 3)
         const maxWidth = window.innerWidth * 0.85;
         let schaal = Math.max(10, maxWidth / widthPX);
-        schaal = schaal / 3; // 33% van vorige grootte
+        schaal = schaal / 6; // 50% kleiner (was /3, nu /6)
         
         const nieuweWidth = widthPX * schaal;
         const nieuweHeight = heightPX * schaal;
@@ -507,11 +513,11 @@ async function startGraffitiAnimatie() {
         
         console.log('📏 Schaal:', schaal.toFixed(1), 'x | Size:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight));
         
-        // POSITIONEER: PRECIES IN HET MIDDEN tussen button en gif
+        // POSITIONEER: MIDDEN
         const knopRect = startBtn.getBoundingClientRect();
         const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
         const beschikbareRuimte = gifRect.top - knopRect.bottom;
-        const centerY = knopRect.bottom + (beschikbareRuimte * 0.50); // 50% = precies midden
+        const centerY = knopRect.bottom + (beschikbareRuimte * 0.50);
         
         graffitiY = centerY;
         graffitiHoogte = nieuweHeight * 1.5;
@@ -536,8 +542,8 @@ async function startGraffitiAnimatie() {
                 // Zet stroke properties
                 path.setAttribute('stroke', kleur);
                 path.style.stroke = kleur;
-                path.setAttribute('stroke-width', '6');
-                path.style.strokeWidth = '6';
+                path.setAttribute('stroke-width', '5');
+                path.style.strokeWidth = '5';
                 path.setAttribute('stroke-linecap', 'round');
                 path.setAttribute('stroke-linejoin', 'round');
                 path.style.strokeDasharray = length;
@@ -552,7 +558,7 @@ async function startGraffitiAnimatie() {
                     path.style.strokeDashoffset = length * (1 - t);
                     
                     // SPRAY STREAKS
-                    if (Math.random() < 0.6 && t < 0.95) {
+                    if (Math.random() < 0.5 && t < 0.95) {
                         try {
                             const point = path.getPointAtLength(length * t);
                             const containerRect = graffitiContainer.getBoundingClientRect();
@@ -564,7 +570,7 @@ async function startGraffitiAnimatie() {
                                 angle = Math.atan2(dy, dx);
                             }
                             
-                            for (let i = 0; i < 3; i++) {
+                            for (let i = 0; i < 2; i++) {
                                 maakSprayStreak(
                                     point.x + containerRect.left,
                                     point.y + containerRect.top,
@@ -604,7 +610,7 @@ function maakSprayStreak(x, y, kleur, schrijfRichting) {
     streak.style.backgroundColor = kleur;
     
     const spreadAngle = schrijfRichting + (Math.random() - 0.5) * Math.PI / 3;
-    const distance = 20 + Math.random() * 40;
+    const distance = 15 + Math.random() * 30;
     
     streak.style.setProperty('--tx', Math.cos(spreadAngle) * distance + 'px');
     streak.style.setProperty('--ty', Math.sin(spreadAngle) * distance + 'px');
@@ -625,12 +631,11 @@ function veegGraffitiWeg() {
     console.log('🧽 Spons');
     
     spons.style.display = 'block';
-    wipeOverlay.style.display = 'block';
 
     const sponsSize = 96;
     let x = -sponsSize;
     const eindX = window.innerWidth + sponsSize;
-    const snelheid = 7;
+    const snelheid = 9;
 
     function animeerSpons() {
         x += snelheid;
@@ -638,11 +643,15 @@ function veegGraffitiWeg() {
         spons.style.left = x + 'px';
         spons.style.top = (graffitiY - 48) + 'px';
         
-        const overlayCenterX = x + (sponsSize / 2);
-        wipeOverlay.style.left = '0';
-        wipeOverlay.style.top = (graffitiY - graffitiHoogte / 2) + 'px';
-        wipeOverlay.style.width = overlayCenterX + 'px';
-        wipeOverlay.style.height = graffitiHoogte + 'px';
+        // Check of spons over graffiti is
+        const sponsCenterX = x + (sponsSize / 2);
+        const graffitiRect = graffitiContainer.getBoundingClientRect();
+        
+        if (sponsCenterX > graffitiRect.left && x < graffitiRect.right) {
+            // Fade out graffiti
+            const progress = (sponsCenterX - graffitiRect.left) / graffitiRect.width;
+            graffitiContainer.style.opacity = 1 - progress;
+        }
         
         if (x < eindX) {
             requestAnimationFrame(animeerSpons);
@@ -650,8 +659,8 @@ function veegGraffitiWeg() {
             console.log('✅ Spons klaar');
             
             spons.style.display = 'none';
-            wipeOverlay.style.display = 'none';
             graffitiContainer.classList.remove('actief');
+            graffitiContainer.style.opacity = '1';
             graffitiContainer.innerHTML = '';
             
             sprayParticles.forEach(p => p.remove());
