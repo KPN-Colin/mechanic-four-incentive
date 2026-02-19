@@ -386,13 +386,6 @@ let vorigeZin = null;
 let graffitiY = 0;
 let graffitiHoogte = 0;
 
-// Pre-load de font
-document.fonts.load('48px GrafSpray').then(() => {
-    console.log('✅ GrafSpray font geladen');
-}).catch(() => {
-    console.log('❌ GrafSpray font NIET geladen');
-});
-
 function wachtEnSprayGraffiti() {
     const wachttijd = 2000 + Math.random() * 3000;
     setTimeout(startGraffitiAnimatie, wachttijd);
@@ -416,18 +409,16 @@ function startGraffitiAnimatie() {
     const centerY = knopRect.bottom + (beschikbareRuimte / 2);
 
     graffitiY = centerY;
-    graffitiText.style.color = kleur;
     graffitiText.innerHTML = '';
 
     const maxWidth = window.innerWidth - 60;
     let fontSize = 48;
-
-    // Probeer eerst de custom font, dan Comic Sans als test
-    graffitiText.style.fontFamily = 'GrafSpray, "Comic Sans MS", cursive';
-    graffitiText.style.fontWeight = 'bold';
+    
+    // Font stack
+    const fontStack = 'GrafSpray, "Comic Sans MS", cursive';
     
     const tempText = document.createElement('span');
-    tempText.style.fontFamily = graffitiText.style.fontFamily;
+    tempText.style.fontFamily = fontStack;
     tempText.style.fontWeight = 'bold';
     tempText.style.fontSize = fontSize + 'px';
     tempText.style.visibility = 'hidden';
@@ -439,9 +430,6 @@ function startGraffitiAnimatie() {
         fontSize -= 2;
         tempText.style.fontSize = fontSize + 'px';
     }
-    
-    const computedFont = window.getComputedStyle(tempText).fontFamily;
-    console.log('📝 Werkelijke font gebruikt:', computedFont);
     
     document.body.removeChild(tempText);
 
@@ -455,10 +443,18 @@ function startGraffitiAnimatie() {
         const span = document.createElement('span');
         span.className = 'graffiti-letter';
         span.textContent = letter === ' ' ? '\u00A0' : letter;
+        
+        // FORCE FONT OP ELK SPAN INDIVIDUEEL
+        span.style.fontFamily = fontStack;
+        span.style.fontWeight = 'bold';
+        span.style.color = kleur;
+        
         graffitiText.appendChild(span);
     });
 
     const spans = graffitiText.querySelectorAll('.graffiti-letter');
+    
+    console.log('🔤 Test eerste span font:', window.getComputedStyle(spans[0]).fontFamily);
 
     spans.forEach((span, index) => {
         setTimeout(() => {
