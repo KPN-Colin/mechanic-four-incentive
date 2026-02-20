@@ -397,10 +397,8 @@ async function startHandwritingAnimatie() {
         svgText = svgText.replace(/stroke-width="[^"]*"/gi, '');
         svgText = svgText.replace(/stroke-dasharray="[^"]*"/gi, '');
         svgText = svgText.replace(/stroke-dashoffset="[^"]*"/gi, '');
-        svgText = svgText.replace(/fill="[^"]*"/gi, '');  // ← NIEUW!
-        svgText = svgText.replace(/fill:[^;"]*/gi, '');    // ← NIEUW!
-        
-        console.log('🧹 Strokes + Fills verwijderd uit SVG');
+        svgText = svgText.replace(/fill="[^"]*"/gi, '');
+        svgText = svgText.replace(/fill:[^;"]*/gi, '');
         
         handwritingContainer.innerHTML = svgText;
         await new Promise(r => requestAnimationFrame(r));
@@ -408,7 +406,17 @@ async function startHandwritingAnimatie() {
         const svg = handwritingContainer.querySelector('svg');
         if (!svg) throw new Error('Geen SVG');
         
-        console.log('✅ SVG geladen (volledig onzichtbaar)');
+        console.log('✅ SVG geladen');
+        
+        // FORCE verwijder fills uit ALLE DOM elementen
+        console.log('🧹 Verwijder fills uit DOM...');
+        svg.querySelectorAll('*').forEach(elem => {
+            elem.removeAttribute('fill');
+            elem.removeAttribute('stroke');
+            elem.style.fill = 'none';
+            elem.style.stroke = 'none';
+        });
+        console.log('✅ Fills verwijderd!');
         
         // Schaling
         const currentWidth = svg.viewBox.baseVal.width || 100;
@@ -478,12 +486,14 @@ async function startHandwritingAnimatie() {
             setTimeout(() => {
                 console.log(`✏️ [${idx}] Schrijf`);
                 
-                // ZET stroke + dasharray
+                // ZET stroke + dasharray (fill blijft none!)
                 path.setAttribute('stroke', defaultStroke);
                 path.setAttribute('stroke-width', '2');
                 path.setAttribute('stroke-linecap', 'round');
                 path.setAttribute('stroke-linejoin', 'round');
                 path.setAttribute('fill', 'none');
+                path.style.fill = 'none';
+                path.style.stroke = defaultStroke;
                 path.style.strokeDasharray = `${length}`;
                 path.style.strokeDashoffset = `${length}`;
                 
