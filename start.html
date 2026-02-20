@@ -406,9 +406,12 @@ async function startGraffitiAnimatie() {
         
         let svgText = await response.text();
         
-        // Verwijder ALLEEN fills (NIET strokes!)
+        // Verwijder fills EN strokes
         svgText = svgText.replace(/fill="[^"]*"/gi, '');
         svgText = svgText.replace(/fill:[^;"]*;?/gi, '');
+        svgText = svgText.replace(/stroke="[^"]*"/gi, '');
+        svgText = svgText.replace(/stroke:[^;"]*;?/gi, '');
+        svgText = svgText.replace(/stroke-width="[^"]*"/gi, '');
         
         graffitiContainer.innerHTML = svgText;
         await new Promise(r => requestAnimationFrame(r));
@@ -461,9 +464,12 @@ async function startGraffitiAnimatie() {
                 return;
             }
             
-            // Verwijder fill
+            // ULTRA verwijder fill + stroke
             elem.removeAttribute('fill');
-            elem.style.fill = 'none';
+            elem.removeAttribute('stroke');
+            elem.removeAttribute('stroke-width');
+            elem.removeAttribute('style');
+            elem.style.cssText = 'fill: none !important;';
             
             if (['path', 'line', 'polyline', 'polygon'].includes(tagName)) {
                 try {
@@ -479,10 +485,9 @@ async function startGraffitiAnimatie() {
         
         if (paths.length === 0) throw new Error('Geen paths');
         
-        // Schaal
-        const maxWidth = window.innerWidth * 0.85;
-        let schaal = Math.max(10, maxWidth / widthPX);
-        schaal = schaal / 4;
+        // SCHAAL: Max 80% van scherm breedte
+        const maxWidth = window.innerWidth * 0.80;
+        let schaal = maxWidth / widthPX;
         
         const nieuweWidth = widthPX * schaal;
         const nieuweHeight = heightPX * schaal;
@@ -492,6 +497,7 @@ async function startGraffitiAnimatie() {
         svg.style.display = 'block';
         
         console.log('📏 Grootte:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight));
+        console.log('📏 Scherm breedte:', window.innerWidth);
         
         // Positioneer HORIZONTAAL GECENTREERD
         const knopRect = startBtn.getBoundingClientRect();
@@ -500,39 +506,51 @@ async function startGraffitiAnimatie() {
         const centerY = knopRect.bottom + (beschikbareRuimte * 0.50);
         const centerX = window.innerWidth / 2;
         
+        const left = Math.max(0, centerX - nieuweWidth / 2);
+        const top = centerY - nieuweHeight / 2;
+        
         graffitiY = centerY;
         graffitiHoogte = nieuweHeight * 1.5;
         
-        graffitiContainer.style.left = (centerX - nieuweWidth / 2) + 'px';
-        graffitiContainer.style.top = (centerY - nieuweHeight / 2) + 'px';
+        graffitiContainer.style.left = left + 'px';
+        graffitiContainer.style.top = top + 'px';
         graffitiContainer.classList.add('actief');
         
-        console.log('📍 Positie:', Math.round(centerX), ',', Math.round(centerY));
+        console.log('📍 Left:', Math.round(left), '| Top:', Math.round(top));
         
-        // Animeer met stroke-dasharray techniek
+        // Animeer met stroke-dasharray
         let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
         const schrijfDuur = 2000;
         let cumulativeLength = 0;
         let vorigePoint = null;
         
         paths.forEach(({ path, length }, idx) => {
-            // Zet stroke properties VOOR animatie
-            path.setAttribute('stroke', kleur);
-            path.setAttribute('stroke-width', '6');
-            path.setAttribute('stroke-linecap', 'round');
-            path.setAttribute('stroke-linejoin', 'round');
-            
-            // Dasharray = "pen aan voor X, pen uit voor 0"
-            path.style.strokeDasharray = length;
-            // Dashoffset = verschuif de dasharray X pixels naar links
-            path.style.strokeDashoffset = length; // START onzichtbaar
-            
             const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
             const pathDuur = (length / totalLength) * schrijfDuur;
             cumulativeLength += length;
             
             setTimeout(() => {
-                console.log(`✏️ [${idx}] Schrijf path (${Math.round(length)}px)`);
+                console.log(`✏️ [${idx}] Zet stroke properties + start onzichtbaar`);
+                
+                // ZET stroke properties
+                path.setAttribute('stroke', kleur);
+                path.setAttribute('stroke-width', '6');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                path.setAttribute('fill', 'none');
+                
+                // FORCE geen andere styles
+                path.style.fill = 'none';
+                path.style.stroke = kleur;
+                path.style.strokeWidth = '6px';
+                path.style.strokeLinecap = 'round';
+                path.style.strokeLinejoin = 'round';
+                
+                // DASHARRAY animatie
+                path.style.strokeDasharray = `${length}`;
+                path.style.strokeDashoffset = `${length}`;
+                
+                console.log(`   Dasharray: ${length}, Offset start: ${length}`);
                 
                 const start = performance.now();
                 
@@ -540,9 +558,12 @@ async function startGraffitiAnimatie() {
                     const elapsed = now - start;
                     const t = Math.min(elapsed / pathDuur, 1);
                     
-                    // Animeer offset van length → 0 = "schuift naar binnen"
                     const offset = length * (1 - t);
-                    path.style.strokeDashoffset = offset;
+                    path.style.strokeDashoffset = `${offset}`;
+                    
+                    if (t === 0.5) {
+                        console.log(`   50% - Offset nu: ${Math.round(offset)}`);
+                    }
                     
                     // Spray
                     if (Math.random() < 0.5 && t < 0.95) {
@@ -571,7 +592,7 @@ async function startGraffitiAnimatie() {
                     if (t < 1) {
                         requestAnimationFrame(animate);
                     } else {
-                        console.log(`✅ [${idx}] Path klaar`);
+                        console.log(`✅ [${idx}] Path klaar - Offset eind: 0`);
                         if (idx === paths.length - 1) {
                             console.log('🎉 Alle paths geschreven!');
                             setTimeout(veegGraffitiWeg, 2000);
