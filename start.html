@@ -427,18 +427,31 @@ async function startHandwritingAnimatie() {
         
         console.log('📍 Positie:', Math.round(left), ',', Math.round(top));
         
-        // Vind alle paths
+        // Vind alle paths EN bewaar originele stroke kleur
         const paths = [];
         svg.querySelectorAll('path, line, polyline, polygon').forEach(elem => {
             try {
                 const length = elem.getTotalLength();
                 if (length > 0) {
-                    paths.push({ path: elem, length });
+                    // Bewaar originele stroke kleur
+                    const originalStroke = elem.getAttribute('stroke') || 
+                                         window.getComputedStyle(elem).stroke || 
+                                         '#000000';
+                    
+                    console.log('  Path stroke:', originalStroke, 'length:', Math.round(length));
+                    
+                    paths.push({ 
+                        path: elem, 
+                        length: length,
+                        stroke: originalStroke
+                    });
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn('  Path error:', e);
+            }
         });
         
-        console.log('🛤️ Paths:', paths.length);
+        console.log('🛤️ Animeerbare paths:', paths.length);
         
         if (paths.length === 0) {
             console.warn('⚠️ Geen paths, skip animatie');
@@ -446,22 +459,30 @@ async function startHandwritingAnimatie() {
             return;
         }
         
+        // EERST: maak alle paths onzichtbaar door stroke te verwijderen
+        paths.forEach(({ path }) => {
+            path.style.stroke = 'none';
+        });
+        
+        console.log('🎬 Start schrijf animatie');
+        
         // Animeer handwriting (stroke-dasharray)
         let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
         const schrijfDuur = 2500;
         let cumulativeLength = 0;
         
-        paths.forEach(({ path, length }, idx) => {
+        paths.forEach(({ path, length, stroke }, idx) => {
             const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
             const pathDuur = (length / totalLength) * schrijfDuur;
             cumulativeLength += length;
             
             setTimeout(() => {
-                console.log(`✏️ [${idx}] Schrijf path`);
+                console.log(`✏️ [${idx}/${paths.length}] Schrijf path (${Math.round(length)}px)`);
                 
-                // Zet dasharray (handwriting effect)
-                path.style.strokeDasharray = length;
-                path.style.strokeDashoffset = length;
+                // ZET stroke TERUG + dasharray
+                path.style.stroke = stroke;
+                path.style.strokeDasharray = `${length}`;
+                path.style.strokeDashoffset = `${length}`; // START onzichtbaar
                 
                 const start = performance.now();
                 
@@ -470,13 +491,14 @@ async function startHandwritingAnimatie() {
                     const t = Math.min(elapsed / pathDuur, 1);
                     
                     const offset = length * (1 - t);
-                    path.style.strokeDashoffset = offset;
+                    path.style.strokeDashoffset = `${offset}`;
                     
                     if (t < 1) {
                         requestAnimationFrame(animate);
                     } else {
+                        console.log(`  ✅ [${idx}] Path klaar`);
                         if (idx === paths.length - 1) {
-                            console.log('✅ Schrijven klaar');
+                            console.log('🎉 ALLE PATHS KLAAR');
                             setTimeout(veegHandwritingWeg, 2000);
                         }
                     }
@@ -529,6 +551,7 @@ function veegHandwritingWeg() {
             
             // Volgende SVG
             currentSvgIndex = (currentSvgIndex + 1) % HANDWRITING_SVGS.length;
+            console.log('🔄 Volgende SVG:', HANDWRITING_SVGS[currentSvgIndex]);
             setTimeout(startHandwritingAnimatie, 2000);
         }
     }
