@@ -386,10 +386,12 @@ async function startHandwritingAnimatie() {
         
         let svgText = await response.text();
         
-        // BEWAAR stroke kleur
+        // BEWAAR stroke EN fill kleur
         const strokeKleurMatch = svgText.match(/stroke="([^"]+)"/);
+        const fillKleurMatch = svgText.match(/fill="([^"]+)"/);
         const defaultStroke = strokeKleurMatch ? strokeKleurMatch[1] : '#000000';
-        console.log('🎨 Originele stroke kleur:', defaultStroke);
+        const defaultFill = fillKleurMatch ? fillKleurMatch[1] : '#000000';
+        console.log('🎨 Originele kleuren - Stroke:', defaultStroke, '| Fill:', defaultFill);
         
         // VERWIJDER ALLE strokes EN fills uit SVG text
         svgText = svgText.replace(/stroke="[^"]*"/gi, '');
@@ -409,14 +411,13 @@ async function startHandwritingAnimatie() {
         console.log('✅ SVG geladen');
         
         // FORCE verwijder fills uit ALLE DOM elementen
-        console.log('🧹 Verwijder fills uit DOM...');
         svg.querySelectorAll('*').forEach(elem => {
             elem.removeAttribute('fill');
             elem.removeAttribute('stroke');
             elem.style.fill = 'none';
             elem.style.stroke = 'none';
         });
-        console.log('✅ Fills verwijderd!');
+        console.log('✅ Volledig onzichtbaar gemaakt!');
         
         // Schaling
         const currentWidth = svg.viewBox.baseVal.width || 100;
@@ -484,15 +485,15 @@ async function startHandwritingAnimatie() {
             cumulativeLength += length;
             
             setTimeout(() => {
-                console.log(`✏️ [${idx}] Schrijf`);
+                console.log(`✏️ [${idx}] Schrijf (stroke + fill)`);
                 
-                // ZET stroke + dasharray (fill blijft none!)
+                // ZET stroke + FILL + dasharray
                 path.setAttribute('stroke', defaultStroke);
                 path.setAttribute('stroke-width', '2');
                 path.setAttribute('stroke-linecap', 'round');
                 path.setAttribute('stroke-linejoin', 'round');
-                path.setAttribute('fill', 'none');
-                path.style.fill = 'none';
+                path.setAttribute('fill', defaultFill); // ← FILL TERUG!
+                path.style.fill = defaultFill;          // ← FILL TERUG!
                 path.style.stroke = defaultStroke;
                 path.style.strokeDasharray = `${length}`;
                 path.style.strokeDashoffset = `${length}`;
