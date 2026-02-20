@@ -392,7 +392,7 @@ function startGraffitiLoop() {
 }
 
 async function startGraffitiAnimatie() {
-    console.log('🎨 START');
+    console.log('🎨 START GRAFFITI');
     
     if (graffitiBezig) return;
     graffitiBezig = true;
@@ -406,17 +406,17 @@ async function startGraffitiAnimatie() {
         
         let svgText = await response.text();
         
-        // Verwijder fills
+        // Verwijder ALLEEN fills (NIET strokes!)
         svgText = svgText.replace(/fill="[^"]*"/gi, '');
         svgText = svgText.replace(/fill:[^;"]*;?/gi, '');
-        svgText = svgText.replace(/stroke="[^"]*"/gi, '');
-        svgText = svgText.replace(/stroke:[^;"]*;?/gi, '');
         
         graffitiContainer.innerHTML = svgText;
         await new Promise(r => requestAnimationFrame(r));
         
         const svg = graffitiContainer.querySelector('svg');
         if (!svg) throw new Error('Geen SVG');
+        
+        console.log('✅ SVG geladen');
         
         // Converteer MM naar PX
         const MM_TO_PX = 3.779527559;
@@ -449,7 +449,7 @@ async function startGraffitiAnimatie() {
         
         await new Promise(r => requestAnimationFrame(r));
         
-        // Vind paths EN verwijder fill/stroke
+        // Vind paths
         const alleElementen = svg.querySelectorAll('*');
         const paths = [];
         
@@ -461,11 +461,9 @@ async function startGraffitiAnimatie() {
                 return;
             }
             
-            // ULTRA FORCE geen fill/stroke
+            // Verwijder fill
             elem.removeAttribute('fill');
-            elem.removeAttribute('stroke');
-            elem.removeAttribute('style');
-            elem.style.cssText = 'fill: none !important; stroke: none !important;';
+            elem.style.fill = 'none';
             
             if (['path', 'line', 'polyline', 'polygon'].includes(tagName)) {
                 try {
@@ -477,7 +475,7 @@ async function startGraffitiAnimatie() {
             }
         });
         
-        console.log('🛤️ Paths:', paths.length);
+        console.log('🛤️ Paths gevonden:', paths.length);
         
         if (paths.length === 0) throw new Error('Geen paths');
         
@@ -493,9 +491,9 @@ async function startGraffitiAnimatie() {
         svg.style.height = nieuweHeight + 'px';
         svg.style.display = 'block';
         
-        console.log('📏 Size:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight), 'px');
+        console.log('📏 Grootte:', Math.round(nieuweWidth), 'x', Math.round(nieuweHeight));
         
-        // Positioneer: HORIZONTAAL GECENTREERD
+        // Positioneer HORIZONTAAL GECENTREERD
         const knopRect = startBtn.getBoundingClientRect();
         const gifRect = document.querySelector('.gif-section').getBoundingClientRect();
         const beschikbareRuimte = gifRect.top - knopRect.bottom;
@@ -509,30 +507,32 @@ async function startGraffitiAnimatie() {
         graffitiContainer.style.top = (centerY - nieuweHeight / 2) + 'px';
         graffitiContainer.classList.add('actief');
         
-        console.log('📍 Pos:', Math.round(centerX), ',', Math.round(centerY));
+        console.log('📍 Positie:', Math.round(centerX), ',', Math.round(centerY));
         
-        // EERST alle paths onzichtbaar maken, DAN animeren
+        // Animeer met stroke-dasharray techniek
         let totalLength = paths.reduce((sum, p) => sum + p.length, 0);
         const schrijfDuur = 2000;
         let cumulativeLength = 0;
         let vorigePoint = null;
         
         paths.forEach(({ path, length }, idx) => {
-            // ZET DIRECT stroke + dasharray (maar onzichtbaar)
-            path.style.stroke = kleur;
-            path.style.strokeWidth = '6px';
-            path.style.strokeLinecap = 'round';
-            path.style.strokeLinejoin = 'round';
-            path.style.fill = 'none';
-            path.style.strokeDasharray = `${length}`;
-            path.style.strokeDashoffset = `${length}`;
+            // Zet stroke properties VOOR animatie
+            path.setAttribute('stroke', kleur);
+            path.setAttribute('stroke-width', '6');
+            path.setAttribute('stroke-linecap', 'round');
+            path.setAttribute('stroke-linejoin', 'round');
+            
+            // Dasharray = "pen aan voor X, pen uit voor 0"
+            path.style.strokeDasharray = length;
+            // Dashoffset = verschuif de dasharray X pixels naar links
+            path.style.strokeDashoffset = length; // START onzichtbaar
             
             const startDelay = (cumulativeLength / totalLength) * schrijfDuur;
             const pathDuur = (length / totalLength) * schrijfDuur;
             cumulativeLength += length;
             
             setTimeout(() => {
-                console.log(`🎬 [${idx}] Start schrijven`);
+                console.log(`✏️ [${idx}] Schrijf path (${Math.round(length)}px)`);
                 
                 const start = performance.now();
                 
@@ -540,10 +540,11 @@ async function startGraffitiAnimatie() {
                     const elapsed = now - start;
                     const t = Math.min(elapsed / pathDuur, 1);
                     
+                    // Animeer offset van length → 0 = "schuift naar binnen"
                     const offset = length * (1 - t);
-                    path.style.strokeDashoffset = `${offset}`;
+                    path.style.strokeDashoffset = offset;
                     
-                    // Spray - gebruik SVG rect als referentie
+                    // Spray
                     if (Math.random() < 0.5 && t < 0.95) {
                         try {
                             const point = path.getPointAtLength(length * t);
@@ -564,16 +565,17 @@ async function startGraffitiAnimatie() {
                             }
                             
                             vorigePoint = point;
-                        } catch (e) {
-                            console.warn('Spray error:', e);
-                        }
+                        } catch (e) {}
                     }
                     
                     if (t < 1) {
                         requestAnimationFrame(animate);
-                    } else if (idx === paths.length - 1) {
-                        console.log('✅ Schrijven klaar');
-                        setTimeout(veegGraffitiWeg, 2000);
+                    } else {
+                        console.log(`✅ [${idx}] Path klaar`);
+                        if (idx === paths.length - 1) {
+                            console.log('🎉 Alle paths geschreven!');
+                            setTimeout(veegGraffitiWeg, 2000);
+                        }
                     }
                 }
                 requestAnimationFrame(animate);
@@ -581,7 +583,7 @@ async function startGraffitiAnimatie() {
         });
         
     } catch (error) {
-        console.error('❌', error);
+        console.error('❌ FOUT:', error);
         graffitiBezig = false;
         setTimeout(startGraffitiAnimatie, 2000);
     }
@@ -612,7 +614,7 @@ function maakSprayStreak(x, y, kleur, richting) {
 }
 
 function veegGraffitiWeg() {
-    console.log('🧽 Spons');
+    console.log('🧽 Start vegen');
     
     spons.style.display = 'block';
     wipeOverlay.style.display = 'block';
@@ -637,7 +639,7 @@ function veegGraffitiWeg() {
         if (x < eindX) {
             requestAnimationFrame(animeerSpons);
         } else {
-            console.log('✅ Gewist');
+            console.log('✅ Vegen klaar');
             
             spons.style.display = 'none';
             wipeOverlay.style.display = 'none';
