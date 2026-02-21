@@ -151,28 +151,7 @@ footer {
 
 <div class="carousel-section">
     <div class="carousel-wrapper">
-        <div class="carousel" id="carousel">
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 20</h3><span class="new-badge" id="newBadge">NIEUW</span></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 19</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 18</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 17</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 16</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 15</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 14</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 13</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 12</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 11</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 10</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 9</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 8</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 7</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 6</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 5</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 4</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 3</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 2</h3></div>
-            <div class="video-card"><img src="images/icons/videos.png"><h3>Video 1</h3></div>
-        </div>
+        <div class="carousel" id="carousel"></div>
         <div class="scroll-hint" id="scrollBtn">&#8250;</div>
     </div>
 </div>
@@ -195,26 +174,14 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW:', e));
 }
 
-const NIEUWE_VIDEO = true;
-const badge = document.getElementById("newBadge");
-if (!NIEUWE_VIDEO) badge.style.display = "none";
-
+// Scroll carousel
 const carousel = document.getElementById("carousel");
 const scrollBtn = document.getElementById("scrollBtn");
 scrollBtn.addEventListener('click', function() {
     carousel.scrollTo({ left: carousel.scrollWidth, behavior: 'smooth' });
 });
 
-const defaultQuote = "Jij en video's... noem het een ideaal stel! 😄";
-const newVideoQuote = "Psst! Er is een nieuwe video voor je! 🎬";
-const quote = NIEUWE_VIDEO ? newVideoQuote : defaultQuote;
-const quoteEl = document.getElementById("quoteText");
-let i = 0;
-function typeWriter() {
-    if (i < quote.length) { quoteEl.textContent += quote.charAt(i); i++; setTimeout(typeWriter, 45); }
-}
-setTimeout(typeWriter, 800);
-
+// Countdown timer
 let incentiveEnd = new Date("2026-06-01T23:59:59");
 function updateCountdown() {
     let diff = incentiveEnd - new Date();
@@ -228,6 +195,57 @@ function updateCountdown() {
 }
 setInterval(updateCountdown, 60000);
 updateCountdown();
+
+// Typing quote
+const NIEUWE_VIDEO = true;
+const badge = document.getElementById("newBadge");
+if (!NIEUWE_VIDEO && badge) badge.style.display = "none";
+const defaultQuote = "Jij en video's... noem het een ideaal stel! 😄";
+const newVideoQuote = "Psst! Er is een nieuwe video voor je! 🎬";
+const quote = NIEUWE_VIDEO ? newVideoQuote : defaultQuote;
+const quoteEl = document.getElementById("quoteText");
+let i = 0;
+function typeWriter() {
+    if (i < quote.length) { quoteEl.textContent += quote.charAt(i); i++; setTimeout(typeWriter, 45); }
+}
+setTimeout(typeWriter, 800);
+
+// ==== DYNAMISCHE VIDEOS VAN SHAREPOINT ====
+const jsonUrl = "https://kpnbv.sharepoint.com/sites/IncentiveWebApp/Shared$Documents/json/videos.json"; // Vervang door je echte link
+
+fetch(jsonUrl)
+  .then(response => response.json())
+  .then(data => {
+    carousel.innerHTML = ""; // leegmaken
+
+    data.videos.forEach((video, index) => {
+      const card = document.createElement("div");
+      card.className = "video-card";
+
+      const thumb = document.createElement("img");
+      thumb.src = "images/icons/videos.png"; // standaard thumbnail
+      card.appendChild(thumb);
+
+      const title = document.createElement("h3");
+      title.textContent = video.naam;
+      card.appendChild(title);
+
+      if(index === 0) { // NIEUW badge bij nieuwste video
+        const newBadge = document.createElement("span");
+        newBadge.className = "new-badge";
+        newBadge.textContent = "NIEUW";
+        card.appendChild(newBadge);
+      }
+
+      // Klikbaar: open video
+      card.addEventListener("click", () => {
+        window.open(video.url, "_blank");
+      });
+
+      carousel.appendChild(card);
+    });
+  })
+  .catch(err => console.error("Fout bij laden videos.json:", err));
 </script>
 </body>
 </html>
